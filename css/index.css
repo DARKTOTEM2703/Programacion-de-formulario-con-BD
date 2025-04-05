@@ -1,0 +1,164 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #003366;
+}
+
+.container-1 {
+  text-align: center;
+  padding: 20px;
+}
+
+.container-1-img img {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  max-width: 100%;
+  height: auto;
+}
+
+.container-1-text h1 {
+  font-size: 24px;
+  color: #003366;
+}
+
+.container-1-text p {
+  font-size: 16px;
+  color: #333;
+}
+
+.header {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.header__image {
+  margin-top: 20px;
+}
+
+.main {
+  padding: 20px;
+}
+
+.main h2 {
+  margin: auto;
+  max-width: 600px;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 14.05rem;
+}
+
+.btn {
+  background-color: #003366;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-primary,
+.btn-secondary {
+  color: white;
+}
+.btn:hover {
+  background-color: #00509e;
+}
+
+.btn-logout {
+  background-color: #ff4d4d;
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.btn-logout:hover {
+  background-color: #cc0000;
+}
+
+@media (max-width: 768px) {
+  body {
+    text-align: left;
+  }
+
+  .header__image {
+    margin-top: 10px;
+    width: 100%;
+    height: auto;
+  }
+
+  .main h2 {
+    font-size: 18px;
+    padding: 0 15px;
+    text-align: center;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 6.5rem;
+  }
+
+  .btn {
+    width: 90%;
+    margin: 0 auto;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+
+  .footer {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main h2 {
+    font-size: 22px;
+    max-width: 90%;
+  }
+
+  .buttons {
+    gap: 15px;
+  }
+
+  .btn {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .main h2 {
+    font-size: 24px;
+    max-width: 600px;
+  }
+
+  .buttons {
+    gap: 20px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
