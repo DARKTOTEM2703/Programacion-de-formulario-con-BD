@@ -35,6 +35,9 @@ if (!isset($_SESSION['usuario_id'])) {
         </div>
     </div>
     <?php include 'components/footer.php'; ?>
+
+
 </body>
+<script src="js/dark-mode.js"></script>
 
 </html>
