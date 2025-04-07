@@ -1,0 +1,20 @@
+/* filepath: c:\xampp\htdocs\Programacion de formulario con BD\css\register.css */
+body {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.card {
+  max-width: 400px;
+  margin: auto;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-container img {
+  max-width: 15rem;
+  margin-bottom: 10px;
+}
