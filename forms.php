@@ -80,5 +80,6 @@
 <footer>
     <?php include 'components/footer.php'; ?>
 </footer>
+<script src="js/dark-mode.js"></script>
 
 </html>

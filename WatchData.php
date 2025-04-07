@@ -63,11 +63,11 @@ include 'components/db_connection.php';
         $conn->close();
         ?>
     </div>
-    <script src="js/dark-mode.js"></script>
 </body>
 
 <footer>
     <?php include 'components/footer.php'; ?>
 </footer>
+<script src="js/dark-mode.js"></script>
 
 </html>

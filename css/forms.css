@@ -1,9 +1,11 @@
+/* Estilos generales */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
   color: #003366;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .form-container {
@@ -13,6 +15,7 @@ body {
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 h2 {
@@ -123,4 +126,57 @@ textarea {
 
 .btn-submit:hover {
   background-color: #00509e;
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212; /* Fondo oscuro */
+    color: #ffffff; /* Texto claro */
+  }
+
+  .form-container {
+    background-color: #1e1e1e; /* Fondo del formulario */
+    border-color: #444444; /* Borde del formulario */
+  }
+
+  h2,
+  label {
+    color: #ffffff; /* Asegura que el texto sea blanco en modo oscuro */
+  }
+
+  h3 {
+    background-color: #2e2e2e; /* Fondo del encabezado */
+    color: #ffffff; /* Texto claro */
+    padding: 10px;
+    border-left: 5px solid #00509e; /* Línea decorativa */
+  }
+
+  .warning {
+    color: #ff6666; /* Texto de advertencia en rojo claro */
+    font-weight: bold;
+  }
+
+  input,
+  textarea {
+    background-color: #2e2e2e; /* Fondo de los campos */
+    color: #ffffff; /* Texto claro */
+    border-color: #555555; /* Borde de los campos */
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #aaaaaa; /* Placeholder en gris claro */
+  }
+
+  .btn-back,
+  .btn-submit {
+    background-color: #444444; /* Fondo del botón */
+    color: #ffffff; /* Texto claro */
+  }
+
+  .btn-back:hover,
+  .btn-submit:hover {
+    background-color: #666666; /* Fondo del botón al pasar el cursor */
+  }
 }
