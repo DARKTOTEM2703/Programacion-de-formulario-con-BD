@@ -36,25 +36,50 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 
 ---
 
-## Estructura del Proyecto
+## 📂 Estructura del Proyecto
 
 ```
-.
-├── components/         # Componentes PHP reutilizables
-├── css/                # Archivos de estilos CSS
-├── db/                 # Archivos relacionados con la base de datos
-├── img/                # Imágenes utilizadas en la aplicación
-├── js/                 # Scripts JavaScript
-├── vendor/             # Dependencias instaladas por Composer
-├── .env                # Variables de entorno
-├── .gitignore          # Archivos y carpetas ignorados por Git
-├── composer.json       # Configuración de dependencias de Composer
-├── index.php           # Página principal
-├── login.php           # Página de inicio de sesión
-├── register.php        # Página de registro de usuarios
-├── forms.php           # Página para gestionar formularios
-├── WatchData.php       # Página para visualizar datos enviados
-└── logout.php          # Lógica de cierre de sesión
+└── 📁PROGRAMACION-DE-FORMULARIO-CON-BD
+    └── 📁components
+        └── config.php
+        └── db_connection.php
+        └── footer.php
+        └── form_handler.php
+        └── google_login_handler.php
+        └── header.php
+        └── login_handler.php
+        └── register_handler.php
+    └── 📁css
+        └── dark-mode.css
+        └── footer.css
+        └── forms.css
+        └── header.css
+        └── index.css
+        └── login.css
+        └── register.css
+        └── WatchData.css
+    └── 📁db
+        └── gestion_envios.sql
+    └── 📁elements
+        └── 2_formulario.jpg
+        └── 3_ver_datos.jpg
+    └── 📁js
+        └── dark-mode.js
+        └── form_validation.js
+        └── googleconection.js
+        └── validation.js
+    └── 📁vendor
+    └──.env.example
+    └──.gitignore
+    └──composer.json
+    └──composer.lock
+    └──config.php
+    └──forms.php
+    └──index.php
+    └──login.php
+    └──logout.php
+    └──register.php
+    └──WatchData.php
 ```
 
 ---
