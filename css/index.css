@@ -4,12 +4,19 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%; /* Asegura que el html y body ocupen toda la altura */
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   text-align: center;
   color: #003366;
   transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column; /* Permite que los hijos se apilen verticalmente */
 }
 
 .container-1 {
@@ -48,6 +55,7 @@ body {
 
 .main {
   padding: 20px;
+  flex: 1; /* Hace que el contenido principal ocupe el espacio disponible */
 }
 
 .main h2 {
@@ -79,7 +87,7 @@ body {
   color: white;
 }
 .logout {
-  margin-bottom: 4.4rem;
+  margin-bottom: 16.6rem;
 }
 .btn:hover {
   background-color: #00509e;
@@ -102,6 +110,16 @@ body {
 
 .card {
   transition: background-color 0.3s, color 0.3s;
+}
+
+.footer {
+  display: block;
+  margin-top: auto; /* Asegura que el footer esté al final de la página */
+  text-align: center;
+  font-size: 14px;
+  padding: 10px 0;
+  background-color: #003366;
+  color: white;
 }
 
 @media (max-width: 768px) {

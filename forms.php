@@ -81,5 +81,6 @@
     <?php include 'components/footer.php'; ?>
 </footer>
 <script src="js/dark-mode.js"></script>
+<script src="js/form_validation.js"></script>
 
 </html>

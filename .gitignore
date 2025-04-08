@@ -1,0 +1,25 @@
+# Ignorar archivos de entorno
+.env
+
+# Ignorar dependencias instaladas por Composer
+/vendor/
+
+# Ignorar archivos generados por el sistema
+*.log
+*.cache
+*.bak
+*.tmp
+
+# Ignorar archivos de bases de datos locales
+*.sql
+*.sqlite
+
+# Ignorar configuraciones específicas del IDE
+.vscode/
+.idea/
+
+# Ignorar otros archivos temporales
+node_modules/
+.DS_Store
+Thumbs.db
+*~

@@ -42,11 +42,58 @@
             <div class="text-center mt-3">
                 <p>¿No tienes una cuenta? <a href="register.php" class="text-decoration-none">Regístrate aquí</a></p>
             </div>
+
+            <!-- Botón de Google Sign-In -->
+            <div class="text-center mt-4">
+                <p>O inicia sesión con:</p>
+                <div id="g_id_onload" data-client_id="TU_CLIENT_ID" data-context="signin" data-ux_mode="popup"
+                    data-callback="handleCredentialResponse" data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard"></div>
+            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/dark-mode.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+    function handleCredentialResponse(response) {
+        // Decodificar el token JWT de Google
+        const user = parseJwt(response.credential);
+        console.log("Usuario autenticado:", user);
+
+        // Enviar el token al servidor para validación
+        fetch("components/google_login_handler.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    token: response.credential
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Bienvenido, ${user.name}`);
+                    window.location.href = "dashboard.php"; // Redirige al usuario
+                } else {
+                    alert("Error al autenticar con Google.");
+                }
+            })
+            .catch(err => console.error("Error:", err));
+    }
+
+    function parseJwt(token) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+    </script>
 </body>
 
 </html>
