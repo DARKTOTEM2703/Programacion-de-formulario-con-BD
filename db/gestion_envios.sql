@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-04-2025 a las 01:22:43
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 08-04-2025 a las 05:00:11
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,22 +24,34 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `solicitudes_envios`
+-- Estructura de tabla para la tabla `envios`
 --
 
-CREATE TABLE `solicitudes_envios` (
+CREATE TABLE `envios` (
   `id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `nombre_completo` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `celular` varchar(15) NOT NULL,
-  `telefono_oficina` varchar(15) DEFAULT NULL,
-  `direccion_origen` varchar(255) NOT NULL,
-  `direccion_destino` varchar(255) NOT NULL,
-  `descripcion` text DEFAULT NULL,
-  `valor_aproximado` decimal(10,2) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `office_phone` varchar(15) DEFAULT NULL,
+  `origin` text NOT NULL,
+  `destination` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `value` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `envios`
+--
+
+INSERT INTO `envios` (`id`, `usuario_id`, `name`, `email`, `phone`, `office_phone`, `origin`, `destination`, `description`, `value`, `created_at`) VALUES
+(1, 7, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '9996369799', '9996369799', 'C55A', 'c 55A #357 x 18 y 20', 'edjfnasdionfioñdasnf', 99999999.99, '2025-04-08 02:34:00'),
+(2, 7, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '9996369799', '9996369799', 'C55A', 'c 55A #357 x 18 y 20', 'adfvasdvasdv', 99999999.99, '2025-04-08 02:36:00'),
+(3, 7, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '9996369799', '9996369799', 'C55A', 'c 55A #357 x 18 y 20', 'oñdkjmvaklñ{sdmv', 99999999.99, '2025-04-08 02:41:23'),
+(4, 0, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '9996369799', '9996369799', 'C55A', 'c 55A #357 x 18 y 20', 'oñvnasdklñvmao{svmp{asd,v', 99999999.99, '2025-04-08 02:48:02'),
+(5, 1, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '9996369799', '', 'C55A', 'c 55A #357 x 18 y 20', 'idhaisfhioadjsnf', 99999999.99, '2025-04-08 02:53:43'),
+(6, 8, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '9996369799', '', 'C55A', 'c 55A #357 x 18 y 20', 'giuhiluhihiohihuiuhuihiuhui', 9999.00, '2025-04-08 02:55:11');
 
 -- --------------------------------------------------------
 
@@ -49,9 +61,10 @@ CREATE TABLE `solicitudes_envios` (
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
   `nombre_usuario` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -59,18 +72,19 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre_usuario`, `email`, `password`, `created_at`) VALUES
-(1, 'isis can', 'nnnjnjj@gmail.com', '$2y$10$lWeAcOhIyX7WYYDuDCPQ4.MS9FoTi/lXAwidFxlEzpdjnFPTTzvxW', '2025-04-05 19:26:18'),
-(2, 'jafeth', 'okanfdoknfojms@gmail.com', '$2y$10$h20bON2A5iLYMq9l.S1u8.K3fjTh9V98H5kka5/Q7SMLz2h3atj9W', '2025-04-07 21:42:03');
+INSERT INTO `usuarios` (`id`, `google_id`, `nombre_usuario`, `email`, `password`, `created_at`) VALUES
+(1, '102805881195773678735', 'Darksoul 2703', 'jafethgamboabaas@gmail.com', NULL, '2025-04-08 02:39:36'),
+(7, NULL, 'DARK', 'jqadkjfbiasdnfoasd@xn--aodfnasdonf-9db.com', '$2y$10$5IVy1izbRvhZwK7VB9JlBOO9XxbkvumoRShonZKYIT/rfibQXTwP6', '2025-04-08 02:46:20'),
+(8, '115034569881549488883', 'Gamboa Baas Jafeth', 'jafethgamboa27@gmail.com', NULL, '2025-04-08 02:54:53');
 
 --
 -- Índices para tablas volcadas
 --
 
 --
--- Indices de la tabla `solicitudes_envios`
+-- Indices de la tabla `envios`
 --
-ALTER TABLE `solicitudes_envios`
+ALTER TABLE `envios`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`);
 
@@ -79,33 +93,24 @@ ALTER TABLE `solicitudes_envios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `google_id` (`google_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `solicitudes_envios`
+-- AUTO_INCREMENT de la tabla `envios`
 --
-ALTER TABLE `solicitudes_envios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `envios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `solicitudes_envios`
---
-ALTER TABLE `solicitudes_envios`
-  ADD CONSTRAINT `solicitudes_envios_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
