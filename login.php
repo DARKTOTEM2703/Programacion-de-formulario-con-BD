@@ -20,6 +20,7 @@
             <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
             <?php
+            require 'components/config.php';
             session_start();
             if (isset($_SESSION['error'])) {
                 echo '<div class="alert alert-danger text-center" role="alert">' . $_SESSION['error'] . '</div>';
@@ -46,7 +47,9 @@
             <!-- Botón de Google Sign-In -->
             <div class="text-center mt-4">
                 <p>O inicia sesión con:</p>
-                <div id="g_id_onload" data-client_id="TU_CLIENT_ID" data-context="signin" data-ux_mode="popup"
+                <div id="g_id_onload" data-client_id="<?php 
+                require 'components/config.php';
+                echo getenv('GOOGLE_CLIENT_ID'); ?>" data-context="signin" data-ux_mode="popup"
                     data-callback="handleCredentialResponse" data-auto_prompt="false">
                 </div>
                 <div class="g_id_signin" data-type="standard"></div>

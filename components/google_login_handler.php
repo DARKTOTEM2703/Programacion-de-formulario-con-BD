@@ -1,11 +1,12 @@
 <?php
 // filepath: c:\xampp\htdocs\Programacion-de-formulario-con-BD\components\google_login_handler.php
 require 'vendor/autoload.php'; // Instala Google Client Library con Composer
+require __DIR__ . '/config.php';
 
 use Google\Client;
 
 $client = new Client();
-$client->setClientId('TU_CLIENT_ID'); // Reemplaza con tu Client ID
+$client->setClientId(getenv('GOOGLE_CLIENT_ID')); // Usar la variable de entorno
 
 // Obtener el token enviado desde el cliente
 $data = json_decode(file_get_contents('php://input'), true);
