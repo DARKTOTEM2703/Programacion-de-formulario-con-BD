@@ -154,4 +154,15 @@ La base de datos `gestion_envios` contiene las siguientes tablas principales:
 
 ---
 
+Contacto
+Para más información, puedes contactarme a través de:
+
+Correo electrónico: Jafethgamboa27@gmail.com
+
 ¡Gracias por usar este proyecto! Si tienes alguna pregunta o sugerencia, no dudes en abrir un issue.
+
+Créditos
+Este proyecto fue desarrollado por Jafet Gamboa, comprometido con proporcionar soluciones financieras de alta calidad a nuestros clientes.
+
+Derechos
+Todos los derechos reservados. Este proyecto y su contenido están protegidos por derechos de autor y no pueden ser reproducidos, distribuidos ni utilizados sin el permiso expreso del autor.
