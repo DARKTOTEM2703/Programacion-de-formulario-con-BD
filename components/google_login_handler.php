@@ -1,37 +1,77 @@
 <?php
 // filepath: c:\xampp\htdocs\Programacion-de-formulario-con-BD\components\google_login_handler.php
-require 'vendor/autoload.php'; // Instala Google Client Library con Composer
-require __DIR__ . '/config.php';
+error_log("Google login handler started");
+require __DIR__ . '/../vendor/autoload.php'; // Instala Google Client Library con Composer
 
 use Google\Client;
+use Dotenv\Dotenv;
+
+session_start();
+
+// Cargar variables de entorno
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 $client = new Client();
-$client->setClientId(getenv('GOOGLE_CLIENT_ID')); // Usar la variable de entorno
+$client->setClientId($_ENV['GOOGLE_CLIENT_ID']); // Usar la variable de entorno
 
-// Obtener el token enviado desde el cliente
-$data = json_decode(file_get_contents('php://input'), true);
-$token = $data['token'] ?? '';
+// Determinar si es una solicitud POST (API) o GET (redirección)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Procesar solicitud API (desde JavaScript)
+    $data = json_decode(file_get_contents('php://input'), true);
+    $token = $data['token'] ?? '';
 
-try {
-    $payload = $client->verifyIdToken($token);
-    if ($payload) {
-        // Token válido, puedes obtener información del usuario
-        $userId = $payload['sub'];
-        $email = $payload['email'];
-        $name = $payload['name'];
-
-        // Aquí puedes guardar al usuario en tu base de datos o iniciar sesión
-        session_start();
-        $_SESSION['user'] = [
-            'id' => $userId,
-            'email' => $email,
-            'name' => $name
-        ];
-
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Token inválido']);
+    try {
+        $payload = $client->verifyIdToken($token);
+        if ($payload) {
+            procesarUsuario($payload);
+            $_SESSION['usuario_id'] = $payload['sub']; // ID único del usuario
+            $_SESSION['usuario_nombre'] = $payload['name']; // Nombre del usuario
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false]);
+        }
+    } catch (Exception $e) {
+        error_log("Google authentication error: " . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+} else {
+    // Procesar redirección
+    $credential = $_GET['credential'] ?? '';
+
+    if (empty($credential)) {
+        header('Location: ../login.php?error=missing_credential');
+        exit;
+    }
+
+    try {
+        $payload = $client->verifyIdToken($credential);
+        if ($payload) {
+            procesarUsuario($payload);
+            header('Location: ../index.php');
+            exit;
+        } else {
+            header('Location: ../login.php?error=invalid_token');
+            exit;
+        }
+    } catch (Exception $e) {
+        error_log("Google authentication error: " . $e->getMessage());
+        header('Location: ../login.php?error=' . urlencode($e->getMessage()));
+        exit;
+    }
+}
+
+function procesarUsuario($payload)
+{
+    $userId = $payload['sub'];
+    $email = $payload['email'];
+    $name = $payload['name'];
+
+    $_SESSION['user'] = [
+        'id' => $userId,
+        'email' => $email,
+        'nombre_usuario' => $name
+    ];
+
+    // Aquí podrías guardar el usuario en tu base de datos si es necesario
 }
