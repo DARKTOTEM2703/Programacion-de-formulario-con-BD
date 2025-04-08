@@ -1,77 +1,75 @@
 <?php
-// filepath: c:\xampp\htdocs\Programacion-de-formulario-con-BD\components\google_login_handler.php
-error_log("Google login handler started");
-require __DIR__ . '/../vendor/autoload.php'; // Instala Google Client Library con Composer
-
-use Google\Client;
-use Dotenv\Dotenv;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 session_start();
+require '../vendor/autoload.php'; // Asegúrate de tener instalado el cliente de Google con Composer
+include 'db_connection.php';
 
-// Cargar variables de entorno
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+// Cargar las variables de entorno
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
-$client = new Client();
-$client->setClientId($_ENV['GOOGLE_CLIENT_ID']); // Usar la variable de entorno
-
-// Determinar si es una solicitud POST (API) o GET (redirección)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Procesar solicitud API (desde JavaScript)
-    $data = json_decode(file_get_contents('php://input'), true);
-    $token = $data['token'] ?? '';
-
-    try {
-        $payload = $client->verifyIdToken($token);
-        if ($payload) {
-            procesarUsuario($payload);
-            $_SESSION['usuario_id'] = $payload['sub']; // ID único del usuario
-            $_SESSION['usuario_nombre'] = $payload['name']; // Nombre del usuario
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false]);
-        }
-    } catch (Exception $e) {
-        error_log("Google authentication error: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-    }
-} else {
-    // Procesar redirección
-    $credential = $_GET['credential'] ?? '';
-
-    if (empty($credential)) {
-        header('Location: ../login.php?error=missing_credential');
-        exit;
-    }
-
-    try {
-        $payload = $client->verifyIdToken($credential);
-        if ($payload) {
-            procesarUsuario($payload);
-            header('Location: ../index.php');
-            exit;
-        } else {
-            header('Location: ../login.php?error=invalid_token');
-            exit;
-        }
-    } catch (Exception $e) {
-        error_log("Google authentication error: " . $e->getMessage());
-        header('Location: ../login.php?error=' . urlencode($e->getMessage()));
-        exit;
-    }
+// Verificar que las variables de entorno estén configuradas
+if (!isset($_ENV['GOOGLE_CLIENT_ID']) || !isset($_ENV['GOOGLE_CLIENT_SECRET'])) {
+    die("Error: Las variables de entorno GOOGLE_CLIENT_ID o GOOGLE_CLIENT_SECRET no están configuradas.");
 }
 
-function procesarUsuario($payload)
-{
-    $userId = $payload['sub'];
-    $email = $payload['email'];
-    $name = $payload['name'];
+$client = new Google\Client();
+$client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
+$client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
+$client->setRedirectUri('http://localhost/Programacion-de-formulario-con-BD/components/google_login_handler.php');
+$client->addScope('email');
+$client->addScope('profile');
 
-    $_SESSION['user'] = [
-        'id' => $userId,
-        'email' => $email,
-        'nombre_usuario' => $name
-    ];
+if (isset($_GET['code'])) {
+    $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+    if (!isset($token['error'])) {
+        echo "Token recibido: " . json_encode($token) . "<br>";
+        $client->setAccessToken($token['access_token']);
+        $google_service = new Google\Service\Oauth2($client);
+        $data = $google_service->userinfo->get();
 
-    // Aquí podrías guardar el usuario en tu base de datos si es necesario
+        // Extraer datos del usuario
+        $google_id = $data['id'];
+        $name = $data['name'];
+        $email = $data['email'];
+
+        // Verificar si el usuario ya existe en la base de datos
+        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE google_id = ?");
+        $stmt->bind_param("s", $google_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Usuario existente, iniciar sesión
+            $user = $result->fetch_assoc();
+            $_SESSION['usuario_id'] = $user['id'];
+            $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
+        } else {
+            // Nuevo usuario, guardar en la base de datos
+            $stmt = $conn->prepare("INSERT INTO usuarios (google_id, nombre_usuario, email) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $google_id, $name, $email);
+            if ($stmt->execute()) {
+                $_SESSION['usuario_id'] = $conn->insert_id;
+                $_SESSION['nombre_usuario'] = $name;
+            } else {
+                $_SESSION['error'] = "Error al guardar el usuario: " . $stmt->error;
+                header("Location: ../login.php");
+                exit();
+            }
+        }
+
+        // Redirigir al usuario al índice principal
+        header("Location: ../index.php");
+        exit();
+    } else {
+        echo "Error al obtener el token: " . json_encode($token['error']);
+        exit();
+    }
+} else {
+    $_SESSION['error'] = "Error al autenticar con Google.";
+    header("Location: ../login.php");
+    exit();
 }

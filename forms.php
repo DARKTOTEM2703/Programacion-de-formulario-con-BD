@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -10,77 +17,68 @@
 
 <body>
     <?php include 'components/header.php'; ?>
-    <?php include 'components/form_handler.php'; ?>
-    <!-- Procesa el formulario -->
 
     <div class="form-container">
-        <button class="btn-back" onclick="window.location.href='index.php'">
-            << Regresar</button>
-                <h2>Por favor llene el siguiente formulario</h2>
-                <p class="required-fields">Campos requeridos (*)</p>
+        <form action="components/form_handler.php" method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">* Nombre Completo</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">* Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">* Celular</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="office-phone">* Teléfono de oficina</label>
+                    <input type="tel" id="office-phone" name="office-phone">
+                </div>
+            </div>
 
-                <form action="#" method="POST">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">* Nombre Completo</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">* Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone">* Celular</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="office-phone">* Teléfono de oficina</label>
-                            <input type="tel" id="office-phone" name="office-phone">
-                        </div>
-                    </div>
+            <h3>DATOS DE LA MERCANCÍA QUE DESEAS ENVIAR</h3>
+            <p class="warning">* Especifica si el envío es para algún municipio en particular dentro o fuera de
+                la ciudad</p>
 
-                    <h3>DATOS DE LA MERCANCÍA QUE DESEAS ENVIAR</h3>
-                    <p class="warning">* Especifica si el envío es para algún municipio en particular dentro o fuera de
-                        la ciudad</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="origin">* Dirección de origen</label>
+                    <input type="text" id="origin" name="origin" required>
+                </div>
+                <div class="form-group">
+                    <label for="destination">* Dirección Destino</label>
+                    <input type="text" id="destination" name="destination" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description">¿Qué tipo de objetos quieres enviar?</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <div class="form-row value-row">
+                <div class="form-group value-group">
+                    <label for="value">Valor aproximado de toda la mercancía</label>
+                    <div class="value-input">
+                        <span>$</span>
+                        <input type="number" id="value" name="value" step="0.01">
+                        <span>.00 M/N</span>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="origin">* Dirección de origen</label>
-                            <input type="text" id="origin" name="origin" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="destination">* Dirección Destino</label>
-                            <input type="text" id="destination" name="destination" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">¿Qué tipo de objetos quieres enviar?</label>
-                        <textarea id="description" name="description"></textarea>
-                    </div>
-                    <div class="form-row value-row">
-                        <div class="form-group value-group">
-                            <label for="value">Valor aproximado de toda la mercancía</label>
-                            <div class="value-input">
-                                <span>$</span>
-                                <input type="number" id="value" name="value" step="0.01">
-                                <span>.00 M/N</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-buttons">
-                        <button type="submit" class="btn-submit">Guardar</button>
-                    </div>
-                </form>
+            <div class="form-buttons">
+                <button type="submit" class="btn-submit">Guardar</button>
+            </div>
+            <div class="form-buttons mt-3">
+                <a href="index.php" class="btn btn-secondary">Volver al Inicio</a>
+            </div>
+        </form>
     </div>
 </body>
-
-<footer>
-    <?php include 'components/footer.php'; ?>
-</footer>
-<script src="js/dark-mode.js"></script>
-<script src="js/form_validation.js"></script>
 
 </html>
