@@ -5,7 +5,7 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 ## Tabla de Contenidos
 
 1. [Tecnologías Utilizadas](#tecnologías-utilizadas)
-2. [Estructura del Proyecto](#estructura-del-proyecto)
+2. [Estructura del proyecto](#estructura-del-proyecto)
 3. [Instalación](#instalación)
 4. [Configuración](#configuración)
 5. [Componentes Principales](#componentes-principales)
@@ -36,7 +36,7 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 └── 📁PROGRAMACION-DE-FORMULARIO-CON-BD
