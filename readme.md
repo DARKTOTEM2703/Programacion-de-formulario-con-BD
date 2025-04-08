@@ -64,8 +64,7 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 1. Clona este repositorio:
 
    ```bash
-   git clone https://github.com/tu-repositorio.git
-   cd Programacion-de-formulario-con-BD
+   git clone hhttps://github.com/DARKTOTEM2703/Programacion-de-formulario-con-BD
    ```
 
 2. Instala las dependencias de PHP con Composer:
