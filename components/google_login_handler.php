@@ -5,11 +5,10 @@ error_reporting(E_ALL);
 
 session_start();
 require '../vendor/autoload.php'; // Asegúrate de tener instalado el cliente de Google con Composer
-include 'db_connection.php';
+require 'db_connection.php';
 
 // Cargar las variables de entorno
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+require 'config.php';
 
 // Verificar que las variables de entorno estén configuradas
 if (!isset($_ENV['GOOGLE_CLIENT_ID']) || !isset($_ENV['GOOGLE_CLIENT_SECRET'])) {

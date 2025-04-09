@@ -2,7 +2,8 @@
 <?php
 session_start();
 include 'db_connection.php';
-
+include 'email_service.php';
+include 'config.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_usuario = htmlspecialchars(trim($_POST['nombre_usuario']));
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -35,14 +36,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre_usuario, email, password) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $nombre_usuario, $email, $hashed_password);
 
-    if ($stmt->execute()) {
-        $_SESSION['success'] = "Usuario registrado exitosamente. Ahora puedes iniciar sesión.";
-        header("Location: ../login.php");
-        exit();
+    $resultadoCorreo = enviarCorreo($email, $nombre_usuario);
+
+
+    if ($resultadoCorreo === true) {
+        $_SESSION['success'] = "Usuario registrado exitosamente. Se ha enviado un correo de confirmación.";
     } else {
-        $_SESSION['error'] = "Error al registrar el usuario: " . $stmt->error;
-        header("Location: ../register.php");
-        exit();
+        $_SESSION['error'] = "Usuario registrado, pero no se pudo enviar el correo: $resultadoCorreo";
     }
+
+    header("Location: ../register.php");
+    exit();
+} else {
+    $_SESSION['error'] = "Error al registrar el usuario: " . $stmt->error;
+    header("Location: ../register.php");
+    exit();
 }
-?>

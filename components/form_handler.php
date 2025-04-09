@@ -11,9 +11,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Obtener el usuario_id desde el formulario
+    // isset() se utiliza para verificar si la variable está definida y no es null
+    // En este caso, se espera que el formulario envíe un campo 'usuario_id'
     $usuario_id = isset($_POST['usuario_id']) ? $_POST['usuario_id'] : null;
 
     // Otros datos del formulario
+
+    //Seguridad del lado del servidor
+
+    /* htmlspecialchars() se utiliza para evitar ataques XSS al escapar caracteres especiales
+     trim() se utiliza para eliminar espacios en blanco al inicio y al final de la cadena
+     filter_var() se utiliza para validar y filtrar datos, en este caso, se utiliza para sanitizar el email y el valor*/
     $name = htmlspecialchars(trim($_POST['name']));
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $phone = htmlspecialchars(trim($_POST['phone']));
