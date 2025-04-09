@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 session_start();
 require '../vendor/autoload.php'; // Asegúrate de tener instalado el cliente de Google con Composer
 require 'db_connection.php';
+require 'email_service.php'; // Incluye el servicio de correo
 
 // Cargar las variables de entorno
 require 'config.php';
@@ -53,6 +54,12 @@ if (isset($_GET['code'])) {
             if ($stmt->execute()) {
                 $_SESSION['usuario_id'] = $conn->insert_id;
                 $_SESSION['nombre_usuario'] = $name;
+
+                // Enviar correo de bienvenida
+                $resultadoCorreo = enviarCorreo($email, $name);
+                if ($resultadoCorreo !== true) {
+                    error_log("Error al enviar el correo de bienvenida: $resultadoCorreo");
+                }
             } else {
                 $_SESSION['error'] = "Error al guardar el usuario: " . $stmt->error;
                 header("Location: ../login.php");

@@ -10,6 +10,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
+    // Verificar si todos los campos están llenos
+    if (empty($nombre_usuario) || empty($email) || empty($password)) {
+        $_SESSION['error'] = "Todos los campos son obligatorios.";
+        header("Location: ../register.php");
+        exit();
+    }
+
     // Verificar si las contraseñas coinciden
     if ($password !== $confirm_password) {
         $_SESSION['error'] = "Las contraseñas no coinciden.";
@@ -18,7 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Verificar si el email ya está registrado
-    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    if (!$stmt) {
+        $_SESSION['error'] = "Error en la consulta: " . $conn->error;
+        header("Location: ../register.php");
+        exit();
+    }
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -29,18 +41,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Encriptar la contraseña
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-    // Insertar el nuevo usuario en la base de datos
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre_usuario, email, password) VALUES (?, ?, ?)");
+    if (!$stmt) {
+        $_SESSION['error'] = "Error en la consulta: " . $conn->error;
+        header("Location: ../register.php");
+        exit();
+    }
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $stmt->bind_param("sss", $nombre_usuario, $email, $hashed_password);
+
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Usuario registrado exitosamente.";
+    } else {
+        $_SESSION['error'] = "Error al insertar el usuario: " . $stmt->error;
+    }
 
     $resultadoCorreo = enviarCorreo($email, $nombre_usuario);
 
-
     if ($resultadoCorreo === true) {
-        $_SESSION['success'] = "Usuario registrado exitosamente. Se ha enviado un correo de confirmación.";
+        $_SESSION['success'] .= " Se ha enviado un correo de confirmación.";
     } else {
         $_SESSION['error'] = "Usuario registrado, pero no se pudo enviar el correo: $resultadoCorreo";
     }
