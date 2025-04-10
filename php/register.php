@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/dark-mode.css">
-    <link rel="stylesheet" href="css/register.css">
+    <link rel="stylesheet" href="../css/register.css">
     <title>Registro de Usuario</title>
 
 </head>
@@ -15,7 +14,7 @@
     <div class="container py-5">
         <!-- Logo -->
         <div class="logo-container">
-            <img src="img/logo.png" alt="Logo de la empresa">
+            <img src="../img/logo.png" alt="Logo de la empresa">
         </div>
         <!-- Mensajes de sesión -->
         <?php
@@ -71,7 +70,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/dark-mode.js"></script>
+    <script src="../js/dark-mode.js"></script>
 </body>
 
 </html>

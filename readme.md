@@ -73,18 +73,22 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
         └── form_validation.js
         └── googleconection.js
         └── validation.js
+    └── 📁php
+        └── config.php
+        └── dashboard.php
+        └──forms.php
+        └──login.php
+        └──logout.php
+        └──register.php
+        └──WatchData.php
     └── 📁vendor
     └──.env.example
     └──.gitignore
     └──composer.json
     └──composer.lock
-    └──config.php
-    └──forms.php
-    └──dashboard.php
-    └──login.php
-    └──logout.php
-    └──register.php
-    └──WatchData.php
+    └──index.html
+
+
 ```
 
 ---
