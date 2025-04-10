@@ -9,9 +9,10 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/footer.css">
 </head>
 
-<body>
+<body class="bg-light text-dark">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
@@ -28,9 +29,9 @@
                     <li class="nav-item"><a class="nav-link" href="#">Servicios</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Unidades</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Certificaciones</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
                 </ul>
-                <a href="#" class="btn btn-warning ms-3">Cotizar</a>
+                <a href="php/login.php" class="btn btn-outline-warning ms-3" target="_blank">Iniciar Sesión</a>
             </div>
         </div>
     </nav>
@@ -38,15 +39,20 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-overlay"></div>
-        <div class="container text-center text-white hero-content">
+        <div class="container text-center hero-content">
             <h1 class="display-3 fw-bold">MENDEZ</h1>
-            <p class="lead">Transportes de Carga de México</p>
-            <a href="https://www.youtube.com/watch?v=I56LwrvY_lk" class="btn btn-light btn-lg">Ver Video ▶</a>
+            <p class="lead">Transportes logisticos mendez</p>
+            <a href="https://www.youtube.com/watch?v=I56LwrvY_lk" class="btn btn-light btn-lg" target="_blank"
+                rel="noopener noreferrer">Ver Video ▶</a>
         </div>
     </section>
 
+    <?php
+    include 'components/footer.php';
+    ?>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+
+    <body>
 
 </html>

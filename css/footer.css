@@ -103,3 +103,55 @@ body {
 .footer__bottom p {
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 20px 10px; /* Reduce el padding general */
+  }
+
+  .footer__container {
+    grid-template-columns: 1fr; /* Cambia a una sola columna */
+    gap: 15px; /* Ajusta el espacio entre secciones */
+    text-align: center; /* Centra el texto */
+    width: 100%; /* Asegura que ocupe todo el ancho */
+  }
+
+  .footer__section {
+    align-items: center; /* Centra los elementos horizontalmente */
+    justify-content: center; /* Centra los elementos verticalmente */
+    text-align: center; /* Centra el contenido */
+    margin-bottom: 15px; /* Añade espacio entre secciones */
+  }
+
+  .footer__section h4 {
+    font-size: 18px; /* Reduce el tamaño del título */
+    margin-bottom: 10px; /* Ajusta el margen inferior */
+  }
+
+  .footer__section p,
+  .footer__section a {
+    font-size: 13px; /* Reduce el tamaño del texto */
+    line-height: 1.6; /* Ajusta el interlineado */
+  }
+
+  .footer__map iframe {
+    width: 100%; /* Asegura que el mapa ocupe todo el ancho disponible */
+    height: 150px; /* Ajusta la altura para pantallas pequeñas */
+  }
+
+  .footer__social {
+    gap: 10px; /* Reduce el espacio entre íconos */
+  }
+
+  .footer__social a {
+    width: 30px; /* Reduce el tamaño del círculo */
+    height: 30px; /* Reduce el tamaño del círculo */
+    font-size: 16px; /* Ajusta el tamaño del ícono */
+  }
+
+  .footer__bottom {
+    font-size: 12px; /* Reduce el tamaño del texto */
+    padding-top: 10px; /* Ajusta el espaciado superior */
+    margin-top: 15px; /* Añade espacio superior */
+  }
+}

@@ -1,6 +1,9 @@
+/* Estilos por defecto (modo claro) */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  color: #000000;
 }
 
 header {
@@ -13,12 +16,8 @@ header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.logo img {
-  height: 50px;
-}
-
 .navbar-brand img {
-  height: 50px;
+  height: 5rem;
 }
 
 nav ul {
@@ -79,11 +78,14 @@ nav ul li a:hover {
 
 .hero {
   position: relative;
-  background: url("img/background.jpg");
-  height: 80vh;
+  background: url("../img/background.jpg") no-repeat center center;
+  background-size: cover;
+  height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #f8f9fa;
+  color: #000000;
 }
 
 .hero-overlay {
@@ -149,4 +151,46 @@ nav ul li a:hover {
 .hero .btn-video:hover {
   background-color: #d4ac0d;
   color: white;
+}
+
+.bg-dark {
+  max-width: 80%;
+}
+
+.navbar {
+  margin-top: 20px;
+  margin: auto;
+  background-color: #343a40;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .bg-dark {
+    max-width: 100%;
+  }
+  .hero p {
+    font-size: 1rem;
+  }
+}
+
+.dark-mode {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.dark-mode .navbar {
+  background-color: #212529;
+}
+
+.dark-mode .card {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+/* Excluir el hero del modo oscuro */
+.dark-mode .hero {
+  background-color: inherit;
+  color: inherit;
 }
