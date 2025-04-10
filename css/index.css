@@ -133,6 +133,7 @@ nav ul li a:hover {
 }
 
 .hero p {
+  color: #ffffff;
   font-size: 1.2rem;
   margin: 10px 0;
 }
@@ -163,7 +164,119 @@ nav ul li a:hover {
   background-color: #343a40;
 }
 
+.container_2 {
+  background-color: #212529;
+  padding: 1rem;
+}
+.cards-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.format1 {
+  display: inline-block;
+  weight: 30%;
+}
+.card1,
+.card2,
+.card3 {
+  padding: 2rem 1rem;
+  background-color: #343a40; /* Fondo oscuro */
+  color: #f1c40f; /* Texto amarillo */
+  flex: 1 1 calc(33.333% - 20px); /* Tres tarjetas por fila */
+  margin: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card1:hover,
+.card2:hover,
+.card3:hover {
+  transform: translateY(-5px); /* Efecto de elevación */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Sombra más intensa */
+}
+
+.card-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #f1c40f; /* Amarillo */
+}
+
+.formattxt {
+  text-align: center;
+  display: block;
+  font-family: "arial light", cursive;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 100;
+}
+
+.card-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffffff; /* Texto blanco */
+  margin-top: 0.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  align-self: center; /* Centra el texto horizontalmente */
+  text-align: center;
+  height: 200px; /* Asegura que el texto ocupe toda la altura disponible */
+  margin-bottom: 0.2rem;
+}
+
+.card-text + a {
+  align-self: center;
+}
+
+.card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Centra los elementos horizontalmente */
+  height: 100%; /* Asegura que el contenido ocupe toda la altura disponible */
+}
+
+.cards-container a {
+  display: block;
+  background-color: #f1c40f; /* Botón amarillo */
+  text-decoration: none;
+  color: #343a40; /* Texto oscuro */
+  padding: 0.9rem 2rem;
+  border-radius: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: auto;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.cards-container a:hover {
+  background-color: #d4ac0d; /* Amarillo más oscuro */
+  color: #ffffff; /* Texto blanco */
+}
+
+/* Responsividad */
 @media (max-width: 768px) {
+  .card1,
+  .card2,
+  .card3 {
+    flex: 1 1 calc(50% - 20px); /* Dos tarjetas por fila en pantallas medianas */
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
   .hero h1 {
     font-size: 2rem;
   }
@@ -173,24 +286,14 @@ nav ul li a:hover {
   .hero p {
     font-size: 1rem;
   }
-}
-
-.dark-mode {
-  background-color: #343a40;
-  color: #f8f9fa;
-}
-
-.dark-mode .navbar {
-  background-color: #212529;
-}
-
-.dark-mode .card {
-  background-color: #343a40;
-  color: #f8f9fa;
-}
-
-/* Excluir el hero del modo oscuro */
-.dark-mode .hero {
-  background-color: inherit;
-  color: inherit;
+  .card1,
+  .card2,
+  .card3 {
+    flex: 1 1 100%; /* Una tarjeta por fila en pantallas pequeñas */
+    height: auto;
+  }
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
