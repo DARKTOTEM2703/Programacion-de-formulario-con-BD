@@ -12,16 +12,16 @@ if (!isset($_SESSION['usuario_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <title>Formulario con Base de Datos</title>
 </head>
 
 <body>
     <div class="content">
-        <?php include 'components/header.php'; ?>
+        <?php include '../components/header.php'; ?>
         <div class="header">
-            <img src="img/foto.jpg" alt="Transporte" class="header__image">
+            <img src="../img/foto.jpg" alt="Transporte" class="header__image">
         </div>
         <div class="main">
             <h2>Servicio especializado en mudanzas y carga en general a todo México</h2>
@@ -34,10 +34,10 @@ if (!isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </div>
-    <?php include 'components/footer.php'; ?>
+    <?php include '../components/footer.php'; ?>
 
 
 </body>
-<script src="js/dark-mode.js"></script>
+<script src="../js/dark-mode.js"></script>
 
 </html>

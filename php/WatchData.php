@@ -1,7 +1,7 @@
 <!-- filepath: c:\xampp\htdocs\Programacion de formulario con BD\WatchData.php -->
 <?php
 session_start();
-include 'components/db_connection.php';
+include '../components/db_connection.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
@@ -23,12 +23,12 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/WatchData.css">
+    <link rel="stylesheet" href="../css/WatchData.css">
     <title>Ver Datos de Envíos</title>
 </head>
 
 <body>
-    <?php include 'components/header.php'; ?>
+    <?php include '../components/header.php'; ?>
 
     <div class="data-container">
         <button class="btn-back" onclick="window.location.href='dashboard.php'">
@@ -56,7 +56,7 @@ $result = $stmt->get_result();
 </body>
 
 <footer>
-    <?php include 'components/footer.php'; ?>
+    <?php include '../components/footer.php'; ?>
 </footer>
 <script src="js/dark-mode.js"></script>
 

@@ -68,7 +68,7 @@ if (isset($_GET['code'])) {
         }
 
         // Redirigir al usuario al índice principal
-        header("Location: ../dashboard.php");
+        header("Location: ../php/dashboard.php");
         exit();
     } else {
         echo "Error al obtener el token: " . json_encode($token['error']);
