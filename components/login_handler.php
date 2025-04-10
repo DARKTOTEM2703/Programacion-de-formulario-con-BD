@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
 
             // Redirige al index principal
-            header("Location: ../index.php");
+            header("Location: ../dashboard.php");
             exit();
         } else {
             // Contraseña incorrecta

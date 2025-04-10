@@ -31,7 +31,7 @@ $result = $stmt->get_result();
     <?php include 'components/header.php'; ?>
 
     <div class="data-container">
-        <button class="btn-back" onclick="window.location.href='index.php'">
+        <button class="btn-back" onclick="window.location.href='dashboard.php'">
             << Regresar</button>
                 <h2>Datos de los Formularios Enviados</h2>
 

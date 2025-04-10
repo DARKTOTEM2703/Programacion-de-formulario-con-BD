@@ -16,7 +16,7 @@ function handleCredentialResponse(response) {
       console.log("Respuesta del servidor:", data);
       if (data.success) {
         alert(`Bienvenido, ${user.name}`);
-        window.location.href = "index.php";
+        window.location.href = "dashboard.php";
       } else {
         alert("Error al autenticar con Google.");
       }

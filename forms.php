@@ -19,7 +19,7 @@ if (empty($_SESSION['csrf_token'])) {
     <?php include 'components/header.php'; ?>
 
     <div class="form-container">
-        <button class="btn-back" onclick="window.location.href='index.php'">
+        <button class="btn-back" onclick="window.location.href='dashboard.php'">
             << Regresar</button>
                 <form action="components/form_handler.php" method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
