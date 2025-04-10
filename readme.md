@@ -80,7 +80,7 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
     └──composer.lock
     └──config.php
     └──forms.php
-    └──index.php
+    └──dashboard.php
     └──login.php
     └──logout.php
     └──register.php
