@@ -1,21 +1,21 @@
-# Form Management System with Database
+# Sistema de gestion trasportistas
 
 Este proyecto es una aplicación web diseñada para gestionar formularios de registro, autenticación y envío de datos, utilizando tecnologías modernas y buenas prácticas de desarrollo. La aplicación incluye funcionalidades como registro de usuarios, inicio de sesión, integración con Google OAuth, y manejo de formularios con validación y persistencia en base de datos.
 
 ---
 
-## Table of Contents
+## Tabla de contenidos
 
-1. [Technologies Used](#technologies-used)
-2. [Project Structure](#project-structure)
-3. [Installation](#installation)
-4. [Configuration](#configuration)
-5. [Main Components](#main-components)
-6. [Styles and Design](#styles-and-design)
-7. [Validation and Security](#validation-and-security)
-8. [Database](#database)
-9. [Contributions](#contributions)
-10. [Contact](#contact)
+1. [Tecnologías Utilizadas](#tecnologías-utilizadas)
+2. [Estructura del Proyecto](#estructura-del-proyecto)
+3. [Instalación](#instalación)
+4. [Configuración](#configuración)
+5. [Componentes Principales](#componentes-principales)
+6. [Estilos y Diseño](#estilos-y-diseño)
+7. [Validación y Seguridad](#validación-y-seguridad)
+8. [Base de Datos](#base-de-datos)
+9. [Contacto](#contacto)
+10. [Créditos](#créditos)
 
 ---
 
