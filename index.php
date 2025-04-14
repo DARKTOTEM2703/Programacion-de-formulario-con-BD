@@ -55,18 +55,24 @@
         <div class="cards-container">
             <div class="card card1 formatcard1">
                 <h1 class="card-title">Soluciones de Transporte</h1>
+                <img src="https://th.bing.com/th/id/OIP.zXb5UndBqGx6vcM7oD1uCwHaDr?rs=1&pid=ImgDetMain"
+                    alt="Soluciones de Transporte" class="img-fluid my-3">
                 <p class="card-text formattxt">Ofrecemos servicios de transporte confiables y eficientes para garantizar
                     que tu carga llegue a tiempo y en perfectas condiciones.</p>
                 <a class="green-button cardformat" href="#">Ver más</a>
             </div>
             <div class="card card2 formatcard1">
                 <h1 class="card-title">Logística Personalizada</h1>
+                <img src="https://th.bing.com/th/id/OIP.4YEWgqOa6rimX_KqiYI_RgHaE8?rs=1&pid=ImgDetMain"
+                    alt="Logística Personalizada" class="img-fluid my-3">
                 <p class="card-text formattxt">Diseñamos soluciones logísticas adaptadas a las necesidades específicas
                     de tu negocio, optimizando costos y tiempos.</p>
                 <a class="green-button cardformat" href="#">Ver más</a>
             </div>
             <div class="card card3 formatcard1">
                 <h1 class="card-title">Seguridad Garantizada</h1>
+                <img src="https://www.k8logistica.com/wp-content/uploads/2020/02/trailer-seguridad-768x517.jpg"
+                    alt="Seguridad Garantizada" class="img-fluid my-3">
                 <p class="card-text formattxt">Tu carga está protegida con los más altos estándares de seguridad,
                     asegurando tranquilidad en cada envío.</p>
                 <a class="green-button cardformat" href="#">Ver más</a>
