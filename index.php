@@ -28,7 +28,7 @@
                     <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Servicios</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Unidades</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Certificaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#certificaciones">Certificaciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
                 </ul>
             </div>
@@ -72,6 +72,37 @@
                 <a class="green-button cardformat" href="#">Ver más</a>
             </div>
         </div>
+    </div>
+    <div class="containerservice">
+
+    </div>
+    <div class="container_2">
+        <div id="certificaciones" class="py-5">
+            <h1 class="text-center">Certificaciones</h1>
+            <p class="text-center">Contamos con certificaciones que avalan la calidad y seguridad de nuestros servicios.
+            </p>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <img src="https://www.primafrio.com/wp-content/uploads/2025/03/sgs-9001-100x100-1.webp"
+                        alt="Certificación ISO 9001" class="img-fluid mb-3">
+                    <h5>ISO 9001</h5>
+                    <p>Certificación en gestión de calidad.</p>
+                </div>
+                <div class="col-md-4">
+                    <img src="https://www.primafrio.com/wp-content/uploads/2025/03/sgs-14001-100x100-1.webp"
+                        alt="Certificación ISO 14001" class="img-fluid mb-3">
+                    <h5>ISO 14001</h5>
+                    <p>Certificación en gestión ambiental.</p>
+                </div>
+                <div class="col-md-4">
+                    <img src="https://logodix.com/logo/625627.png" alt="Certificación OHSAS 18001"
+                        class="img-fluid mb-3">
+                    <h5>OHSAS 18001</h5>
+                    <p>Certificación en seguridad y salud ocupacional.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
     <?php
     include 'components/footer.php';

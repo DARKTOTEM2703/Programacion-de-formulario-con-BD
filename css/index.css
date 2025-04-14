@@ -266,6 +266,120 @@ nav ul li a:hover {
   color: #ffffff; /* Texto blanco */
 }
 
+/* Estilos para la sección de certificaciones */
+#certificaciones {
+  padding: 60px 0;
+  margin: 40px 0;
+  border-radius: 10px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#certificaciones h1 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #003366;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+#certificaciones h1:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #d4ac0d;
+}
+
+#certificaciones > p {
+  font-size: 18px;
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  color: #555;
+}
+
+.certificacion-item {
+  padding: 25px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.certificacion-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.certificacion-item img {
+  max-width: 120px;
+  margin: 0 auto 20px;
+  filter: grayscale(0.2);
+  transition: all 0.3s ease;
+}
+
+.certificacion-item:hover img {
+  filter: grayscale(0);
+  transform: scale(1.05);
+}
+
+.certificacion-item h5 {
+  font-weight: 600;
+  margin: 15px 0;
+  color: #ffffff;
+}
+
+.certificacion-item p {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.col-md-4 {
+  color: #ffffff;
+}
+.col-md-4 img {
+  height: 100px;
+  width: 100px;
+}
+/* Estilos para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  #certificaciones {
+    background-color: #1e1e1e;
+  }
+
+  #certificaciones h1 {
+    color: #ffffff;
+  }
+
+  #certificaciones > p {
+    color: #cccccc;
+  }
+
+  .certificacion-item {
+    background-color: #2e2e2e;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .certificacion-item h5 {
+    color: #ffffff;
+  }
+
+  .certificacion-item p {
+    color: #aaaaaa;
+  }
+
+  .certificacion-item img {
+    filter: brightness(0.9);
+  }
+
+  .certificacion-item:hover img {
+    filter: brightness(1);
+  }
+}
+
 /* Responsividad */
 @media (max-width: 768px) {
   .card1,
