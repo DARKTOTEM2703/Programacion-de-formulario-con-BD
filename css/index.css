@@ -354,6 +354,80 @@ nav ul li a:hover {
   height: 100px;
   width: 100px;
 }
+/* Estilos para la sección Acerca de */
+#acerca-de {
+  padding: 60px 0;
+  margin: 40px 0;
+  border-radius: 10px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#acerca-de .section-title {
+  color: #003366;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+#acerca-de .section-title:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background-color: #d4ac0d;
+}
+
+#acerca-de h4 {
+  color: #003366;
+  font-weight: 600;
+  margin-top: 25px;
+}
+
+#acerca-de p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+.about-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.about-image {
+  border-radius: 10px;
+  transition: transform 0.5s;
+}
+
+.about-image:hover {
+  transform: scale(1.02);
+}
+
+.valores-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.valor-item h5 {
+  color: #003366;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.valor-item p {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
 /* Estilos para modo oscuro */
 @media (prefers-color-scheme: dark) {
   #certificaciones {
@@ -387,6 +461,26 @@ nav ul li a:hover {
 
   .certificacion-item:hover img {
     filter: brightness(1);
+  }
+
+  .section-title {
+    color: #000000;
+  }
+
+  .valor-item h5 {
+    color: #ffffff;
+  }
+
+  col-lg-6 p {
+    color: #000000;
+  }
+  .valor-item p {
+    color: #cccccc;
+  }
+
+  .valores-container {
+    background-color: #2e2e2e;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 }
 

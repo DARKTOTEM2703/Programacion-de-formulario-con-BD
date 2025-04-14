@@ -108,7 +108,70 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container">
+        <div id="acerca-de" class="py-5">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h1 class="section-title mb-4">Acerca de MENDEZ</h1>
+                    <p class="lead">Somos una empresa líder en el sector de transporte y logística con más de 20 años de
+                        experiencia.</p>
 
+                    <h4 class="mt-4">Nuestra Historia</h4>
+                    <p>Fundada en 2003, MENDEZ comenzó como una pequeña empresa familiar con tan solo 3 camiones. Hoy
+                        contamos con una flota de más de 150 unidades y operamos en toda la República Mexicana,
+                        ofreciendo soluciones integrales de transporte y logística.</p>
+
+                    <h4 class="mt-4">Misión</h4>
+                    <p>Brindar servicios de transporte y logística de la más alta calidad, eficiencia y seguridad,
+                        superando las expectativas de nuestros clientes y contribuyendo al desarrollo económico del
+                        país.</p>
+
+                    <h4 class="mt-4">Visión</h4>
+                    <p>Ser la empresa líder en transporte y logística en México, reconocida por la excelencia en el
+                        servicio, la innovación continua y el compromiso con nuestros clientes, colaboradores y el medio
+                        ambiente.</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="about-video-container">
+                        <iframe src="https://www.youtube.com/embed/CHirjmiIyhs?si=Bx0JLrV189ruW_mt"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="valores-container p-4">
+                        <h4 class="text-center mb-3">Nuestros Valores</h4>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="valor-item">
+                                    <h5><i class="fas fa-check-circle me-2"></i> Integridad</h5>
+                                    <p>Actuamos con honestidad y transparencia en todo momento.</p>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="valor-item">
+                                    <h5><i class="fas fa-users me-2"></i> Compromiso</h5>
+                                    <p>Nos dedicamos a cumplir lo prometido y superar expectativas.</p>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="valor-item">
+                                    <h5><i class="fas fa-leaf me-2"></i> Sustentabilidad</h5>
+                                    <p>Operamos con responsabilidad hacia el medio ambiente.</p>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="valor-item">
+                                    <h5><i class="fas fa-cog me-2"></i> Innovación</h5>
+                                    <p>Buscamos constantemente mejorar nuestros procesos y servicios.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <?php
     include 'components/footer.php';
