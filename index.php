@@ -29,7 +29,7 @@
                     <li class="nav-item"><a class="nav-link" href="#">Servicios</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Unidades</a></li>
                     <li class="nav-item"><a class="nav-link" href="#certificaciones">Certificaciones</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#acerca-de">Acerca de</a></li>
                 </ul>
             </div>
         </div>
