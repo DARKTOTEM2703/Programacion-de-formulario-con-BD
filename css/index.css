@@ -243,6 +243,8 @@ nav ul li a:hover {
   text-align: center;
   height: 200px; /* Asegura que el texto ocupe toda la altura disponible */
   margin-bottom: 0.2rem;
+  flex-grow: 1;
+  min-height: 80px; /* Asegura que todos los textos tengan al menos esta altura */
 }
 
 .card-text + a {
@@ -330,7 +332,9 @@ nav ul li a:hover {
   filter: grayscale(0.2);
   transition: all 0.3s ease;
 }
-
+.mb-4 {
+  color: #ffffff;
+}
 .certificacion-item:hover img {
   filter: grayscale(0);
   transform: scale(1.05);
@@ -462,6 +466,232 @@ nav ul li a:hover {
 @media (max-width: 480px) {
   .about-video-container {
     border-radius: 8px;
+  }
+}
+
+/* Estilos para la sección de servicios */
+#servicios {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#servicios .section-title {
+  color: #003366;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+#servicios .section-title:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #f1c40f;
+}
+
+.service-card {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.service-img-container {
+  height: 220px; /* Altura fija para todas las imágenes */
+  overflow: hidden;
+  position: relative;
+}
+
+.service-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Esto es crucial para mantener proporción */
+  object-position: center; /* Centra la imagen */
+  transition: transform 0.5s ease;
+}
+
+.service-card:hover .service-img-container img {
+  transform: scale(1.1);
+}
+
+.service-icon {
+  color: #f1c40f;
+}
+
+.service-card .card-title {
+  color: #003366;
+  font-weight: 600;
+}
+
+.service-card .btn-outline-primary {
+  color: #003366;
+  border-color: #003366;
+  transition: all 0.3s ease;
+}
+
+.service-card .btn-outline-primary:hover {
+  background-color: #003366;
+  color: white;
+}
+
+/* Asegura que el botón quede al final */
+.card-body a.btn {
+  margin-top: auto;
+}
+
+/* Modo oscuro para la sección de servicios */
+@media (prefers-color-scheme: dark) {
+  #servicios {
+    background-color: #121212;
+  }
+
+  #servicios .section-title {
+    color: #ffffff;
+  }
+
+  .service-card {
+    background-color: #1e1e1e;
+  }
+
+  .service-card .card-title {
+    color: #ffffff;
+  }
+
+  .service-card .card-text {
+    color: #cccccc;
+  }
+
+  .service-card .btn-outline-primary {
+    color: #ffffff;
+    border-color: #f1c40f;
+  }
+
+  .service-card .btn-outline-primary:hover {
+    background-color: #f1c40f;
+    color: #1e1e1e;
+    border-color: #f1c40f;
+  }
+}
+
+/* Estilos para la sección de unidades */
+#unidades {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#unidades .section-title {
+  color: #003366;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+#unidades .section-title:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #f1c40f;
+}
+
+.unit-card {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.unit-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.unit-img-container {
+  height: 220px; /* Altura fija para todas las imágenes */
+  overflow: hidden;
+  position: relative;
+}
+
+.unit-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Esto es crucial para mantener proporción */
+  object-position: center; /* Centra la imagen */
+  transition: transform 0.5s ease;
+}
+
+.unit-card:hover .unit-img-container img {
+  transform: scale(1.1);
+}
+
+.unit-icon {
+  color: #f1c40f;
+}
+
+.unit-card .card-title {
+  color: #003366;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.unit-specs {
+  list-style: none;
+  padding-left: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Certificaciones con tamaño uniforme */
+#certificaciones img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+/* Modo oscuro para la sección de unidades */
+@media (prefers-color-scheme: dark) {
+  #unidades {
+    background-color: #121212;
+  }
+
+  #unidades .section-title {
+    color: #ffffff;
+  }
+
+  .unit-card {
+    background-color: #1e1e1e;
+  }
+
+  .unit-card .card-title {
+    color: #ffffff;
+  }
+
+  .unit-specs li {
+    color: #cccccc;
   }
 }
 

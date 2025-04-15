@@ -8,6 +8,7 @@
     <title>MENDEZ - Transportes de Carga de México</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/footer.css">
 </head>
@@ -26,8 +27,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Servicios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Unidades</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#unidades">Unidades</a></li>
                     <li class="nav-item"><a class="nav-link" href="#certificaciones">Certificaciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="#acerca-de">Acerca de</a></li>
                 </ul>
@@ -51,6 +52,307 @@
                 <a href="php/login.php" class="btn btn-warning btn-lg" target="_blank">Iniciar Sesión</a>
             </div>
     </section>
+    </section>
+    <!-- Sección de Servicios -->
+    <section id="servicios" class="py-5">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="section-title mb-3">Nuestros Servicios</h2>
+                    <p class="lead" style="color: white;">Ofrecemos soluciones integrales de transporte y logística
+                        adaptadas a tus
+                        necesidades</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Servicio 1 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="service-card h-100 shadow-sm">
+                        <div class="service-img-container">
+                            <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                class="card-img-top" alt="Transporte Nacional">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="service-icon mb-3">
+                                <i class="fas fa-truck fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Transporte Nacional</h4>
+                            <p class="card-text">Servicio de transporte de carga general y especializada a cualquier
+                                punto de la República Mexicana, con seguimiento en tiempo real y garantía de entrega.
+                            </p>
+                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 2 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="service-card h-100 shadow-sm">
+                        <div class="service-img-container">
+                            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                                class="card-img-top" alt="Logística Integral">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="service-icon mb-3">
+                                <i class="fas fa-cubes fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Logística Integral</h4>
+                            <p class="card-text">Diseñamos e implementamos soluciones logísticas a medida que optimizan
+                                la cadena de suministro de tu empresa, reduciendo costos y tiempos.</p>
+                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 3 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="service-card h-100 shadow-sm">
+                        <div class="service-img-container">
+                            <img src="https://th.bing.com/th/id/R.34facd747cb4ea315dabe09e6fa553fc?rik=D5EK9wZtpdjY3A&pid=ImgRaw&r=0"
+                                class="card-img-top" alt="Almacenaje y Distribución">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="service-icon mb-3">
+                                <i class="fas fa-warehouse fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Almacenaje y Distribución</h4>
+                            <p class="card-text">Contamos con almacenes estratégicamente ubicados para el resguardo y
+                                distribución de tus productos, con control de inventario en tiempo real.</p>
+                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 4 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="service-card h-100 shadow-sm">
+                        <div class="service-img-container">
+                            <img src="https://th.bing.com/th/id/OIP.GULsSQrPGq569qsixiWYQAHaE7?rs=1&pid=ImgDetMain"
+                                class="card-img-top" alt="Transporte Refrigerado">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="service-icon mb-3">
+                                <i class="fas fa-temperature-low fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Transporte Refrigerado</h4>
+                            <p class="card-text">Especializados en el transporte de productos que requieren control de
+                                temperatura, garantizando la cadena de frío durante todo el trayecto.</p>
+                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 5 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="service-card h-100 shadow-sm">
+                        <div class="service-img-container">
+                            <img src="https://th.bing.com/th/id/OIP.G90ev_bZoyJ4B8GpuqLAswHaEK?rs=1&pid=ImgDetMain"
+                                class="card-img-top" alt="Carga Especializada">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="service-icon mb-3">
+                                <i class="fas fa-dolly fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Carga Especializada</h4>
+                            <p class="card-text">Transportamos cargas de dimensiones especiales, maquinaria pesada y
+                                mercancías que requieren manejo especializado con total seguridad.</p>
+                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Servicio 6 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="service-card h-100 shadow-sm">
+                        <div class="service-img-container">
+                            <img src="https://th.bing.com/th/id/OIP.W8_0o3G9mhAsbf3YYzCzjQHaC0?rs=1&pid=ImgDetMain"
+                                class="card-img-top" alt="Paquetería Express">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="service-icon mb-3">
+                                <i class="fas fa-shipping-fast fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Paquetería Express</h4>
+                            <p class="card-text">Entrega de paquetes y documentos en tiempo récord, ideal para envíos
+                                urgentes que requieren máxima rapidez y seguridad.</p>
+                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <p class="mb-4">¿Necesitas un servicio personalizado? Contáctanos para diseñar una solución a tu
+                        medida.</p>
+                    <a href="php/login.php" class="btn btn-warning btn-lg">Solicitar cotización</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Unidades -->
+    <section id="unidades" class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="section-title mb-3" style="color: black;">Nuestra Flota de Unidades</h2>
+                    <p class="lead">Contamos con vehículos modernos y especializados para cada tipo de carga</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Unidad 1 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="unit-card h-100 shadow-sm">
+                        <div class="unit-img-container">
+                            <img src="https://fuso.gruposanblas.com/wp-content/uploads/2021/09/canter5t-thumb.png"
+                                class="card-img-top" alt="Camión 5 Toneladas">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="unit-icon mb-3">
+                                <i class="fas fa-truck fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Camión 5 Toneladas</h4>
+                            <ul class="unit-specs text-start">
+                                <li><i class="fas fa-ruler-combined me-2 text-warning"></i> Caja: 5.5m largo x 2.3m
+                                    ancho x 2.3m alto</li>
+                                <li><i class="fas fa-weight me-2 text-warning"></i> Capacidad: hasta 5 toneladas</li>
+                                <li><i class="fas fa-home me-2 text-warning"></i> Ideal para mudanzas residenciales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 2 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="unit-card h-100 shadow-sm">
+                        <div class="unit-img-container">
+                            <img src="https://fletesdcdlogistica.com.mx/franquias/2/6698846/editor-html/7933709.png"
+                                class="card-img-top" alt="Camión Torton">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="unit-icon mb-3">
+                                <i class="fas fa-truck-moving fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Camión Torton</h4>
+                            <ul class="unit-specs text-start">
+                                <li><i class="fas fa-ruler-combined me-2 text-warning"></i> Caja: 7m largo x 2.5m ancho
+                                    x 3m alto</li>
+                                <li><i class="fas fa-weight me-2 text-warning"></i> Capacidad: hasta 10 toneladas</li>
+                                <li><i class="fas fa-building me-2 text-warning"></i> Ideal para mudanzas corporativas
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 3 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="unit-card h-100 shadow-sm">
+                        <div class="unit-img-container">
+                            <img src="https://www.carpao.com/images/trailer48.png" class="card-img-top"
+                                alt="Tráiler 48 pies">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="unit-icon mb-3">
+                                <i class="fas fa-trailer fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Tráiler 48 pies</h4>
+                            <ul class="unit-specs text-start">
+                                <li><i class="fas fa-ruler-combined me-2 text-warning"></i> Caja: 15m largo x 2.6m ancho
+                                    x 3m alto</li>
+                                <li><i class="fas fa-weight me-2 text-warning"></i> Capacidad: hasta 30 toneladas</li>
+                                <li><i class="fas fa-industry me-2 text-warning"></i> Ideal para cargas industriales
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 4 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="unit-card h-100 shadow-sm">
+                        <div class="unit-img-container">
+                            <img src="https://maxdrive.com.ec/wp-content/uploads/2021/10/Maxdrive-trucks-models-web-900-x-560-px-Instagram-Post-1080-x-540-px-12.png"
+                                class="card-img-top" alt="Camioneta 3.5 Toneladas">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="unit-icon mb-3">
+                                <i class="fas fa-shuttle-van fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Camioneta 3.5 Toneladas</h4>
+                            <ul class="unit-specs text-start">
+                                <li><i class="fas fa-ruler-combined me-2 text-warning"></i> Caja: 4m largo x 2m ancho x
+                                    2m alto</li>
+                                <li><i class="fas fa-weight me-2 text-warning"></i> Capacidad: hasta 3.5 toneladas</li>
+                                <li><i class="fas fa-box me-2 text-warning"></i> Ideal para entregas urbanas rápidas
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 5 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="unit-card h-100 shadow-sm">
+                        <div class="unit-img-container">
+                            <img src="https://www.hino.cl/hino/site/artic/20230131/imag/foto_0000000320230131183729/foto2.png"
+                                class="card-img-top" alt="Camión Refrigerado">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="unit-icon mb-3">
+                                <i class="fas fa-temperature-low fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Camión Refrigerado</h4>
+                            <ul class="unit-specs text-start">
+                                <li><i class="fas fa-ruler-combined me-2 text-warning"></i> Caja: 6m largo x 2.4m ancho
+                                    x 2.5m alto</li>
+                                <li><i class="fas fa-thermometer-half me-2 text-warning"></i> Temperatura: -18°C a +25°C
+                                </li>
+                                <li><i class="fas fa-apple-alt me-2 text-warning"></i> Ideal para productos perecederos
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 6 -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="unit-card h-100 shadow-sm">
+                        <div class="unit-img-container">
+                            <img src="https://th.bing.com/th/id/R.5221cae02befbef68e9af54a49fd299c?rik=hRpykR3hgFyl0Q&pid=ImgRaw&r=0"
+                                class="card-img-top" alt="Plataforma">
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="unit-icon mb-3">
+                                <i class="fas fa-truck-loading fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title">Plataforma</h4>
+                            <ul class="unit-specs text-start">
+                                <li><i class="fas fa-ruler-combined me-2 text-warning"></i> Dimensiones: 12m largo x
+                                    2.5m ancho</li>
+                                <li><i class="fas fa-weight me-2 text-warning"></i> Capacidad: hasta 25 toneladas</li>
+                                <li><i class="fas fa-cogs me-2 text-warning"></i> Ideal para maquinaria y cargas
+                                    sobredimensionadas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <p class="mb-4" style="color: black;">¿Necesitas una unidad especializada para tu carga? Contáctanos
+                        para más información.
+                    </p>
+                    <a href="php/login.php" class="btn btn-warning btn-lg">Solicitar unidad</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div class="container">
         <div class="cards-container">
             <div class="card card1 formatcard1">
@@ -141,7 +443,7 @@
                     </div>
 
                     <div class="valores-container p-4">
-                        <h4 class="text-center mb-3">Nuestros Valores</h4>
+                        <h4 class="text-center mb-3" style="color: white;">Nuestros Valores</h4>
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <div class="valor-item">
