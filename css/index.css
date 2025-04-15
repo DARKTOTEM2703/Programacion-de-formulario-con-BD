@@ -191,7 +191,7 @@ nav ul li a:hover {
 .card1,
 .card2,
 .card3 {
-  padding: 2rem 1rem;
+  padding: 2.5rem 2rem;
   background-color: #343a40; /* Fondo oscuro */
   color: #f1c40f; /* Texto amarillo */
   flex: 1 1 calc(33.333% - 20px); /* Tres tarjetas por fila */
@@ -214,10 +214,36 @@ nav ul li a:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Sombra más intensa */
 }
 
+.card1 .card-title,
+.card2 .card-title,
+.card3 .card-title {
+  margin-bottom: 1.5rem;
+}
+
+.card1 img,
+.card2 img,
+.card3 img {
+  margin-bottom: 1.5rem;
+}
+
+.card1 .card-text,
+.card2 .card-text,
+.card3 .card-text {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.card1 a,
+.card2 a,
+.card3 a {
+  margin-top: 1.5rem;
+  padding: 0.8rem 2.5rem;
+}
+
 .card-title {
   font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
   color: #f1c40f; /* Amarillo */
 }
 
@@ -242,7 +268,7 @@ nav ul li a:hover {
   align-self: center; /* Centra el texto horizontalmente */
   text-align: center;
   height: 200px; /* Asegura que el texto ocupe toda la altura disponible */
-  margin-bottom: 0.2rem;
+  margin-bottom: 1.5rem;
   flex-grow: 1;
   min-height: 80px; /* Asegura que todos los textos tengan al menos esta altura */
 }
@@ -530,6 +556,7 @@ nav ul li a:hover {
 
 .service-icon {
   color: #f1c40f;
+  margin-bottom: 1.5rem;
 }
 
 .service-card .card-title {
@@ -553,6 +580,10 @@ nav ul li a:hover {
   margin-top: auto;
 }
 
+.service-card .card-body {
+  padding: 1.5rem;
+}
+
 /* Modo oscuro para la sección de servicios */
 @media (prefers-color-scheme: dark) {
   #servicios {
@@ -565,6 +596,7 @@ nav ul li a:hover {
 
   .service-card {
     background-color: #1e1e1e;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 
   .service-card .card-title {
@@ -648,6 +680,7 @@ nav ul li a:hover {
 
 .unit-icon {
   color: #f1c40f;
+  margin-bottom: 1.5rem;
 }
 
 .unit-card .card-title {
@@ -656,13 +689,21 @@ nav ul li a:hover {
   margin-bottom: 15px;
 }
 
+.unit-card .card-body {
+  padding: 1.5rem;
+}
+
 .unit-specs {
   list-style: none;
-  padding-left: 0;
+  padding-left: 0.5rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+.unit-specs li {
+  margin-bottom: 12px;
 }
 
 /* Certificaciones con tamaño uniforme */
@@ -684,6 +725,7 @@ nav ul li a:hover {
 
   .unit-card {
     background-color: #1e1e1e;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 
   .unit-card .card-title {
