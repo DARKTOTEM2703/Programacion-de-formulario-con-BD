@@ -59,8 +59,7 @@
             <div class="row mb-5">
                 <div class="col-12 text-center">
                     <h2 class="section-title mb-3">Nuestros Servicios</h2>
-                    <p class="lead" style="color: white;">Ofrecemos soluciones integrales de transporte y logística
-                        adaptadas a tus
+                    <p class="lead">Ofrecemos soluciones integrales de transporte y logística adaptadas a tus
                         necesidades</p>
                 </div>
             </div>
@@ -197,7 +196,7 @@
         <div class="container">
             <div class="row mb-5">
                 <div class="col-12 text-center">
-                    <h2 class="section-title mb-3" style="color: black;">Nuestra Flota de Unidades</h2>
+                    <h2 class="section-title mb-3">Nuestra Flota de Unidades</h2>
                     <p class="lead">Contamos con vehículos modernos y especializados para cada tipo de carga</p>
                 </div>
             </div>
@@ -344,7 +343,7 @@
 
             <div class="row mt-5">
                 <div class="col-12 text-center">
-                    <p class="mb-4" style="color: black;">¿Necesitas una unidad especializada para tu carga? Contáctanos
+                    <p class="mb-4">¿Necesitas una unidad especializada para tu carga? Contáctanos
                         para más información.
                     </p>
                     <a href="php/login.php" class="btn btn-warning btn-lg">Solicitar unidad</a>
@@ -443,7 +442,7 @@
                     </div>
 
                     <div class="valores-container p-4">
-                        <h4 class="text-center mb-3" style="color: white;">Nuestros Valores</h4>
+                        <h4 class="text-center mb-3">Nuestros Valores</h4>
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <div class="valor-item">

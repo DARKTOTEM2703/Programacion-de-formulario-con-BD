@@ -192,9 +192,9 @@ nav ul li a:hover {
 .card2,
 .card3 {
   padding: 2.5rem 2rem;
-  background-color: #343a40; /* Fondo oscuro */
-  color: #f1c40f; /* Texto amarillo */
-  flex: 1 1 calc(33.333% - 20px); /* Tres tarjetas por fila */
+  background-color: #f8f9fa; /* Fondo claro */
+  color: #003366; /* Texto azul oscuro */
+  flex: 1 1 calc(33.333% - 20px);
   margin: 10px;
   box-sizing: border-box;
   text-align: center;
@@ -203,7 +203,7 @@ nav ul li a:hover {
   flex-direction: column;
   justify-content: space-between;
   border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -244,14 +244,14 @@ nav ul li a:hover {
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 1.2rem;
-  color: #f1c40f; /* Amarillo */
+  color: #003366; /* Azul oscuro para que sea visible en modo claro */
 }
 
 .formattxt {
   text-align: center;
   display: block;
   font-family: "arial light", cursive;
-  color: #fff;
+  color: #333333; /* Gris oscuro para modo claro */
   font-size: 1rem;
   font-weight: 100;
 }
@@ -259,7 +259,7 @@ nav ul li a:hover {
 .card-text {
   font-size: 1rem;
   line-height: 1.5;
-  color: #ffffff; /* Texto blanco */
+  color: #333333; /* Gris oscuro para modo claro */
   margin-top: 0.1rem;
   display: flex;
   align-items: center;
@@ -500,6 +500,7 @@ nav ul li a:hover {
   padding: 80px 0;
   background-color: #f8f9fa;
   transition: background-color 0.3s, color 0.3s;
+  color: white;
 }
 
 #servicios .section-title {
@@ -518,6 +519,10 @@ nav ul li a:hover {
   width: 80px;
   height: 3px;
   background-color: #f1c40f;
+}
+
+#servicios .lead {
+  color: white;
 }
 
 .service-card {
@@ -619,18 +624,16 @@ nav ul li a:hover {
   }
 }
 
-/* Estilos para la sección de unidades */
+/* Estilos para la sección de unidades - Restaurando animaciones */
 #unidades {
   padding: 80px 0;
   background-color: #f8f9fa;
   transition: background-color 0.3s, color 0.3s;
+  color: black;
 }
 
 #unidades .section-title {
-  color: #003366;
-  font-weight: 700;
-  position: relative;
-  padding-bottom: 15px;
+  color: black;
 }
 
 #unidades .section-title:after {
@@ -644,6 +647,11 @@ nav ul li a:hover {
   background-color: #f1c40f;
 }
 
+#unidades .mb-4 {
+  color: black;
+}
+
+/* Restauramos los estilos de animación para las tarjetas */
 .unit-card {
   border: none;
   border-radius: 8px;
@@ -661,7 +669,7 @@ nav ul li a:hover {
 }
 
 .unit-img-container {
-  height: 220px; /* Altura fija para todas las imágenes */
+  height: 220px;
   overflow: hidden;
   position: relative;
 }
@@ -669,28 +677,18 @@ nav ul li a:hover {
 .unit-img-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Esto es crucial para mantener proporción */
-  object-position: center; /* Centra la imagen */
+  object-fit: contain;
   transition: transform 0.5s ease;
 }
 
 .unit-card:hover .unit-img-container img {
-  transform: scale(1.1);
-}
-
-.unit-icon {
-  color: #f1c40f;
-  margin-bottom: 1.5rem;
+  transform: scale(1.05);
 }
 
 .unit-card .card-title {
   color: #003366;
   font-weight: 600;
   margin-bottom: 15px;
-}
-
-.unit-card .card-body {
-  padding: 1.5rem;
 }
 
 .unit-specs {
@@ -704,6 +702,44 @@ nav ul li a:hover {
 
 .unit-specs li {
   margin-bottom: 12px;
+  color: #333333; /* Color oscuro para el texto en modo claro */
+}
+
+/* Modo oscuro para la sección de unidades */
+@media (prefers-color-scheme: dark) {
+  #unidades {
+    background-color: #121212;
+  }
+
+  #unidades .section-title {
+    color: #ffffff;
+  }
+
+  #unidades .lead {
+    color: #cccccc;
+  }
+
+  .unit-card {
+    background-color: #1e1e1e;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .unit-card:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  .unit-card .card-title {
+    color: #f1c40f; /* Amarillo para títulos en modo oscuro */
+  }
+
+  .unit-specs li {
+    color: #ffffff; /* Blanco para textos en modo oscuro */
+  }
+
+  /* También aseguramos que el párrafo de texto bajo las unidades sea visible */
+  #unidades .mb-4 {
+    color: #ffffff;
+  }
 }
 
 /* Certificaciones con tamaño uniforme */
@@ -792,6 +828,25 @@ nav ul li a:hover {
   .valores-container {
     background-color: #2e2e2e;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-title {
+    color: #f1c40f; /* Amarillo para modo oscuro */
+  }
+
+  .formattxt {
+    color: #ffffff; /* Blanco para modo oscuro */
+  }
+
+  .card-text {
+    color: #ffffff; /* Blanco para modo oscuro */
+  }
+
+  .card1,
+  .card2,
+  .card3 {
+    background-color: #343a40; /* Fondo oscuro en modo oscuro */
+    color: #f1c40f; /* Texto amarillo */
   }
 }
 .about-video-container iframe {

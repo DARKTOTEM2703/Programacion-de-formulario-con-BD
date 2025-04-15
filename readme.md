@@ -14,8 +14,9 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 6. [Estilos y Diseño](#estilos-y-diseño)
 7. [Validación y Seguridad](#validación-y-seguridad)
 8. [Base de Datos](#base-de-datos)
-9. [Contacto](#contacto)
-10. [Créditos](#créditos)
+9. [Características Adicionales](#características-adicionales)
+10. [Contacto](#contacto)
+11. [Créditos](#créditos)
 
 ---
 
@@ -197,6 +198,42 @@ La base de datos `gestion_envios` contiene las siguientes tablas principales:
 
 - **usuarios**: Almacena información de los usuarios registrados.
 - **envios**: Almacena los datos de los formularios enviados.
+
+---
+
+## Características Adicionales
+
+### Características de Diseño Frontend
+
+| Característica                   | Descripción                                                                                     |
+| -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Diseño Totalmente Responsive** | Adaptación completa a dispositivos móviles, tablets y escritorio con media queries optimizadas. |
+| **Modo Oscuro Integrado**        | Sistema automático de detección de preferencias del usuario que ajusta colores y contrastes.    |
+| **Secciones Modulares**          | Estructura por componentes que facilita mantenimiento y escalabilidad del código.               |
+| **Efectos Visuales**             | Animaciones sutiles en tarjetas e imágenes para mejorar la experiencia del usuario.             |
+
+### Secciones Principales
+
+| Sección             | Características                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Servicios**       | Presentación visual con iconos y diseño de tarjetas uniformes. Muestra los distintos servicios de transporte y logística. |
+| **Unidades**        | Galería de la flota disponible con especificaciones técnicas e iconos descriptivos.                                       |
+| **Certificaciones** | Visualización de credenciales y certificados que avalan la calidad del servicio.                                          |
+| **Acerca de**       | Información corporativa que incluye misión, visión y valores con integración de video corporativo responsive.             |
+
+### Optimizaciones Técnicas
+
+- **Contenedores de imagen con proporción fija**: Implementación de técnicas avanzadas CSS como object-fit y padding-top para mantener relaciones de aspecto consistentes.
+- **Video Embedding Responsive**: Videos de YouTube integrados que se adaptan perfectamente a cualquier tamaño de pantalla.
+- **Uniformidad Visual**: Sistema de espaciado consistente con variables CSS.
+- **Optimización de Rendimiento**: Imágenes optimizadas y recursos cargados eficientemente.
+- **Microinteracciones**: Efectos hover sutiles para mejorar la experiencia del usuario.
+
+### Mejoras en Accesibilidad
+
+- **Alto contraste**: Cumplimiento de estándares WCAG para legibilidad.
+- **Navegación intuitiva**: Estructura jerárquica clara.
+- **Compatibilidad con lectores de pantalla**: Implementación de atributos ARIA para mejorar la accesibilidad.
 
 ---
 
