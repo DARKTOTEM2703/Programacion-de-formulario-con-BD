@@ -510,17 +510,6 @@ nav ul li a:hover {
   padding-bottom: 15px;
 }
 
-#servicios .section-title:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 3px;
-  background-color: #f1c40f;
-}
-
 #servicios .lead {
   color: white;
 }
@@ -624,6 +613,13 @@ nav ul li a:hover {
   }
 }
 
+/* Ajustar el color del texto en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  #servicios p {
+    color: #ffffff; /* Cambiar a blanco para mejor visibilidad */
+  }
+}
+
 /* Estilo para la sección de servicios */
 #servicios {
   background-color: #121212; /* Fondo oscuro */
@@ -707,6 +703,14 @@ nav ul li a:hover {
 .col-12 .mb-4 {
   color: #000000; /* Texto negro */
 }
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .col-12 .mb-4 {
+    color: #ffffff; /* Texto blanco */
+  }
+}
+
 /* Forzar el color negro para el texto de la clase mb-4 */
 .col-12 .mb-4 {
   color: #000000 !important; /* Forzar texto negro */
@@ -907,6 +911,10 @@ nav ul li a:hover {
   .card3 {
     background-color: #343a40; /* Fondo oscuro en modo oscuro */
     color: #f1c40f; /* Texto amarillo */
+  }
+
+  #acerca-de h4 {
+    color: #ffffff; /* Azul oscuro */
   }
 }
 .about-video-container iframe {
