@@ -44,51 +44,57 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 ## Estructura del Proyecto
 
 ```
-└── 📁PROGRAMACION-DE-FORMULARIO-CON-BD
-    └── 📁components
-        └── config.php
-        └── db_connection.php
-        └── email_service.php
-        └── footer.php
-        └── form_handler.php
-        └── google_login_handler.php
-        └── header.php
-        └── login_handler.php
-        └── register_handler.php
-    └── 📁css
-        └── dark-mode.css
-        └── footer.css
-        └── forms.css
-        └── header.css
-        └── index.css
-        └── login.css
-        └── register.css
-        └── WatchData.css
-    └── 📁db
-        └── gestion_envios.sql
-    └── 📁elements
-        └── 2_formulario.jpg
-        └── 3_ver_datos.jpg
-    └── 📁js
-        └── dark-mode.js
-        └── form_validation.js
-        └── googleconection.js
-        └── validation.js
-    └── 📁php
-        └── config.php
-        └── dashboard.php
-        └──forms.php
-        └──login.php
-        └──logout.php
-        └──register.php
-        └──WatchData.php
-    └── 📁vendor
-    └──.env.example
-    └──.gitignore
-    └──composer.json
-    └──composer.lock
-    └──index.html
-
+└── 📁Programacion-de-formulario-con-BD/
+    ├── 📁components/            # Componentes del core del sistema
+    │   ├── config.php           # Configuración central y carga de variables de entorno
+    │   ├── db_connection.php    # Singleton de conexión PDO a la base de datos
+    │   ├── email_service.php    # Servicio de envío de correos con PHPMailer
+    │   ├── email_confirmacion.php # Template engine para correos HTML
+    │   ├── footer.php           # Componente compartido de pie de página
+    │   ├── form_handler.php     # Controlador para procesamiento de formularios
+    │   ├── google_login_handler.php # Middleware de autenticación OAuth
+    │   ├── header.php           # Componente compartido de encabezado con nav
+    │   ├── login_handler.php    # Controlador de autenticación local
+    │   └── register_handler.php # Controlador de registro de usuarios
+    │
+    ├── 📁css/                   # Hojas de estilo modularizadas
+    │   ├── dark-mode.css        # Sistema de temas con variables CSS
+    │   ├── dashboard.css        # Estilos específicos del dashboard
+    │   ├── footer.css           # Estilos del componente footer
+    │   ├── forms.css            # Estilos para formularios y validaciones
+    │   ├── header.css           # Estilos para navegación y encabezado
+    │   ├── index.css            # Estilos de la página principal
+    │   ├── login.css            # Estilos específicos de autenticación
+    │   ├── register.css         # Estilos para formulario de registro
+    │   └── WatchData.css        # Estilos para visualización de datos
+    │
+    ├── 📁db/                    # Esquemas y migraciones de base de datos
+    │   └── gestion_envios.sql   # Schema completo con índices y constraints
+    │
+    ├── 📁js/                    # Scripts client-side
+    │   ├── dark-mode.js         # Sistema de detección de preferencias y cambio de tema
+    │   ├── form_validation.js   # Validación asíncrona de formularios
+    │   ├── formenvioalert.js    # Gestor de notificaciones temporales
+    │   ├── googleconection.js   # Cliente OAuth para Google
+    │   └── validation.js        # Utilidades de validación reutilizables
+    │
+    ├── 📁php/                   # Controladores y vistas principales
+    │   ├── dashboard.php        # Panel de control principal
+    │   ├── forms.php            # Formulario multi-etapa con validación
+    │   ├── login.php            # Vista de inicio de sesión
+    │   ├── logout.php           # Controlador de cierre de sesión
+    │   ├── register.php         # Vista de registro de usuarios
+    │   └── WatchData.php        # Visualización y filtrado de datos
+    │
+    ├── 📁uploads/               # Directorio para almacenamiento de archivos
+    ├── 📁vendor/                # Dependencias gestionadas por Composer
+    ├── .env.example             # Plantilla de variables de entorno
+    ├── .gitignore               # Configuración de exclusiones para Git
+    ├── .htaccess                # Reglas de reescritura y seguridad Apache
+    ├── composer.json            # Manifiesto de dependencias
+    ├── composer.lock            # Versiones bloqueadas de dependencias
+    ├── index.php                # Punto de entrada principal
+    └── readme.md                # Documentación técnica
 
 ```
 
