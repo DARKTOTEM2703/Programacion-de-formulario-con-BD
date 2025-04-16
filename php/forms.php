@@ -19,9 +19,24 @@ if (empty($_SESSION['csrf_token'])) {
     <?php include '../components/header.php'; ?>
 
     <div class="form-container">
+        <!-- Mostrar mensajes de éxito o error -->
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?php echo $_SESSION['success']; ?>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?php echo $_SESSION['error']; ?>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         <button class="btn-back" onclick="window.location.href='dashboard.php'">
             << Regresar</button>
-                <form action="components/form_handler.php" method="POST">
+                <form action="../components/form_handler.php" method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                     <input type="hidden" name="usuario_id"
                         value="<?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : ''; ?>">
@@ -82,5 +97,6 @@ if (empty($_SESSION['csrf_token'])) {
                 </form>
     </div>
 </body>
+<script src="../js/formenvioalert.js"></script>
 
 </html>

@@ -3,13 +3,21 @@
 session_start();
 include 'db_connection.php';
 include 'config.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
 
     // Consulta para verificar el usuario
-    $sql = "SELECT * FROM usuarios WHERE email = '$email'";
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
+    if (!$stmt) {
+        $_SESSION['error'] = "Error en la consulta: " . $conn->error;
+        header("Location: ../php/login.php");
+        exit();
+    }
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
@@ -19,8 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['usuario_id'] = $user['id'];
             $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
 
-            // Redirige al index principal
-            header("Location: ../dashboard.php");
+            // Redirige al dashboard
+            header("Location: ../php/dashboard.php");
             exit();
         } else {
             // Contraseña incorrecta
@@ -31,9 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['error'] = "Usuario no encontrado.";
     }
 
+    $stmt->close();
     $conn->close();
+
     // Redirige de vuelta al login con un mensaje de error
-    header("Location: ../login.php");
+    header("Location: ../php/login.php");
     exit();
 }
 ?>

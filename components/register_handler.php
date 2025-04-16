@@ -4,6 +4,7 @@ session_start();
 include 'db_connection.php';
 include 'email_service.php';
 include 'config.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre_usuario = htmlspecialchars(trim($_POST['nombre_usuario']));
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -13,14 +14,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Verificar si todos los campos están llenos
     if (empty($nombre_usuario) || empty($email) || empty($password)) {
         $_SESSION['error'] = "Todos los campos son obligatorios.";
-        header("Location: ../register.php");
+        header("Location: ../php/register.php");
         exit();
     }
 
     // Verificar si las contraseñas coinciden
     if ($password !== $confirm_password) {
         $_SESSION['error'] = "Las contraseñas no coinciden.";
-        header("Location: ../register.php");
+        header("Location: ../php/register.php");
         exit();
     }
 
@@ -28,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
     if (!$stmt) {
         $_SESSION['error'] = "Error en la consulta: " . $conn->error;
-        header("Location: ../register.php");
+        header("Location: ../php/register.php");
         exit();
     }
     $stmt->bind_param("s", $email);
@@ -37,14 +38,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         $_SESSION['error'] = "El email ya está registrado.";
-        header("Location: ../register.php");
+        header("Location: ../php/register.php");
         exit();
     }
 
+    // Insertar el usuario en la base de datos
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre_usuario, email, password) VALUES (?, ?, ?)");
     if (!$stmt) {
         $_SESSION['error'] = "Error en la consulta: " . $conn->error;
-        header("Location: ../register.php");
+        header("Location: ../php/register.php");
         exit();
     }
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -54,8 +56,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['success'] = "Usuario registrado exitosamente.";
     } else {
         $_SESSION['error'] = "Error al insertar el usuario: " . $stmt->error;
+        header("Location: ../php/register.php");
+        exit();
     }
 
+    // Enviar correo de confirmación
     $resultadoCorreo = enviarCorreo($email, $nombre_usuario);
 
     if ($resultadoCorreo === true) {
@@ -64,10 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['error'] = "Usuario registrado, pero no se pudo enviar el correo: $resultadoCorreo";
     }
 
-    header("Location: ../register.php");
-    exit();
-} else {
-    $_SESSION['error'] = "Error al registrar el usuario: " . $stmt->error;
-    header("Location: ../register.php");
+    header("Location: ../php/register.php");
     exit();
 }

@@ -2,7 +2,7 @@ function handleCredentialResponse(response) {
   const user = parseJwt(response.credential);
   console.log("Usuario autenticado:", user);
 
-  fetch("components/google_login_handler.php", {
+  fetch("../components/google_login_handler.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

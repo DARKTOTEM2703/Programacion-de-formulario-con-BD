@@ -1,4 +1,16 @@
 <?php
+// Configurar el archivo de registro para errores
+ini_set('log_errors', 1);
+ini_set('error_log', dirname(__FILE__) . '/../google_oauth.log');
+
+// Registrar inicio y parámetros
+error_log("=== INICIO GOOGLE LOGIN HANDLER ===");
+error_log("Método HTTP: " . $_SERVER['REQUEST_METHOD']);
+error_log("URI solicitado: " . $_SERVER['REQUEST_URI']);
+error_log("GET params: " . json_encode($_GET));
+error_log("POST params: " . json_encode($_POST));
+error_log("SESSION: " . json_encode(isset($_SESSION) ? $_SESSION : []));
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -12,70 +24,91 @@ require 'email_service.php'; // Incluye el servicio de correo
 require 'config.php';
 
 // Verificar que las variables de entorno estén configuradas
-if (!isset($_ENV['GOOGLE_CLIENT_ID']) || !isset($_ENV['GOOGLE_CLIENT_SECRET'])) {
-    die("Error: Las variables de entorno GOOGLE_CLIENT_ID o GOOGLE_CLIENT_SECRET no están configuradas.");
+if (!isset($_ENV['GOOGLE_CLIENT_ID'])) {
+    $_SESSION['error'] = "Error: Google Client ID no configurado";
+    header('Location: ../php/login.php');
+    exit();
 }
 
-$client = new Google\Client();
-$client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
-$client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
-$client->setRedirectUri('http://localhost/Programacion-de-formulario-con-BD/components/google_login_handler.php');
-$client->addScope('email');
-$client->addScope('profile');
+// Manejar el token JWT recibido vía POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['credential'])) {
+    $jwt = $_POST['credential'];
 
-if (isset($_GET['code'])) {
-    $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-    if (!isset($token['error'])) {
-        echo "Token recibido: " . json_encode($token) . "<br>";
-        $client->setAccessToken($token['access_token']);
-        $google_service = new Google\Service\Oauth2($client);
-        $data = $google_service->userinfo->get();
+    try {
+        // Dividir el JWT en sus partes: header.payload.signature
+        $parts = explode('.', $jwt);
+        if (count($parts) !== 3) {
+            throw new Exception("Token JWT inválido");
+        }
 
-        // Extraer datos del usuario
-        $google_id = $data['id'];
-        $name = $data['name'];
-        $email = $data['email'];
+        // Decodificar la parte del payload (segunda parte)
+        $payload = json_decode(base64_decode(str_replace(
+            ['-', '_'],
+            ['+', '/'],
+            $parts[1]
+        )), true);
 
-        // Verificar si el usuario ya existe en la base de datos
+        if (!$payload) {
+            throw new Exception("No se pudo decodificar el payload del JWT");
+        }
+
+        error_log("Información de usuario: " . json_encode($payload));
+
+        // Extraer información del usuario
+        $google_id = $payload['sub'];
+        $name = $payload['name'];
+        $email = $payload['email'];
+
+        // Verificar usuario en la base de datos
         $stmt = $conn->prepare("SELECT * FROM usuarios WHERE google_id = ?");
+        if (!$stmt) {
+            throw new Exception("Error preparando consulta: " . $conn->error);
+        }
+
         $stmt->bind_param("s", $google_id);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Usuario existente, iniciar sesión
+            // Usuario existente
             $user = $result->fetch_assoc();
             $_SESSION['usuario_id'] = $user['id'];
             $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
+            $_SESSION['success'] = "Inicio de sesión exitoso";
         } else {
-            // Nuevo usuario, guardar en la base de datos
+            // Nuevo usuario, registrarlo
             $stmt = $conn->prepare("INSERT INTO usuarios (google_id, nombre_usuario, email) VALUES (?, ?, ?)");
+            if (!$stmt) {
+                throw new Exception("Error preparando consulta: " . $conn->error);
+            }
+
             $stmt->bind_param("sss", $google_id, $name, $email);
             if ($stmt->execute()) {
                 $_SESSION['usuario_id'] = $conn->insert_id;
                 $_SESSION['nombre_usuario'] = $name;
+                $_SESSION['success'] = "Cuenta creada con éxito";
 
                 // Enviar correo de bienvenida
                 $resultadoCorreo = enviarCorreo($email, $name);
                 if ($resultadoCorreo !== true) {
-                    error_log("Error al enviar el correo de bienvenida: $resultadoCorreo");
+                    error_log("Error al enviar correo: " . $resultadoCorreo);
                 }
             } else {
-                $_SESSION['error'] = "Error al guardar el usuario: " . $stmt->error;
-                header("Location: ../login.php");
-                exit();
+                throw new Exception("Error insertando usuario: " . $stmt->error);
             }
         }
 
-        // Redirigir al usuario al índice principal
         header("Location: ../php/dashboard.php");
         exit();
-    } else {
-        echo "Error al obtener el token: " . json_encode($token['error']);
+    } catch (Exception $e) {
+        error_log("Error en autenticación JWT: " . $e->getMessage());
+        $_SESSION['error'] = "Error al autenticar con Google: " . $e->getMessage();
+        header('Location: ../php/login.php');
         exit();
     }
 } else {
-    $_SESSION['error'] = "Error al autenticar con Google.";
-    header("Location: ../login.php");
+    // Si no hay credenciales en POST, redirigir con error
+    $_SESSION['error'] = "No se recibieron credenciales de autenticación";
+    header('Location: ../php/login.php');
     exit();
 }

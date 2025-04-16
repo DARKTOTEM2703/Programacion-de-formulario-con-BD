@@ -20,19 +20,23 @@
             <h2 class="text-center mb-4">Iniciar Sesión</h2>
 
             <?php
-            require '../components/config.php';
             session_start();
             if (isset($_SESSION['error'])) {
                 echo '<div class="alert alert-danger text-center" role="alert">' . $_SESSION['error'] . '</div>';
                 unset($_SESSION['error']); // Elimina el mensaje después de mostrarlo
             }
-            if (isset($_GET['error'])) {
-                echo '<div class="alert alert-danger text-center" role="alert">Error: ' . htmlspecialchars($_GET['error']) . '</div>';
+            if (isset($_SESSION['success'])) {
+                echo '<div class="alert alert-success text-center" role="alert">' . $_SESSION['success'] . '</div>';
+                unset($_SESSION['success']);
+                echo '<script>
+                        setTimeout(function() {
+                            window.location.href = "dashboard.php";
+                        }, 3000);
+                      </script>';
             }
-
             ?>
 
-            <form action="components/login_handler.php" method="POST">
+            <form action="../components/login_handler.php" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email:</label>
                     <input type="email" id="email" name="email" class="form-control" required>
@@ -51,18 +55,27 @@
             <!-- Botón de Google Sign-In -->
             <div class="text-center mt-4">
                 <p>O inicia sesión con:</p>
-                <a href="https://accounts.google.com/o/oauth2/auth?client_id=<?= $_ENV['GOOGLE_CLIENT_ID'] ?>&redirect_uri=http://localhost/Programacion-de-formulario-con-BD/components/google_login_handler.php&response_type=code&scope=email%20profile"
-                    class="btn btn-outline-primary">
-                    Iniciar sesión con Google
-                </a>
+                <?php
+                include '../components/config.php';
+                $client_id = isset($_ENV['GOOGLE_CLIENT_ID']) ? $_ENV['GOOGLE_CLIENT_ID'] : '';
+                if (empty($client_id)) {
+                    echo '<div class="alert alert-warning">Error: Google Client ID no está configurado.</div>';
+                }
+                ?>
+                <div id="g_id_onload" data-client_id="<?= $client_id ?>" data-context="signin" data-ux_mode="redirect"
+                    data-login_uri="http://localhost/Programacion-de-formulario-con-BD/components/google_login_handler.php"
+                    data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                    data-text="signin_with" data-size="large" data-logo_alignment="left">
+                </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../JS/dark-mode.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="../JS/googleconection.js"></script>
 </body>
 
 </html>

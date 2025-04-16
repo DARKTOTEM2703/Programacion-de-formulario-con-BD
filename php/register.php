@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -7,7 +10,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/register.css">
     <title>Registro de Usuario</title>
-
 </head>
 
 <body class="bg-light text-dark">
@@ -18,7 +20,6 @@
         </div>
         <!-- Mensajes de sesión -->
         <?php
-        session_start();
         if (isset($_SESSION['error'])) {
             echo '<div class="alert alert-danger" role="alert">' . $_SESSION['error'] . '</div>';
             unset($_SESSION['error']);
@@ -37,7 +38,7 @@
         <!-- Formulario de registro -->
         <div class="card shadow-sm p-4">
             <h3 class="text-center text-primary mb-4">Crea tu cuenta</h3>
-            <form action="components/register_handler.php" method="POST">
+            <form action="../components/register_handler.php" method="POST">
                 <div class="mb-3">
                     <label for="nombre_usuario" class="form-label">Nombre de Usuario:</label>
                     <input type="text" id="nombre_usuario" name="nombre_usuario" class="form-control"

@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $csrf_token = $_POST['csrf_token'];
     if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
         $_SESSION['error'] = "Solicitud no válida.";
-        header("Location: ../forms.php");
+        header("Location: ../php/forms.php");
         exit();
     }
 
@@ -44,11 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "Envío registrado exitosamente.";
-        header("Location: ../forms.php");
+        header("Location: ../php/forms.php");
         exit();
     } else {
         $_SESSION['error'] = "Error al guardar el envío: " . $stmt->error;
-        header("Location: ../forms.php");
+        header("Location: ../php/forms.php");
         exit();
     }
 }
