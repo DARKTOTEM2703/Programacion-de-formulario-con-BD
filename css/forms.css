@@ -8,20 +8,26 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
+/* Mejoras estéticas generales */
 .form-container {
   max-width: 900px;
   margin: 20px auto;
-  padding: 20px;
+  padding: 30px;
   background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 h2 {
   text-align: left;
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f1f1f1;
 }
 
 .required-fields {
@@ -32,12 +38,14 @@ h2 {
 }
 
 h3 {
-  background-color: #f1f1f1;
-  padding: 10px;
-  font-size: 16px;
-  margin: 20px 0 10px;
-  text-align: left;
+  background-color: #f8f9fa;
+  padding: 12px 15px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 25px 0 20px;
+  border-radius: 6px;
   color: #003366;
+  border-left: 4px solid #6699cc;
 }
 
 .warning {
@@ -128,6 +136,139 @@ textarea {
   background-color: #00509e;
 }
 
+/* Estilos para campos de formulario mejorados */
+.form-control,
+.form-select {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #6699cc;
+  box-shadow: 0 0 0 0.25rem rgba(102, 153, 204, 0.25);
+}
+
+.form-text {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+/* Validación */
+.form-control.is-invalid {
+  border-color: #dc3545;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='5'/%3e%3cpath stroke-linecap='round' d='M8 4l-4 4'/%3e%3cpath stroke-linecap='round' d='M4 4l4 4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-valid {
+  border-color: #28a745;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+
+/* Botones estilizados */
+.btn {
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: #6699cc;
+  border-color: #6699cc;
+}
+
+.btn-primary:hover {
+  background-color: #5588bb;
+  border-color: #5588bb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 153, 204, 0.3);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Navegación entre pasos */
+.text-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Animaciones */
+.form-section {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Progreso */
+.progress {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.progress-bar {
+  background-color: #6699cc;
+}
+
+/* Migas de pan */
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+  color: #6699cc;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  color: #003366;
+  text-decoration: underline;
+}
+
 /* Estilos para las alertas */
 .alert {
   width: 100%;
@@ -166,19 +307,28 @@ textarea {
 
   .form-container {
     background-color: #1e1e1e; /* Fondo del formulario */
-    border-color: #444444; /* Borde del formulario */
+    border-color: #333; /* Borde del formulario */
   }
 
-  h2,
-  label {
+  h2 {
     color: #ffffff; /* Asegura que el texto sea blanco en modo oscuro */
+    border-bottom-color: #333;
   }
 
   h3 {
-    background-color: #2e2e2e; /* Fondo del encabezado */
-    color: #ffffff; /* Texto claro */
-    padding: 10px;
-    border-left: 5px solid #00509e; /* Línea decorativa */
+    background-color: #1a3b5c; /* Azul oscuro más visible */
+    color: white;
+    border-left: 4px solid #6699cc;
+    border-bottom: none;
+  }
+
+  .breadcrumb-item,
+  .breadcrumb-item a {
+    color: #aaa;
+  }
+
+  .breadcrumb-item.active {
+    color: #fff;
   }
 
   .warning {
@@ -186,11 +336,19 @@ textarea {
     font-weight: bold;
   }
 
+  label {
+    color: #e9ecef; /* Color claro muy visible */
+    font-weight: 500;
+  }
+
   input,
-  textarea {
-    background-color: #2e2e2e; /* Fondo de los campos */
-    color: #ffffff; /* Texto claro */
-    border-color: #555555; /* Borde de los campos */
+  textarea,
+  select,
+  .form-control,
+  .form-select {
+    background-color: #2c2c2c !important;
+    color: white !important;
+    border-color: #444 !important;
   }
 
   input::placeholder,
@@ -198,15 +356,41 @@ textarea {
     color: #aaaaaa; /* Placeholder en gris claro */
   }
 
+  .form-text {
+    color: #bdc6cf !important; /* Color más claro para mejor visibilidad */
+  }
+
   .btn-back,
-  .btn-submit {
+  .btn-submit,
+  .btn-primary,
+  .btn-success {
     background-color: #444444; /* Fondo del botón */
     color: #ffffff; /* Texto claro */
   }
 
   .btn-back:hover,
-  .btn-submit:hover {
+  .btn-submit:hover,
+  .btn-primary:hover,
+  .btn-success:hover {
     background-color: #666666; /* Fondo del botón al pasar el cursor */
+  }
+
+  .btn-primary {
+    background-color: #337ab7 !important;
+    border-color: #2e6da4 !important;
+    color: white !important;
+  }
+
+  .btn-success {
+    background-color: #28a745 !important;
+    border-color: #218838 !important;
+    color: white !important;
+  }
+
+  .btn-secondary {
+    background-color: #5a6268 !important;
+    border-color: #545b62 !important;
+    color: white !important;
   }
 
   .alert-success {
@@ -220,4 +404,45 @@ textarea {
     border-color: #5c2a2d;
     color: #f8a8af;
   }
+
+  .form-section[data-step] h3 {
+    margin-top: 10px;
+    padding: 15px;
+  }
+
+  .form-check-label {
+    color: #e9ecef;
+  }
+
+  .form-check-input {
+    background-color: #2c2c2c;
+    border-color: #555;
+  }
+
+  .form-check-input:checked {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+  }
+
+  .bi {
+    color: #8bb3e5; /* Azul más claro para mejor visibilidad */
+  }
+
+  /* Mejora la visibilidad de los placeholders en modo oscuro */
+  input::placeholder,
+  textarea::placeholder {
+    color: #d0d0d0 !important; /* Placeholder más claro para mejor contraste */
+    opacity: 0.7 !important; /* Asegura que no sea demasiado brillante pero sí visible */
+  }
+
+  /* Mejora específicamente para campos con fondo oscuro */
+  .form-control::placeholder {
+    color: #d0d0d0 !important;
+    opacity: 0.7 !important;
+  }
+}
+
+/* Elimina esta regla que está duplicando los atributos "for" */
+label[for]::after {
+  content: none; /* Cambiado de attr(for) a none */
 }
