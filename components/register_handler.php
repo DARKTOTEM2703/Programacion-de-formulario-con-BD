@@ -54,21 +54,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         $_SESSION['success'] = "Usuario registrado exitosamente.";
+
+        // Enviar correo de confirmación con la contraseña original
+        $resultadoCorreo = enviarCorreo($email, $nombre_usuario, $password);
+
+        if ($resultadoCorreo === true) {
+            $_SESSION['success'] .= " Se ha enviado un correo de confirmación.";
+        } else {
+            $_SESSION['error'] = "Error al enviar el correo: " . $resultadoCorreo;
+        }
+
+        // Redirigir
+        header("Location: ../php/login.php");
+        exit();
     } else {
-        $_SESSION['error'] = "Error al insertar el usuario: " . $stmt->error;
+        $_SESSION['error'] = "Error al registrar el usuario: " . $stmt->error;
         header("Location: ../php/register.php");
         exit();
     }
-
-    // Enviar correo de confirmación
-    $resultadoCorreo = enviarCorreo($email, $nombre_usuario);
-
-    if ($resultadoCorreo === true) {
-        $_SESSION['success'] .= " Se ha enviado un correo de confirmación.";
-    } else {
-        $_SESSION['error'] = "Usuario registrado, pero no se pudo enviar el correo: $resultadoCorreo";
-    }
-
-    header("Location: ../php/register.php");
-    exit();
 }

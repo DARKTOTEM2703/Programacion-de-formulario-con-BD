@@ -52,7 +52,7 @@ if (isset($_POST['login'])) {
                     $stmt->execute();
                     $result_perfil = $stmt->get_result();
                     $perfil_data = $result_perfil->fetch_assoc();
-                    
+
                     if ($perfil_data && !empty($perfil_data['tipo_licencia'])) {
                         // Ya completó el paso 2, mostrar página de espera
                         $_SESSION['usuario_id'] = $user['id'];
@@ -75,7 +75,7 @@ if (isset($_POST['login'])) {
                 $_SESSION['nombre'] = $user['nombre_usuario'];
                 $_SESSION['rol'] = 'cliente';
 
-                header("Location: ../cliente/dashboard.php");
+                header("Location: ../php/dashboard.php");
                 exit();
             } else if ($user['rol_id'] == 1) {
                 // Es un administrador
@@ -216,11 +216,11 @@ if (isset($_POST['register'])) {
             </div>
 
             <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo $error; ?></div>
+                <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>
 
             <?php if ($success): ?>
-            <div class="alert alert-success"><?php echo $success; ?></div>
+                <div class="alert alert-success"><?php echo $success; ?></div>
             <?php endif; ?>
 
             <div class="tabs">
@@ -313,27 +313,27 @@ if (isset($_POST['register'])) {
     </div>
 
     <script>
-    function showTab(tabName) {
-        // Ocultar todos los contenidos de pestañas
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
+        function showTab(tabName) {
+            // Ocultar todos los contenidos de pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
 
-        // Desactivar todas las pestañas
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
+            // Desactivar todas las pestañas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
 
-        // Mostrar la pestaña seleccionada
-        document.getElementById(tabName + '-tab').classList.add('active');
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabName + '-tab').classList.add('active');
 
-        // Activar el botón de la pestaña
-        document.querySelectorAll('.tab').forEach(tab => {
-            if (tab.innerText.toLowerCase().includes(tabName === 'login' ? 'iniciar' : 'registr')) {
-                tab.classList.add('active');
-            }
-        });
-    }
+            // Activar el botón de la pestaña
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.innerText.toLowerCase().includes(tabName === 'login' ? 'iniciar' : 'registr')) {
+                    tab.classList.add('active');
+                }
+            });
+        }
     </script>
 </body>
 
