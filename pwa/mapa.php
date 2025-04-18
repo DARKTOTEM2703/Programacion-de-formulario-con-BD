@@ -12,11 +12,10 @@ $repartidor_id = $_SESSION['repartidor_id'];
 
 // Obtener envíos asignados al repartidor
 $stmt = $conn->prepare("
-    SELECT e.id, e.tracking_number, e.recipient_address, e.recipient_name, e.status, e.urgent
+    SELECT e.id, e.tracking_number, e.name AS recipient_name, e.destination AS recipient_address, e.status, e.urgent 
     FROM envios e 
     JOIN repartidores_envios re ON e.id = re.envio_id 
-    WHERE re.repartidor_id = ? AND e.status NOT IN ('Entregado', 'Cancelado')
-    ORDER BY e.urgent DESC, e.created_at ASC
+    WHERE re.usuario_id = ? AND e.status NOT IN ('Entregado', 'Cancelado')
 ");
 $stmt->bind_param("i", $repartidor_id);
 $stmt->execute();
