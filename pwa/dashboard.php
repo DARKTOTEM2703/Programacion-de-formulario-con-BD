@@ -66,7 +66,7 @@ while ($row = $result->fetch_assoc()) {
     <title>Dashboard Repartidor</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/mobile.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c82c9">
     <meta name="apple-mobile-web-app-capable" content="yes">
