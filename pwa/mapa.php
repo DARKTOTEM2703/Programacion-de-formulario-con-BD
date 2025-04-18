@@ -33,109 +33,260 @@ while ($row = $result->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mapa de Rutas</title>
+    <title>Rutas de Entrega - MENDEZ Transportes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/mobile.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c82c9">
+    <meta name="theme-color" content="#0057B8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Añadir Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Añadir Leaflet Routing Machine para rutas -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
     <style>
+        :root {
+            --primary-color: #0057B8;
+            /* Color azul corporativo MENDEZ */
+            --secondary-color: #FF9500;
+            /* Color naranja/amarillo de acento MENDEZ */
+            --accent-color: #FF9500;
+            --success-color: #2E8B57;
+            --danger-color: #D32F2F;
+            --warning-color: #F9A826;
+            --light-bg: #F8F9FA;
+            --dark-text: #212529;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 80px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand img {
+            height: 36px;
+            width: auto;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 15px;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .section-content {
+            margin-bottom: 25px;
+        }
+
         #map {
             width: 100%;
-            height: calc(100vh - 150px);
+            height: 400px;
+            border-radius: 15px;
             margin-bottom: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            z-index: 1;
         }
 
         .map-placeholder {
-            width: 100%;
-            height: calc(100vh - 150px);
+            height: 400px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            color: var(--text-secondary);
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 15px;
             text-align: center;
             padding: 20px;
         }
 
         .map-placeholder i {
             font-size: 3rem;
+            color: #6c757d;
             margin-bottom: 1rem;
-            color: var(--primary-color);
         }
 
         .map-controls {
             position: absolute;
-            bottom: 90px;
-            right: 10px;
-            z-index: 1000;
+            top: 460px;
+            right: 30px;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .map-control-btn {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            background-color: var(--card-bg);
-            color: var(--primary-color);
-            box-shadow: var(--box-shadow);
+            background-color: white;
             border: none;
-            transition: var(--transition);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .map-control-btn:hover {
-            transform: scale(1.1);
-            background-color: var(--primary-light);
-            color: white;
+            background-color: #f0f0f0;
+            transform: scale(1.05);
         }
 
         .route-info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 10px;
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            color: var(--text-color);
-            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
         }
 
         .route-info.active {
+            opacity: 1;
+            pointer-events: all;
+            bottom: 100px;
+        }
+
+        .envio-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .envio-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .envio-card.urgent {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .info-alert {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-bg);
+            padding: 15px;
+            border-radius: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .info-alert i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .navbar.fixed-bottom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* Para marcadores personalizados en el mapa */
+        .envio-marker {
             display: block;
         }
 
-        /* Modo oscuro para Google Maps */
-        @media (prefers-color-scheme: dark) {
-            .gm-style {
-                filter: brightness(0.8) contrast(1.2) !important;
-            }
+        .user-marker {
+            display: block;
+        }
+
+        /* Para las instrucciones de ruta (ocultas) */
+        .leaflet-routing-container {
+            display: none !important;
         }
     </style>
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-primary">
+    <nav class="navbar navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="bi bi-geo-alt me-2"></i>Mapa de Rutas
+                <img src="assets/icons/logo.png" alt="MENDEZ Logo">
+                <span>Rutas de Entrega</span>
             </a>
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
+                <button class="btn dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown"
+                    style="color: white; border: none;">
                     <i class="bi bi-person-circle"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -153,6 +304,11 @@ while ($row = $result->fetch_assoc()) {
     </nav>
 
     <div class="dashboard-container position-relative">
+        <!-- Logo centrado -->
+        <div class="text-center mb-3">
+            <img src="assets/icons/logo.png" alt="MENDEZ Transportes" class="company-logo">
+        </div>
+
         <!-- Info de Ruta -->
         <div id="routeInfo" class="route-info">
             <div class="d-flex justify-content-between align-items-center">
@@ -237,13 +393,13 @@ while ($row = $result->fetch_assoc()) {
         </div>
     </div>
 
-    <!-- Barra de navegación inferior (solo móvil) -->
-    <nav class="navbar fixed-bottom navbar-dark bg-primary p-0 shadow">
+    <!-- Barra de navegación inferior -->
+    <nav class="navbar fixed-bottom navbar-dark p-0 shadow">
         <div class="container-fluid p-0">
             <div class="d-flex flex-row justify-content-around w-100">
                 <a href="dashboard.php" class="nav-link text-center py-3 flex-fill">
                     <div class="d-flex flex-column align-items-center">
-                        <i class="bi bi-house-door fs-4"></i>
+                        <i class="bi bi-house-door-fill fs-4"></i>
                         <span class="small">Inicio</span>
                     </div>
                 </a>
@@ -255,13 +411,13 @@ while ($row = $result->fetch_assoc()) {
                 </a>
                 <a href="mapa.php" class="nav-link text-center py-3 flex-fill active">
                     <div class="d-flex flex-column align-items-center">
-                        <i class="bi bi-geo-alt fs-4"></i>
-                        <span class="small">Mapa</span>
+                        <i class="bi bi-geo-alt-fill fs-4"></i>
+                        <span class="small">Rutas</span>
                     </div>
                 </a>
                 <a href="perfil.php" class="nav-link text-center py-3 flex-fill">
                     <div class="d-flex flex-column align-items-center">
-                        <i class="bi bi-person fs-4"></i>
+                        <i class="bi bi-person-fill fs-4"></i>
                         <span class="small">Perfil</span>
                     </div>
                 </a>
@@ -270,589 +426,6 @@ while ($row = $result->fetch_assoc()) {
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- IMPORTANTE: Reemplaza API_KEY_AQUI con tu clave de API de Google Maps -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mapElement = document.getElementById('map');
-            const mapPlaceholder = document.getElementById('mapPlaceholder');
-            const retryLocationBtn = document.getElementById('retryLocationBtn');
-
-            // Evento para solicitar permisos de ubicación nuevamente
-            retryLocationBtn.addEventListener('click', function() {
-                loadGoogleMapsScript();
-            });
-
-            // Cargar script de Google Maps
-            loadGoogleMapsScript();
-
-            // Función para cargar el script de Google Maps
-            function loadGoogleMapsScript() {
-                if (window.google && window.google.maps) {
-                    // Google Maps ya está cargado
-                    initMap();
-                    return;
-                }
-
-                mapPlaceholder.querySelector('h4').textContent = 'Cargando mapa...';
-
-                const script = document.createElement('script');
-                script.src =
-                    "https://maps.googleapis.com/maps/api/js?key=AIzaSyATiX0cBHJ0DTaSJ9orK0MdTKdzB-HcTsc&lib    raries=places&callback=initMap";
-                script.async = true;
-                script.defer = true;
-                script.onerror = function() {
-                    showMapError('No se pudo cargar Google Maps. Verifica tu conexión a internet.');
-                };
-                document.body.appendChild(script);
-            }
-
-            // Mostrar error del mapa
-            window.showMapError = function(message) {
-                mapPlaceholder.innerHTML = `
-                    <i class="bi bi-exclamation-triangle text-warning"></i>
-                    <h4>No se pudo cargar el mapa</h4>
-                    <p>${message}</p>
-                    <button id="retryMapBtn" class="btn btn-primary mt-3">
-                        <i class="bi bi-arrow-repeat me-2"></i>Reintentar
-                    </button>
-                `;
-                document.getElementById('retryMapBtn').addEventListener('click', loadGoogleMapsScript);
-                mapPlaceholder.style.display = 'flex';
-                mapElement.style.display = 'none';
-            }
-        });
-
-        // Variables globales
-        let map;
-        let markers = [];
-        let directionsService;
-        let directionsRenderer;
-        let trafficLayer;
-        let isTrafficVisible = false;
-        let currentPositionMarker;
-        let watchId;
-
-        // Envíos del servidor (PHP)
-        const envios = <?php echo json_encode($envios); ?>;
-
-        // Inicializar mapa
-        async function initMap() {
-            const mapElement = document.getElementById('map');
-            const mapPlaceholder = document.getElementById('mapPlaceholder');
-
-            // Inicializar mapa centrado en una ubicación predeterminada (CDMX)
-            const defaultLocation = {
-                lat: 19.4326,
-                lng: -99.1332
-            };
-
-            // Crear mapa con opciones adaptadas para modo oscuro/claro
-            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            map = new google.maps.Map(mapElement, {
-                zoom: 12,
-                center: defaultLocation,
-                mapTypeControl: false,
-                streetViewControl: false,
-                fullscreenControl: false,
-                zoomControl: true,
-                zoomControlOptions: {
-                    position: google.maps.ControlPosition.RIGHT_CENTER
-                },
-                styles: isDarkMode ? [{
-                        elementType: "geometry",
-                        stylers: [{
-                            color: "#242f3e"
-                        }]
-                    },
-                    {
-                        elementType: "labels.text.stroke",
-                        stylers: [{
-                            color: "#242f3e"
-                        }]
-                    },
-                    {
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#746855"
-                        }]
-                    },
-                    {
-                        featureType: "administrative.locality",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#d59563"
-                        }],
-                    },
-                    {
-                        featureType: "poi",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#d59563"
-                        }],
-                    },
-                    {
-                        featureType: "poi.park",
-                        elementType: "geometry",
-                        stylers: [{
-                            color: "#263c3f"
-                        }],
-                    },
-                    {
-                        featureType: "poi.park",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#6b9a76"
-                        }],
-                    },
-                    {
-                        featureType: "road",
-                        elementType: "geometry",
-                        stylers: [{
-                            color: "#38414e"
-                        }],
-                    },
-                    {
-                        featureType: "road",
-                        elementType: "geometry.stroke",
-                        stylers: [{
-                            color: "#212a37"
-                        }],
-                    },
-                    {
-                        featureType: "road",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#9ca5b3"
-                        }],
-                    },
-                    {
-                        featureType: "road.highway",
-                        elementType: "geometry",
-                        stylers: [{
-                            color: "#746855"
-                        }],
-                    },
-                    {
-                        featureType: "road.highway",
-                        elementType: "geometry.stroke",
-                        stylers: [{
-                            color: "#1f2835"
-                        }],
-                    },
-                    {
-                        featureType: "road.highway",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#f3d19c"
-                        }],
-                    },
-                    {
-                        featureType: "transit",
-                        elementType: "geometry",
-                        stylers: [{
-                            color: "#2f3948"
-                        }],
-                    },
-                    {
-                        featureType: "transit.station",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#d59563"
-                        }],
-                    },
-                    {
-                        featureType: "water",
-                        elementType: "geometry",
-                        stylers: [{
-                            color: "#17263c"
-                        }],
-                    },
-                    {
-                        featureType: "water",
-                        elementType: "labels.text.fill",
-                        stylers: [{
-                            color: "#515c6d"
-                        }],
-                    },
-                    {
-                        featureType: "water",
-                        elementType: "labels.text.stroke",
-                        stylers: [{
-                            color: "#17263c"
-                        }],
-                    },
-                ] : [] // Estilo normal para modo claro
-            });
-
-            // Inicializar servicios de direcciones
-            directionsService = new google.maps.DirectionsService();
-            directionsRenderer = new google.maps.DirectionsRenderer({
-                suppressMarkers: true,
-                polylineOptions: {
-                    strokeColor: isDarkMode ? "#4fc3f7" : "#4285F4",
-                    strokeWeight: 5,
-                    strokeOpacity: 0.8
-                }
-            });
-            directionsRenderer.setMap(map);
-
-            // Inicializar capa de tráfico
-            trafficLayer = new google.maps.TrafficLayer();
-
-            // Obtener la posición actual del usuario
-            try {
-                const position = await getCurrentPosition();
-                map.setCenter(position);
-                setCurrentPositionMarker(position);
-
-                // Mostrar el mapa
-                mapElement.style.display = 'block';
-                mapPlaceholder.style.display = 'none';
-
-                // Empezar a rastrear la posición
-                startPositionTracking();
-
-                // Colocar marcadores para los envíos
-                await placeEnvioMarkers();
-
-                // Calcular la ruta óptima
-                if (envios.length > 0) {
-                    calculateOptimalRoute(position);
-                }
-
-            } catch (error) {
-                console.error("Error obteniendo ubicación:", error);
-                showMapError(
-                    'No se pudo acceder a tu ubicación. Por favor, permite el acceso a la ubicación en tu navegador.'
-                );
-            }
-
-            // Configurar controles de mapa
-            document.getElementById('center-map').addEventListener('click', function() {
-                getCurrentPosition().then(position => {
-                    map.setCenter(position);
-                    map.setZoom(15);
-                }).catch(error => {
-                    showMapError('No se pudo obtener tu ubicación actual.');
-                });
-            });
-
-            document.getElementById('toggle-traffic').addEventListener('click', function() {
-                if (isTrafficVisible) {
-                    trafficLayer.setMap(null);
-                    isTrafficVisible = false;
-                    this.classList.remove('active');
-                } else {
-                    trafficLayer.setMap(map);
-                    isTrafficVisible = true;
-                    this.classList.add('active');
-                }
-            });
-
-            document.getElementById('toggle-info').addEventListener('click', function() {
-                toggleRouteInfo();
-            });
-
-            // Hacer que los envíos sean clickeables para centrar en el mapa
-            document.querySelectorAll('.envio-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // No activar si se hace clic en el botón "Ver detalles"
-                    if (e.target.tagName === 'A' || e.target.tagName === 'I' || e.target.closest('a')) {
-                        return;
-                    }
-
-                    const envioId = this.dataset.id;
-                    const envio = envios.find(e => e.id == envioId);
-                    if (envio) {
-                        centerMapOnAddress(envio.recipient_address);
-                    }
-                });
-            });
-        }
-
-        // Centrar mapa en una dirección
-        function centerMapOnAddress(address) {
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({
-                address: address
-            }, (results, status) => {
-                if (status === "OK" && results && results.length > 0) {
-                    map.setCenter(results[0].geometry.location);
-                    map.setZoom(16);
-                }
-            });
-        }
-
-        // Mostrar/ocultar info de ruta
-        function toggleRouteInfo() {
-            document.getElementById('routeInfo').classList.toggle('active');
-        }
-
-        // Obtener la posición actual con promesas
-        function getCurrentPosition() {
-            return new Promise((resolve, reject) => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        position => resolve({
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        }),
-                        error => reject(error), {
-                            enableHighAccuracy: true,
-                            timeout: 10000,
-                            maximumAge: 0
-                        }
-                    );
-                } else {
-                    reject(new Error("Geolocalización no soportada en este navegador"));
-                }
-            });
-        }
-
-        // Iniciar rastreo de posición
-        function startPositionTracking() {
-            if (navigator.geolocation) {
-                watchId = navigator.geolocation.watchPosition(
-                    position => {
-                        const currentPos = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-
-                        setCurrentPositionMarker(currentPos);
-                    },
-                    error => console.error("Error en rastreo:", error), {
-                        enableHighAccuracy: true
-                    }
-                );
-            }
-        }
-
-        // Detener rastreo de posición
-        function stopPositionTracking() {
-            if (watchId !== null) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-            }
-        }
-
-        // Colocar/actualizar marcador de posición actual
-        function setCurrentPositionMarker(position) {
-            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            if (currentPositionMarker) {
-                currentPositionMarker.setPosition(position);
-            } else {
-                currentPositionMarker = new google.maps.Marker({
-                    position: position,
-                    map: map,
-                    title: "Tu ubicación",
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 10,
-                        fillColor: isDarkMode ? "#64b5f6" : "#4285F4",
-                        fillOpacity: 1,
-                        strokeColor: "#FFFFFF",
-                        strokeWeight: 2
-                    },
-                    zIndex: 999
-                });
-            }
-        }
-
-        // Colocar marcadores de envíos en el mapa
-        async function placeEnvioMarkers() {
-            // Limpiar marcadores existentes
-            markers.forEach(marker => marker.setMap(null));
-            markers = [];
-
-            // Si no hay envíos, salir
-            if (envios.length === 0) {
-                return;
-            }
-
-            // Promesas para geocodificación
-            const geocodePromises = envios.map(envio =>
-                geocodeAddress(envio.recipient_address)
-                .then(location => ({
-                    envio,
-                    location
-                }))
-                .catch(error => {
-                    console.error("Error geocodificando:", error);
-                    return {
-                        envio,
-                        location: null
-                    };
-                })
-            );
-
-            // Esperar a que todas las promesas se resuelvan
-            const results = await Promise.all(geocodePromises);
-
-            // Crear marcadores para las ubicaciones exitosas
-            results.forEach(result => {
-                if (result.location) {
-                    createEnvioMarker(result.envio, result.location);
-                }
-            });
-
-            // Ajustar el mapa para mostrar todos los marcadores
-            if (markers.length > 0) {
-                const bounds = new google.maps.LatLngBounds();
-                markers.forEach(marker => bounds.extend(marker.getPosition()));
-                if (currentPositionMarker) {
-                    bounds.extend(currentPositionMarker.getPosition());
-                }
-                map.fitBounds(bounds);
-            }
-        }
-
-        // Geocodificar dirección
-        function geocodeAddress(address) {
-            return new Promise((resolve, reject) => {
-                const geocoder = new google.maps.Geocoder();
-                geocoder.geocode({
-                    address: address
-                }, (results, status) => {
-                    if (status === "OK" && results && results.length > 0) {
-                        resolve(results[0].geometry.location);
-                    } else {
-                        reject(new Error(`Geocodificación fallida: ${status}`));
-                    }
-                });
-            });
-        }
-
-        // Crear marcador para un envío
-        function createEnvioMarker(envio, location) {
-            const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            const marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                title: envio.tracking_number,
-                animation: google.maps.Animation.DROP,
-                icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 8,
-                    fillColor: envio.urgent ? (isDarkMode ? "#e57373" : "#d32f2f") : (isDarkMode ? "#81c784" :
-                        "#2e7d32"),
-                    fillOpacity: 0.9,
-                    strokeColor: "#FFFFFF",
-                    strokeWeight: 2
-                }
-            });
-
-            // Crear ventana de información
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div style="width: 250px; padding: 5px;">
-                        <h6 style="margin: 0 0 8px 0; color: ${envio.urgent ? '#d32f2f' : '#1976d2'}">${envio.tracking_number}</h6>
-                        <p style="margin: 0 0 5px 0;"><strong>Destinatario:</strong> ${envio.recipient_name}</p>
-                        <p style="margin: 0 0 5px 0;"><strong>Dirección:</strong> ${envio.recipient_address}</p>
-                        <p style="margin: 0 0 10px 0;"><strong>Estado:</strong> 
-                           <span style="background-color: ${getStatusColor(envio.status)}; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px;">${envio.status}</span>
-                        </p>
-                        <a href="detalle_envio.php?id=${envio.id}" class="btn btn-primary btn-sm" style="width: 100%;">Ver Detalles</a>
-                    </div>
-                `
-            });
-
-            // Evento de clic
-            marker.addListener('click', () => {
-                // Cerrar otras ventanas de información abiertas
-                markers.forEach(m => {
-                    if (m.infoWindow && m.infoWindow !== infoWindow) {
-                        m.infoWindow.close();
-                    }
-                });
-
-                infoWindow.open(map, marker);
-            });
-
-            marker.infoWindow = infoWindow;
-            markers.push(marker);
-
-            return marker;
-        }
-
-        // Obtener color para estado
-        function getStatusColor(status) {
-            switch (status) {
-                case 'Procesando':
-                    return '#6c757d';
-                case 'En camino':
-                    return '#1976d2';
-                case 'En ruta':
-                    return '#0288d1';
-                case 'Entregado':
-                    return '#2e7d32';
-                case 'Cancelado':
-                    return '#d32f2f';
-                default:
-                    return '#6c757d';
-            }
-        }
-
-        // Calcular ruta óptima con el Algoritmo del Vendedor Viajero
-        async function calculateOptimalRoute(startPosition) {
-            if (markers.length === 0) return;
-
-            // Waypoints para la ruta (direcciones de envíos)
-            const waypoints = markers.map(marker => ({
-                location: marker.getPosition(),
-                stopover: true
-            }));
-
-            // Configurar la solicitud de ruta
-            directionsService.route({
-                origin: startPosition,
-                destination: startPosition, // Volver al punto de inicio
-                waypoints: waypoints,
-                optimizeWaypoints: true, // Optimizar el orden
-                travelMode: google.maps.TravelMode.DRIVING
-            }, (response, status) => {
-                if (status === "OK" && response) {
-                    directionsRenderer.setDirections(response);
-
-                    // Mostrar distancia y tiempo estimado
-                    const route = response.routes[0];
-                    let totalDistance = 0;
-                    let totalDuration = 0;
-
-                    route.legs.forEach(leg => {
-                        totalDistance += leg.distance.value;
-                        totalDuration += leg.duration.value;
-                    });
-
-                    // Convertir a formato legible
-                    const distanceKm = (totalDistance / 1000).toFixed(1);
-                    const durationHours = Math.floor(totalDuration / 3600);
-                    const durationMinutes = Math.floor((totalDuration % 3600) / 60);
-
-                    // Mostrar información
-                    document.getElementById('routeDistance').textContent = `${distanceKm} km`;
-                    document.getElementById('routeDuration').textContent = durationHours > 0 ?
-                        `${durationHours}h ${durationMinutes}m` :
-                        `${durationMinutes} min`;
-
-                    // Mostrar información de ruta
-                    document.getElementById('routeInfo').classList.add('active');
-                    setTimeout(() => {
-                        document.getElementById('routeInfo').classList.remove('active');
-                    }, 5000);
-                } else {
-                    console.error("Error al calcular la ruta:", status);
-                    if (status === "ZERO_RESULTS") {
-                        showMapError("No se pudo encontrar una ruta válida entre las ubicaciones");
-                    }
-                }
-            });
-        }
-    </script>
-
     <script src="assets/js/pwa-init.js"></script>
 </body>
 

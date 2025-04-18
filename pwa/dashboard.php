@@ -63,25 +63,176 @@ while ($row = $result->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard Repartidor</title>
+    <title>Panel de Control - MENDEZ Transportes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c82c9">
+    <meta name="theme-color" content="#0057B8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        :root {
+            --primary-color: #0057B8;
+            /* Color azul corporativo MENDEZ */
+            --secondary-color: #FF9500;
+            /* Color naranja/amarillo de acento MENDEZ */
+            --accent-color: #FF9500;
+            --success-color: #2E8B57;
+            --danger-color: #D32F2F;
+            --warning-color: #F9A826;
+            --light-bg: #F8F9FA;
+            --dark-text: #212529;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 80px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-brand img {
+            height: 36px;
+            width: auto;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+        }
+
+        .welcome-header {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .stat-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 15px;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .section-content {
+            margin-bottom: 25px;
+        }
+
+        .envio-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .envio-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .envio-card.urgent {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .info-alert {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-bg);
+            padding: 15px;
+            border-radius: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .info-alert i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .navbar.fixed-bottom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-primary">
+    <nav class="navbar navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="bi bi-truck me-2"></i>App Repartidores
+                <img src="assets/icons/logo.png" alt="MENDEZ Logo">
+                <span>Panel de Control</span>
             </a>
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
+                <button class="btn dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown"
+                    style="color: white; border: none;">
                     <i class="bi bi-person-circle"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -215,8 +366,8 @@ while ($row = $result->fetch_assoc()) {
         </div>
     </div>
 
-    <!-- Barra de navegación inferior (solo móvil) -->
-    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-primary p-0 shadow">
+    <!-- Barra de navegación inferior -->
+    <nav class="navbar fixed-bottom navbar-dark p-0 shadow">
         <div class="container-fluid p-0">
             <div class="d-flex flex-row justify-content-around w-100">
                 <a href="dashboard.php" class="nav-link text-center py-3 flex-fill active">
@@ -233,13 +384,13 @@ while ($row = $result->fetch_assoc()) {
                 </a>
                 <a href="mapa.php" class="nav-link text-center py-3 flex-fill">
                     <div class="d-flex flex-column align-items-center">
-                        <i class="bi bi-geo-alt fs-4"></i>
-                        <span class="small">Mapa</span>
+                        <i class="bi bi-geo-alt-fill fs-4"></i>
+                        <span class="small">Rutas</span>
                     </div>
                 </a>
                 <a href="perfil.php" class="nav-link text-center py-3 flex-fill">
                     <div class="d-flex flex-column align-items-center">
-                        <i class="bi bi-person fs-4"></i>
+                        <i class="bi bi-person-fill fs-4"></i>
                         <span class="small">Perfil</span>
                     </div>
                 </a>
