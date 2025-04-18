@@ -18,6 +18,7 @@ const urlsToCache = [
 
 // Instalación del service worker
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Caché abierta");
@@ -28,43 +29,7 @@ self.addEventListener("install", (event) => {
 
 // Interceptar peticiones y servir desde caché cuando sea posible
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Si el recurso está en caché, se devuelve
-      if (response) {
-        return response;
-      }
-
-      // Si no está en caché, se realiza la petición a la red
-      return fetch(event.request)
-        .then((response) => {
-          // No cachear si la respuesta no es válida o no es una solicitud GET
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic" ||
-            event.request.method !== "GET"
-          ) {
-            return response;
-          }
-
-          // Clonar la respuesta porque se consume al leerla
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-
-          return response;
-        })
-        .catch(() => {
-          // Si falla la petición a la red y es una página HTML, mostrar página offline
-          if (event.request.headers.get("accept").includes("text/html")) {
-            return caches.match("/offline.html");
-          }
-        });
-    })
-  );
+  event.respondWith(fetch(event.request));
 });
 
 // Actualizar caché cuando hay una nueva versión del service worker
