@@ -321,6 +321,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </div>
         </div>
 
+        <!-- Rastreo en vivo -->
+        <?php if ($is_assigned && $envio['status'] !== 'Entregado' && $envio['status'] !== 'Cancelado'): ?>
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-geo-alt-fill me-2"></i> Rastreo en vivo
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">Comparte tu ubicación en tiempo real con el cliente para que pueda seguir el envío.</p>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <button id="btnIniciarRastreo" class="btn btn-success">
+                            <i class="bi bi-play-fill me-2"></i> Iniciar rastreo
+                        </button>
+                        <button id="btnDetenerRastreo" class="btn btn-danger d-none">
+                            <i class="bi bi-stop-fill me-2"></i> Detener rastreo
+                        </button>
+                    </div>
+
+                    <div class="mt-3">
+                        <p id="statusRastreo" class="mb-1 fw-bold text-muted">Rastreo no iniciado</p>
+                        <p id="coordenadas" class="small text-muted">--</p>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Historial de tracking -->
         <div class="card">
             <div class="card-header">

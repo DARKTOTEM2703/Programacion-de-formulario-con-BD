@@ -28,11 +28,16 @@ if (!isset($_SESSION['usuario_id'])) {
             <div class="buttons">
                 <button class="btn btn-primary" onclick="window.location.href='forms.php'">Agendar servicio</button>
                 <button class="btn btn-secondary" onclick="window.location.href='WatchData.php'">Ver servicios</button>
+                <a href="tracking.php" class="btn btn-primary">
+                    <i class="bi bi-search me-2"></i>Rastrear envío
+                </a>
             </div>
             <div class="logout">
                 <button class="btn btn-logout" onclick="window.location.href='logout.php'">Cerrar sesión</button>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     <?php include '../components/footer.php'; ?>
 
