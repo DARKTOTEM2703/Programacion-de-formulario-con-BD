@@ -28,11 +28,24 @@
             if (isset($_SESSION['success'])) {
                 echo '<div class="alert alert-success text-center" role="alert">' . $_SESSION['success'] . '</div>';
                 unset($_SESSION['success']);
-                echo '<script>
+
+                // Modificación aquí: Redireccionar según el rol
+                if (isset($_SESSION['user']) && $_SESSION['user']['rol_id']) {
+                    $redirect = $_SESSION['user']['rol_id'] == 1 ?
+                        '../admin/index.php' : '../admin/dashboard.php';
+
+                    echo '<script>
+                        setTimeout(function() {
+                            window.location.href = "' . $redirect . '";
+                        }, 2000);
+                    </script>';
+                } else {
+                    echo '<script>
                         setTimeout(function() {
                             window.location.href = "dashboard.php";
-                        }, 3000);
-                      </script>';
+                        }, 2000);
+                    </script>';
+                }
             }
             ?>
 
