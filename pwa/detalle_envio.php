@@ -286,11 +286,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                         <p class="text-muted small"><?php echo htmlspecialchars($envio['name']); ?></p>
                     </div>
                     <div class="col-6">
-                        <p class="mb-1"><strong>Destinatario:</strong></p>
-                        <p class="text-muted small">
-                            <?php echo htmlspecialchars($envio['name']); ?><br>
-                            <?php echo htmlspecialchars($envio['phone']); ?>
-                        </p>
+                        <p class="mb-1"><strong>Teléfono remitente:</strong></p>
+                        <p class="text-muted small"><?php echo htmlspecialchars($envio['phone']); ?></p>
                     </div>
                 </div>
 
@@ -298,8 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 
                 <p class="mb-1"><strong>Detalles:</strong></p>
                 <p class="text-muted small">
-                    <strong>Peso:</strong> <?php echo $envio['weight']; ?> kg<br>
-                    <strong>Dimensiones:</strong> <?php echo $envio['dimensions']; ?><br>
+                    <strong>Peso:</strong> <?php echo htmlspecialchars($envio['weight']); ?> kg<br>
                     <strong>Descripción:</strong> <?php echo htmlspecialchars($envio['description']); ?>
                 </p>
 

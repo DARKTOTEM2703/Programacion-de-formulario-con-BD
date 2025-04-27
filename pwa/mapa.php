@@ -426,7 +426,58 @@ while ($row = $result->fetch_assoc()) {
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pwa-init.js"></script>
+    <script src="pwa-init.js"></script>
+    <script>
+        const envios = <?php echo json_encode($envios); ?>;
+        let map = L.map('map').setView([20.967370, -89.592586], 12); // Mérida por defecto
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Mostrar marcadores de envíos
+        envios.forEach(envio => {
+            if (envio.lat && envio.lng) {
+                L.marker([envio.lat, envio.lng])
+                    .addTo(map)
+                    .bindPopup(
+                        `<b>#${envio.tracking_number}</b><br>
+                Destino: ${envio.recipient_address}<br>
+                Estado: ${envio.status}<br>
+                <a href="detalle_envio.php?id=${envio.id}">Ver detalle</a>`
+                    );
+            }
+        });
+
+        // Mostrar ubicación actual del repartidor en tiempo real
+        let userMarker = null;
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                if (userMarker) {
+                    userMarker.setLatLng([lat, lng]);
+                } else {
+                    userMarker = L.marker([lat, lng], {
+                        icon: L.icon({
+                            iconUrl: 'assets/icons/user-marker.png',
+                            iconSize: [32, 32]
+                        })
+                    }).addTo(map).bindPopup('Tu ubicación actual');
+                    map.setView([lat, lng], 13);
+                    document.getElementById('map').style.display = 'block';
+                    document.getElementById('mapPlaceholder').style.display = 'none';
+                }
+            }, function() {
+                document.getElementById('mapPlaceholder').innerHTML =
+                    '<i class="bi bi-exclamation-triangle"></i><h4>No se pudo obtener tu ubicación</h4>';
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 10000
+            });
+        }
+    </script>
 </body>
 
 </html>
