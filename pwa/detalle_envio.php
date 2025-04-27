@@ -20,9 +20,9 @@ $envio_id = $_GET['id'];
 
 // Buscar el envío por su ID
 $stmt = $conn->prepare("
-    SELECT e.*, c.nombre as cliente_nombre, c.email as cliente_email
+    SELECT e.*, c.nombre_usuario as cliente_nombre, c.email as cliente_email
     FROM envios e
-    LEFT JOIN usuarios c ON e.user_id = c.id
+    LEFT JOIN usuarios c ON e.usuario_id = c.id
     WHERE e.id = ?
 ");
 $stmt->bind_param("i", $envio_id);
@@ -40,7 +40,7 @@ $envio = $result->fetch_assoc();
 // Verificar si este envío está asignado al repartidor
 $stmt = $conn->prepare("
     SELECT COUNT(*) as count FROM repartidores_envios 
-    WHERE repartidor_id = ? AND envio_id = ?
+    WHERE usuario_id = ? AND envio_id = ?
 ");
 $stmt->bind_param("ii", $repartidor_id, $envio_id);
 $stmt->execute();
@@ -51,7 +51,7 @@ $is_assigned = ($row['count'] > 0);
 
 // Obtener el historial de tracking
 $stmt = $conn->prepare("
-    SELECT th.*, u.nombre as usuario_nombre
+    SELECT th.*, u.nombre_usuario as usuario_nombre
     FROM tracking_history th
     LEFT JOIN usuarios u ON th.created_by = u.id
     WHERE th.envio_id = ?
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 
                 // Recargar el historial
                 $stmt = $conn->prepare("
-                    SELECT th.*, u.nombre as usuario_nombre
+                    SELECT th.*, u.nombre_usuario as usuario_nombre
                     FROM tracking_history th
                     LEFT JOIN usuarios u ON th.created_by = u.id
                     WHERE th.envio_id = ?
@@ -164,8 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     <title>Detalle de Envío - App Repartidores</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/mobile.css">
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
         .signature-container {
             width: 100%;
@@ -269,11 +270,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-1"><strong>Origen:</strong></p>
-                        <p class="text-muted small"><?php echo htmlspecialchars($envio['sender_address']); ?></p>
+                        <p class="text-muted small"><?php echo htmlspecialchars($envio['origin']); ?></p>
                     </div>
                     <div class="col-6">
                         <p class="mb-1"><strong>Destino:</strong></p>
-                        <p class="text-muted small"><?php echo htmlspecialchars($envio['recipient_address']); ?></p>
+                        <p class="text-muted small"><?php echo htmlspecialchars($envio['destination']); ?></p>
                     </div>
                 </div>
 
@@ -282,13 +283,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 <div class="row">
                     <div class="col-6">
                         <p class="mb-1"><strong>Remitente:</strong></p>
-                        <p class="text-muted small"><?php echo htmlspecialchars($envio['sender_name']); ?></p>
+                        <p class="text-muted small"><?php echo htmlspecialchars($envio['name']); ?></p>
                     </div>
                     <div class="col-6">
                         <p class="mb-1"><strong>Destinatario:</strong></p>
                         <p class="text-muted small">
-                            <?php echo htmlspecialchars($envio['recipient_name']); ?><br>
-                            <?php echo htmlspecialchars($envio['recipient_phone']); ?>
+                            <?php echo htmlspecialchars($envio['name']); ?><br>
+                            <?php echo htmlspecialchars($envio['phone']); ?>
                         </p>
                     </div>
                 </div>
@@ -564,6 +565,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 });
             }
         });
+    </script>
+    <div id="map" style="height: 400px;"></div>
+    <script>
+        const map = L.map('map').setView([0, 0], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        const marker = L.marker([0, 0]).addTo(map);
+
+        function actualizarMapa() {
+            fetch('/Programacion-de-formulario-con-BD/api/obtener_ubicacion.php?envio_id=<?php echo $envio_id; ?>')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.lat && data.lng) {
+                        marker.setLatLng([data.lat, data.lng]);
+                        map.setView([data.lat, data.lng], 15);
+                    }
+                });
+        }
+        setInterval(actualizarMapa, 10000); // cada 10 segundos
+        actualizarMapa();
     </script>
 </body>
 

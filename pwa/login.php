@@ -206,6 +206,11 @@ if (isset($_POST['register'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/mobile.css">
     <link rel="manifest" href="manifest.json">
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+    }
+    </script>
 </head>
 
 <body>
@@ -216,11 +221,11 @@ if (isset($_POST['register'])) {
             </div>
 
             <?php if ($error): ?>
-                <div class="alert alert-danger"><?php echo $error; ?></div>
+            <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>
 
             <?php if ($success): ?>
-                <div class="alert alert-success"><?php echo $success; ?></div>
+            <div class="alert alert-success"><?php echo $success; ?></div>
             <?php endif; ?>
 
             <div class="tabs">
@@ -313,27 +318,27 @@ if (isset($_POST['register'])) {
     </div>
 
     <script>
-        function showTab(tabName) {
-            // Ocultar todos los contenidos de pestañas
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
+    function showTab(tabName) {
+        // Ocultar todos los contenidos de pestañas
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
 
-            // Desactivar todas las pestañas
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+        // Desactivar todas las pestañas
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
 
-            // Mostrar la pestaña seleccionada
-            document.getElementById(tabName + '-tab').classList.add('active');
+        // Mostrar la pestaña seleccionada
+        document.getElementById(tabName + '-tab').classList.add('active');
 
-            // Activar el botón de la pestaña
-            document.querySelectorAll('.tab').forEach(tab => {
-                if (tab.innerText.toLowerCase().includes(tabName === 'login' ? 'iniciar' : 'registr')) {
-                    tab.classList.add('active');
-                }
-            });
-        }
+        // Activar el botón de la pestaña
+        document.querySelectorAll('.tab').forEach(tab => {
+            if (tab.innerText.toLowerCase().includes(tabName === 'login' ? 'iniciar' : 'registr')) {
+                tab.classList.add('active');
+            }
+        });
+    }
     </script>
 </body>
 

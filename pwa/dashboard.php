@@ -67,6 +67,11 @@ while ($row = $result->fetch_assoc()) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
     <meta name="theme-color" content="#0057B8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -422,6 +427,26 @@ while ($row = $result->fetch_assoc()) {
                 })
                 .catch(error => console.error('Error:', error));
         }
+
+        // Cambia ENVIO_ID por el ID real del envío activo
+        function enviarUbicacion() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    fetch('/Programacion-de-formulario-con-BD/api/guardar_ubicacion.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            envio_id: ENVIO_ID, // Debes obtener este ID dinámicamente
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude
+                        })
+                    });
+                });
+            }
+        }
+        setInterval(enviarUbicacion, 15000); // cada 15 segundos
     </script>
 </body>
 
