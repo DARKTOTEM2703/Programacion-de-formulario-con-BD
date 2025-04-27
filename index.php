@@ -11,9 +11,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/footer.css">
+    <!-- Agrega en el <head> después de tus CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flash.min.css" />
 </head>
 
 <body class="bg-light text-dark">
+    <!-- Loader de carga profesional con Pace.js (no necesitas el div loader-bg) -->
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
@@ -37,7 +42,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" data-aos="fade-in" data-aos-duration="1200">
         <div class="container text-center py-5">
             <div class="hero-overlay"></div>
             <div class="container text-center hero-content">
@@ -51,22 +56,21 @@
                     rel="noopener noreferrer">Ver Video ▶</a>
                 <a href="php/login.php" class="btn btn-warning btn-lg" target="_blank">Iniciar Sesión</a>
             </div>
-    </section>
+        </div>
     </section>
     <!-- Sección de Servicios -->
     <section id="servicios" class="py-5">
         <div class="container">
-            <div class="row mb-5">
+            <div class="row mb-5" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-12 text-center">
                     <h2 class="section-title mb-3">Nuestros Servicios</h2>
                     <p class="lead">Ofrecemos soluciones integrales de transporte y logística adaptadas a tus
                         necesidades</p>
                 </div>
             </div>
-
             <div class="row g-4">
                 <!-- Servicio 1 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in-up" data-aos-delay="200">
                     <div class="service-card h-100 shadow-sm">
                         <div class="service-img-container">
                             <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
@@ -86,7 +90,7 @@
                 </div>
 
                 <!-- Servicio 2 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in-up" data-aos-delay="300">
                     <div class="service-card h-100 shadow-sm">
                         <div class="service-img-container">
                             <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
@@ -105,7 +109,7 @@
                 </div>
 
                 <!-- Servicio 3 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in-up" data-aos-delay="400">
                     <div class="service-card h-100 shadow-sm">
                         <div class="service-img-container">
                             <img src="https://th.bing.com/th/id/R.34facd747cb4ea315dabe09e6fa553fc?rik=D5EK9wZtpdjY3A&pid=ImgRaw&r=0"
@@ -124,7 +128,7 @@
                 </div>
 
                 <!-- Servicio 4 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in-up" data-aos-delay="500">
                     <div class="service-card h-100 shadow-sm">
                         <div class="service-img-container">
                             <img src="https://th.bing.com/th/id/OIP.GULsSQrPGq569qsixiWYQAHaE7?rs=1&pid=ImgDetMain"
@@ -143,7 +147,7 @@
                 </div>
 
                 <!-- Servicio 5 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in-up" data-aos-delay="600">
                     <div class="service-card h-100 shadow-sm">
                         <div class="service-img-container">
                             <img src="https://th.bing.com/th/id/OIP.G90ev_bZoyJ4B8GpuqLAswHaEK?rs=1&pid=ImgDetMain"
@@ -162,7 +166,7 @@
                 </div>
 
                 <!-- Servicio 6 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in-up" data-aos-delay="700">
                     <div class="service-card h-100 shadow-sm">
                         <div class="service-img-container">
                             <img src="https://th.bing.com/th/id/OIP.W8_0o3G9mhAsbf3YYzCzjQHaC0?rs=1&pid=ImgDetMain"
@@ -203,7 +207,7 @@
 
             <div class="row g-4">
                 <!-- Unidad 1 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="100">
                     <div class="unit-card h-100 shadow-sm">
                         <div class="unit-img-container">
                             <img src="https://fuso.gruposanblas.com/wp-content/uploads/2021/09/canter5t-thumb.png"
@@ -225,7 +229,7 @@
                 </div>
 
                 <!-- Unidad 2 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="200">
                     <div class="unit-card h-100 shadow-sm">
                         <div class="unit-img-container">
                             <img src="https://fletesdcdlogistica.com.mx/franquias/2/6698846/editor-html/7933709.png"
@@ -248,7 +252,7 @@
                 </div>
 
                 <!-- Unidad 3 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="300">
                     <div class="unit-card h-100 shadow-sm">
                         <div class="unit-img-container">
                             <img src="https://www.carpao.com/images/trailer48.png" class="card-img-top"
@@ -271,7 +275,7 @@
                 </div>
 
                 <!-- Unidad 4 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="400">
                     <div class="unit-card h-100 shadow-sm">
                         <div class="unit-img-container">
                             <img src="https://maxdrive.com.ec/wp-content/uploads/2021/10/Maxdrive-trucks-models-web-900-x-560-px-Instagram-Post-1080-x-540-px-12.png"
@@ -294,7 +298,7 @@
                 </div>
 
                 <!-- Unidad 5 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="500">
                     <div class="unit-card h-100 shadow-sm">
                         <div class="unit-img-container">
                             <img src="https://www.hino.cl/hino/site/artic/20230131/imag/foto_0000000320230131183729/foto2.png"
@@ -318,7 +322,7 @@
                 </div>
 
                 <!-- Unidad 6 -->
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4" data-aos="zoom-in" data-aos-delay="600">
                     <div class="unit-card h-100 shadow-sm">
                         <div class="unit-img-container">
                             <img src="https://th.bing.com/th/id/R.5221cae02befbef68e9af54a49fd299c?rik=hRpykR3hgFyl0Q&pid=ImgRaw&r=0"
@@ -352,9 +356,9 @@
         </div>
     </section>
 
-    <div class="container">
+    <div class="container" data-aos="fade-up" data-aos-delay="200">
         <div class="cards-container">
-            <div class="card card1 formatcard1">
+            <div class="card card1 formatcard1" data-aos="flip-left" data-aos-delay="300">
                 <h1 class="card-title">Soluciones de Transporte</h1>
                 <img src="https://th.bing.com/th/id/OIP.zXb5UndBqGx6vcM7oD1uCwHaDr?rs=1&pid=ImgDetMain"
                     alt="Soluciones de Transporte" class="img-fluid my-3">
@@ -362,7 +366,7 @@
                     que tu carga llegue a tiempo y en perfectas condiciones.</p>
                 <a class="green-button cardformat" href="#">Ver más</a>
             </div>
-            <div class="card card2 formatcard1">
+            <div class="card card2 formatcard1" data-aos="flip-up" data-aos-delay="400">
                 <h1 class="card-title">Logística Personalizada</h1>
                 <img src="https://th.bing.com/th/id/OIP.4YEWgqOa6rimX_KqiYI_RgHaE8?rs=1&pid=ImgDetMain"
                     alt="Logística Personalizada" class="img-fluid my-3">
@@ -370,7 +374,7 @@
                     de tu negocio, optimizando costos y tiempos.</p>
                 <a class="green-button cardformat" href="#">Ver más</a>
             </div>
-            <div class="card card3 formatcard1">
+            <div class="card card3 formatcard1" data-aos="flip-right" data-aos-delay="500">
                 <h1 class="card-title">Seguridad Garantizada</h1>
                 <img src="https://www.k8logistica.com/wp-content/uploads/2020/02/trailer-seguridad-768x517.jpg"
                     alt="Seguridad Garantizada" class="img-fluid my-3">
@@ -418,17 +422,17 @@
                     <p class="lead">Somos una empresa líder en el sector de transporte y logística con más de 20 años de
                         experiencia.</p>
 
-                    <h4 class="mt-4">Nuestra Historia</h4>
+                    <h4 class="mt-4 black">Nuestra Historia</h4>
                     <p>Fundada en 2003, MENDEZ comenzó como una pequeña empresa familiar con tan solo 3 camiones. Hoy
                         contamos con una flota de más de 150 unidades y operamos en toda la República Mexicana,
                         ofreciendo soluciones integrales de transporte y logística.</p>
 
-                    <h4 class="mt-4">Misión</h4>
+                    <h4 class="mt-4 black">Misión</h4>
                     <p>Brindar servicios de transporte y logística de la más alta calidad, eficiencia y seguridad,
                         superando las expectativas de nuestros clientes y contribuyendo al desarrollo económico del
                         país.</p>
 
-                    <h4 class="mt-4">Visión</h4>
+                    <h4 class="mt-4 black">Visión</h4>
                     <p>Ser la empresa líder en transporte y logística en México, reconocida por la excelencia en el
                         servicio, la innovación continua y el compromiso con nuestros clientes, colaboradores y el medio
                         ambiente.</p>
@@ -474,13 +478,16 @@
             </div>
         </div>
     </div>
-    <?php
-    include 'components/footer.php';
-    ?>
+    <?php include 'components/footer.php'; ?>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Pace.js para loader profesional -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="js/animation.js"></script>
-
-    <body>
+</body>
 
 </html>
