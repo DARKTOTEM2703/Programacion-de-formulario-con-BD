@@ -44,7 +44,7 @@ if (!empty($server_ip)) {
         <div class="footer__section">
             <h4>Trabaja con nosotros</h4>
             <ul class="footer__job-list">
-                <li><a href="<?php echo $base_url; ?>/php/careers/operator.php" target="_blank">Operador</a></li>
+                <li><a href="../php/careers/operator.php" target="_blank">Operador</a></li>
                 <li>
                     <!-- Enlace principal usando la URL actual -->
                     <a href="<?php echo $base_url; ?>/pwa/login.php" target="_blank">Repartidor</a>

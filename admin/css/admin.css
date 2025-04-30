@@ -1,0 +1,332 @@
+:root {
+  /* Variables de color - Tema claro */
+  --primary-color: #0057b8;
+  --secondary-color: #ffd700;
+  --accent-color: #00b4d8;
+  --success: #20c997;
+  --danger: #e63946;
+  --warning: #fd7e14;
+  --info: #0dcaf0;
+  --dark: #212529;
+  --light: #f8f9fa;
+
+  /* Variables estructurales */
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+  --border-radius: 0.5rem;
+  --transition-speed: 0.3s;
+  --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+  /* Tema claro por defecto */
+  --bg-color: #f5f7fa;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-muted: #6c757d;
+  --border-color: rgba(0, 0, 0, 0.05);
+  --sidebar-bg: linear-gradient(135deg, #212529 0%, #343a40 100%);
+  --sidebar-text: rgba(255, 255, 255, 0.7);
+  --sidebar-active-bg: var(--primary-color);
+  --sidebar-active-text: #ffffff;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.1);
+  --hamburger-color: #ffffff;
+}
+
+/* Tema oscuro basado en preferencias del sistema */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-muted: #adb5bd;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --sidebar-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    --sidebar-text: rgba(255, 255, 255, 0.7);
+    --sidebar-active-bg: var(--primary-color);
+    --sidebar-active-text: #ffffff;
+    --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  }
+}
+
+body {
+  font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 0;
+  transition: all var(--transition-speed) ease;
+  z-index: 1000;
+  box-shadow: var(--box-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Sidebar en modo colapsado para tablets */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  /* Mostrar el botón hamburguesa */
+  .toggle-sidebar {
+    display: flex !important;
+  }
+}
+
+/* Botón hamburguesa mejorado (posicionado a la derecha) */
+.toggle-sidebar {
+  position: fixed;
+  top: 15px;
+  right: 15px; /* Cambiado de left a right para posicionar a la derecha */
+  z-index: 1100;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.toggle-sidebar:hover {
+  transform: scale(1.05);
+  opacity: 1;
+  background-color: #0046a1;
+}
+
+.toggle-sidebar:active {
+  transform: scale(0.95);
+}
+
+.toggle-sidebar i {
+  font-size: 1.5rem;
+}
+
+.logo-container {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand img {
+  max-width: 100%;
+  height: auto;
+}
+
+.sidebar .nav {
+  padding: 1rem 0;
+}
+
+.sidebar .nav-item {
+  margin: 0.25rem 0.75rem;
+}
+
+.sidebar .nav-link {
+  padding: 0.875rem 1.5rem;
+  color: var(--sidebar-text);
+  display: flex;
+  align-items: center;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: var(--sidebar-active-text);
+  transform: translateX(5px);
+}
+
+.sidebar .nav-link.active {
+  background-color: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .nav-link i {
+  margin-right: 10px;
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover i {
+  transform: scale(1.1);
+}
+
+.nav-item.mt-auto {
+  margin-top: auto !important;
+}
+
+/* Contenido principal */
+.main-content {
+  margin-left: var(--sidebar-width);
+  padding: 20px;
+  transition: margin var(--transition-speed) ease;
+  min-height: 100vh;
+}
+
+/* Título de página */
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 1.25rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Tarjetas de estadísticas */
+.border-left-primary,
+.border-left-success,
+.border-left-warning,
+.border-left-danger,
+.border-left-info {
+  border-left: 4px solid;
+  border-radius: var(--border-radius);
+}
+
+.border-left-primary {
+  border-left-color: var(--primary-color);
+}
+
+.border-left-success {
+  border-left-color: var(--success);
+}
+
+.border-left-warning {
+  border-left-color: var(--warning);
+}
+
+.border-left-danger {
+  border-left-color: var(--danger);
+}
+
+.border-left-info {
+  border-left-color: var(--info);
+}
+
+/* Gráficos */
+.chart-area,
+.chart-pie {
+  position: relative;
+  height: 300px;
+}
+
+/* Tablas */
+.table {
+  color: var(--text-color);
+}
+
+.table thead th {
+  background-color: rgba(0, 87, 184, 0.05);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 87, 184, 0.02);
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.5em 0.75em;
+}
+
+/* Animación del botón hamburguesa */
+.toggle-sidebar.clicked {
+  animation: pulse 0.3s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Ajustar diseño principal para compensar el botón fijo */
+@media (max-width: 992px) {
+  .main-content {
+    padding-top: 60px; /* Espacio adicional en la parte superior */
+  }
+}

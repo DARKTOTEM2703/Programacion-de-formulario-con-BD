@@ -114,6 +114,9 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
    composer install
    composer require phpmailer/phpmailer
    composer require vlucas/phpdotenv
+   composer require --dev phpunit/phpunit
+   composer require --dev phpstan/phpstan
+
    ```
 
 3. Configura la base de datos MySQL:

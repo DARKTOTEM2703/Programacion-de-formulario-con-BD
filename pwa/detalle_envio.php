@@ -150,6 +150,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 $conn->rollback();
                 $update_message = '<div class="alert alert-danger">Error al actualizar: ' . $e->getMessage() . '</div>';
             }
+
+            // Después de actualizar a "Entregado" y después del commit
+            if ($new_status === 'Entregado') {
+                // Generar factura automáticamente
+                require_once '../components/invoice_handler.php';
+                $invoice_number = generateInvoice($envio_id);
+
+                if ($invoice_number) {
+                    $update_message .= '<div class="alert alert-info mt-2">Factura generada: ' . $invoice_number . '</div>';
+                }
+            }
         }
     }
 }
@@ -168,57 +179,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        .signature-container {
-            width: 100%;
-            height: 200px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-            margin-bottom: 10px;
-        }
+    .signature-container {
+        width: 100%;
+        height: 200px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        margin-bottom: 10px;
+    }
 
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 0;
-            height: 100%;
-            width: 2px;
-            background-color: #dee2e6;
-        }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        background-color: #dee2e6;
+    }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 25px;
-        }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 25px;
+    }
 
-        .timeline-marker {
-            position: absolute;
-            left: -30px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background-color: #0d6efd;
-            border: 2px solid #fff;
-            top: 5px;
-        }
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: #0d6efd;
+        border: 2px solid #fff;
+        top: 5px;
+    }
 
-        .status-Entregado .timeline-marker {
-            background-color: #198754;
-        }
+    .status-Entregado .timeline-marker {
+        background-color: #198754;
+    }
 
-        .status-Cancelado .timeline-marker {
-            background-color: #dc3545;
-        }
+    .status-Cancelado .timeline-marker {
+        background-color: #dc3545;
+    }
 
-        .timeline-date {
-            color: #6c757d;
-            font-size: 0.85rem;
-        }
+    .timeline-date {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
     </style>
 </head>
 
@@ -242,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Envío #<?php echo $envio['tracking_number']; ?></h5>
                     <?php if ($envio['urgent']): ?>
-                        <span class="badge bg-danger">URGENTE</span>
+                    <span class="badge bg-danger">URGENTE</span>
                     <?php endif; ?>
                 </div>
 
@@ -300,48 +311,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 </p>
 
                 <?php if ($is_assigned && $envio['status'] !== 'Entregado' && $envio['status'] !== 'Cancelado'): ?>
-                    <div class="d-grid gap-2 mt-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#updateStatusModal">
-                            <i class="bi bi-arrow-clockwise"></i> Actualizar estado
-                        </button>
-                        <a href="https://www.google.com/maps/search/<?php echo urlencode($envio['recipient_address']); ?>"
-                            class="btn btn-outline-secondary" target="_blank">
-                            <i class="bi bi-geo-alt"></i> Ver en mapa
-                        </a>
-                        <a href="tel:<?php echo preg_replace('/[^0-9]/', '', $envio['recipient_phone']); ?>"
-                            class="btn btn-outline-success">
-                            <i class="bi bi-telephone"></i> Llamar al destinatario
-                        </a>
-                    </div>
+                <div class="d-grid gap-2 mt-3">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateStatusModal">
+                        <i class="bi bi-arrow-clockwise"></i> Actualizar estado
+                    </button>
+                    <a href="https://www.google.com/maps/search/<?php echo urlencode($envio['recipient_address']); ?>"
+                        class="btn btn-outline-secondary" target="_blank">
+                        <i class="bi bi-geo-alt"></i> Ver en mapa
+                    </a>
+                    <a href="tel:<?php echo preg_replace('/[^0-9]/', '', $envio['recipient_phone']); ?>"
+                        class="btn btn-outline-success">
+                        <i class="bi bi-telephone"></i> Llamar al destinatario
+                    </a>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
 
         <!-- Rastreo en vivo -->
         <?php if ($is_assigned && $envio['status'] !== 'Entregado' && $envio['status'] !== 'Cancelado'): ?>
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <i class="bi bi-geo-alt-fill me-2"></i> Rastreo en vivo
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-geo-alt-fill me-2"></i> Rastreo en vivo
+            </div>
+            <div class="card-body">
+                <p class="mb-3">Comparte tu ubicación en tiempo real con el cliente para que pueda seguir el envío.</p>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button id="btnIniciarRastreo" class="btn btn-success">
+                        <i class="bi bi-play-fill me-2"></i> Iniciar rastreo
+                    </button>
+                    <button id="btnDetenerRastreo" class="btn btn-danger d-none">
+                        <i class="bi bi-stop-fill me-2"></i> Detener rastreo
+                    </button>
                 </div>
-                <div class="card-body">
-                    <p class="mb-3">Comparte tu ubicación en tiempo real con el cliente para que pueda seguir el envío.</p>
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <button id="btnIniciarRastreo" class="btn btn-success">
-                            <i class="bi bi-play-fill me-2"></i> Iniciar rastreo
-                        </button>
-                        <button id="btnDetenerRastreo" class="btn btn-danger d-none">
-                            <i class="bi bi-stop-fill me-2"></i> Detener rastreo
-                        </button>
-                    </div>
-
-                    <div class="mt-3">
-                        <p id="statusRastreo" class="mb-1 fw-bold text-muted">Rastreo no iniciado</p>
-                        <p id="coordenadas" class="small text-muted">--</p>
-                    </div>
+                <div class="mt-3">
+                    <p id="statusRastreo" class="mb-1 fw-bold text-muted">Rastreo no iniciado</p>
+                    <p id="coordenadas" class="small text-muted">--</p>
                 </div>
             </div>
+        </div>
         <?php endif; ?>
 
         <!-- Historial de tracking -->
@@ -351,38 +362,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </div>
             <div class="card-body">
                 <?php if (count($tracking_history) > 0): ?>
-                    <div class="timeline">
-                        <?php foreach ($tracking_history as $track): ?>
-                            <div class="timeline-item status-<?php echo $track['status']; ?>">
-                                <div class="timeline-marker"></div>
-                                <div class="timeline-content">
-                                    <div class="d-flex justify-content-between">
-                                        <h6 class="mb-1"><?php echo htmlspecialchars($track['status']); ?></h6>
-                                        <span class="timeline-date">
-                                            <?php echo date('d/m/Y H:i', strtotime($track['created_at'])); ?>
-                                        </span>
-                                    </div>
-                                    <?php if ($track['location']): ?>
-                                        <p class="text-muted small mb-1">
-                                            <i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($track['location']); ?>
-                                        </p>
-                                    <?php endif; ?>
-                                    <?php if ($track['notes']): ?>
-                                        <p class="text-muted small mb-0">
-                                            <?php echo nl2br(htmlspecialchars($track['notes'])); ?>
-                                        </p>
-                                    <?php endif; ?>
-                                    <p class="small text-muted mt-1">
-                                        <i class="bi bi-person"></i> <?php echo htmlspecialchars($track['usuario_nombre']); ?>
-                                    </p>
-                                </div>
+                <div class="timeline">
+                    <?php foreach ($tracking_history as $track): ?>
+                    <div class="timeline-item status-<?php echo $track['status']; ?>">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-1"><?php echo htmlspecialchars($track['status']); ?></h6>
+                                <span class="timeline-date">
+                                    <?php echo date('d/m/Y H:i', strtotime($track['created_at'])); ?>
+                                </span>
                             </div>
-                        <?php endforeach; ?>
+                            <?php if ($track['location']): ?>
+                            <p class="text-muted small mb-1">
+                                <i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($track['location']); ?>
+                            </p>
+                            <?php endif; ?>
+                            <?php if ($track['notes']): ?>
+                            <p class="text-muted small mb-0">
+                                <?php echo nl2br(htmlspecialchars($track['notes'])); ?>
+                            </p>
+                            <?php endif; ?>
+                            <p class="small text-muted mt-1">
+                                <i class="bi bi-person"></i> <?php echo htmlspecialchars($track['usuario_nombre']); ?>
+                            </p>
+                        </div>
                     </div>
+                    <?php endforeach; ?>
+                </div>
                 <?php else: ?>
-                    <div class="text-center text-muted">
-                        <p>No hay historial de seguimiento disponible</p>
-                    </div>
+                <div class="text-center text-muted">
+                    <p>No hay historial de seguimiento disponible</p>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -390,60 +401,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 
     <!-- Modal para actualizar estado -->
     <?php if ($is_assigned): ?>
-        <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="updateStatusModalLabel">Actualizar estado del envío</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="updateStatusForm" method="post" action="">
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Nuevo estado</label>
-                                <select class="form-select" id="status" name="status" required>
-                                    <option value="En tránsito"
-                                        <?php echo ($envio['status'] === 'En tránsito') ? 'selected' : ''; ?>>En tránsito
-                                    </option>
-                                    <option value="En punto de entrega">En punto de entrega</option>
-                                    <option value="Intentado entregar">Intentado entregar</option>
-                                    <option value="Entregado">Entregado</option>
-                                    <option value="No entregado">No entregado</option>
-                                </select>
-                            </div>
+    <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateStatusModalLabel">Actualizar estado del envío</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStatusForm" method="post" action="">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Nuevo estado</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="En tránsito"
+                                    <?php echo ($envio['status'] === 'En tránsito') ? 'selected' : ''; ?>>En tránsito
+                                </option>
+                                <option value="En punto de entrega">En punto de entrega</option>
+                                <option value="Intentado entregar">Intentado entregar</option>
+                                <option value="Entregado">Entregado</option>
+                                <option value="No entregado">No entregado</option>
+                            </select>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="location" class="form-label">Ubicación</label>
-                                <input type="text" class="form-control" id="location" name="location"
-                                    placeholder="Dirección actual">
-                                <div class="form-text">Deja en blanco para usar tu ubicación actual</div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Ubicación</label>
+                            <input type="text" class="form-control" id="location" name="location"
+                                placeholder="Dirección actual">
+                            <div class="form-text">Deja en blanco para usar tu ubicación actual</div>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="notes" class="form-label">Notas</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                            </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notas</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
 
-                            <div id="signature-container" class="mb-3" style="display: none;">
-                                <label class="form-label">Firma del destinatario</label>
-                                <div class="signature-container" id="signature-pad"></div>
-                                <input type="hidden" name="signature" id="signature-data">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                                        id="clear-signature">Borrar</button>
-                                </div>
+                        <div id="signature-container" class="mb-3" style="display: none;">
+                            <label class="form-label">Firma del destinatario</label>
+                            <div class="signature-container" id="signature-pad"></div>
+                            <input type="hidden" name="signature" id="signature-data">
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    id="clear-signature">Borrar</button>
                             </div>
+                        </div>
 
-                            <div class="d-grid">
-                                <button type="submit" name="update_status" class="btn btn-primary">Actualizar
-                                    estado</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="d-grid">
+                            <button type="submit" name="update_status" class="btn btn-primary">Actualizar
+                                estado</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     <?php endif; ?>
 
     <!-- Barra de navegación inferior -->
@@ -482,106 +493,106 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <script src="assets/js/pwa-init.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const statusSelect = document.getElementById('status');
-            const signatureContainer = document.getElementById('signature-container');
-            let signaturePad = null;
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('status');
+        const signatureContainer = document.getElementById('signature-container');
+        let signaturePad = null;
 
-            // Mostrar/ocultar firma según el estado seleccionado
-            if (statusSelect) {
-                statusSelect.addEventListener('change', function() {
-                    if (this.value === 'Entregado') {
-                        signatureContainer.style.display = 'block';
-                        initSignaturePad();
-                    } else {
-                        signatureContainer.style.display = 'none';
-                    }
-                });
-
-                // Inicializar según el valor actual
-                if (statusSelect.value === 'Entregado') {
+        // Mostrar/ocultar firma según el estado seleccionado
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function() {
+                if (this.value === 'Entregado') {
                     signatureContainer.style.display = 'block';
                     initSignaturePad();
+                } else {
+                    signatureContainer.style.display = 'none';
                 }
+            });
+
+            // Inicializar según el valor actual
+            if (statusSelect.value === 'Entregado') {
+                signatureContainer.style.display = 'block';
+                initSignaturePad();
+            }
+        }
+
+        function initSignaturePad() {
+            if (signaturePad !== null) return;
+
+            const canvas = document.getElementById('signature-pad');
+            signaturePad = new SignaturePad(canvas, {
+                backgroundColor: 'rgb(255, 255, 255)'
+            });
+
+            // Ajustar tamaño del canvas
+            function resizeCanvas() {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                canvas.height = canvas.offsetHeight * ratio;
+                canvas.getContext("2d").scale(ratio, ratio);
+                signaturePad.clear(); // otherwise isEmpty() might return incorrect value
             }
 
-            function initSignaturePad() {
-                if (signaturePad !== null) return;
+            window.onresize = resizeCanvas;
+            resizeCanvas();
 
-                const canvas = document.getElementById('signature-pad');
-                signaturePad = new SignaturePad(canvas, {
-                    backgroundColor: 'rgb(255, 255, 255)'
-                });
+            // Botón para borrar firma
+            document.getElementById('clear-signature').addEventListener('click', function() {
+                signaturePad.clear();
+            });
 
-                // Ajustar tamaño del canvas
-                function resizeCanvas() {
-                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                    canvas.width = canvas.offsetWidth * ratio;
-                    canvas.height = canvas.offsetHeight * ratio;
-                    canvas.getContext("2d").scale(ratio, ratio);
-                    signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+            // Al enviar el formulario, guardar la firma
+            document.getElementById('updateStatusForm').addEventListener('submit', function() {
+                if (statusSelect.value === 'Entregado' && signaturePad.isEmpty()) {
+                    alert('Por favor, solicita la firma del destinatario');
+                    event.preventDefault();
+                    return false;
                 }
 
-                window.onresize = resizeCanvas;
-                resizeCanvas();
+                if (!signaturePad.isEmpty() && statusSelect.value === 'Entregado') {
+                    document.getElementById('signature-data').value = signaturePad.toDataURL();
+                }
+            });
+        }
 
-                // Botón para borrar firma
-                document.getElementById('clear-signature').addEventListener('click', function() {
-                    signaturePad.clear();
-                });
+        // Obtener ubicación actual
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
 
-                // Al enviar el formulario, guardar la firma
-                document.getElementById('updateStatusForm').addEventListener('submit', function() {
-                    if (statusSelect.value === 'Entregado' && signaturePad.isEmpty()) {
-                        alert('Por favor, solicita la firma del destinatario');
-                        event.preventDefault();
-                        return false;
-                    }
-
-                    if (!signaturePad.isEmpty() && statusSelect.value === 'Entregado') {
-                        document.getElementById('signature-data').value = signaturePad.toDataURL();
-                    }
-                });
-            }
-
-            // Obtener ubicación actual
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-
-                    // Opcional: usar la API de geocodificación inversa para obtener la dirección
-                    // Por simplicidad, solo guardaremos las coordenadas
-                    document.getElementById('location').placeholder =
-                        `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
-                    document.getElementById('location').value =
-                        `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
-                }, function(error) {
-                    console.log('Error al obtener ubicación:', error);
-                });
-            }
-        });
+                // Opcional: usar la API de geocodificación inversa para obtener la dirección
+                // Por simplicidad, solo guardaremos las coordenadas
+                document.getElementById('location').placeholder =
+                    `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+                document.getElementById('location').value =
+                    `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+            }, function(error) {
+                console.log('Error al obtener ubicación:', error);
+            });
+        }
+    });
     </script>
     <div id="map" style="height: 400px;"></div>
     <script>
-        const map = L.map('map').setView([0, 0], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-        const marker = L.marker([0, 0]).addTo(map);
+    const map = L.map('map').setView([0, 0], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    const marker = L.marker([0, 0]).addTo(map);
 
-        function actualizarMapa() {
-            fetch('/Programacion-de-formulario-con-BD/api/obtener_ubicacion.php?envio_id=<?php echo $envio_id; ?>')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.lat && data.lng) {
-                        marker.setLatLng([data.lat, data.lng]);
-                        map.setView([data.lat, data.lng], 15);
-                    }
-                });
-        }
-        setInterval(actualizarMapa, 10000); // cada 10 segundos
-        actualizarMapa();
+    function actualizarMapa() {
+        fetch('/Programacion-de-formulario-con-BD/api/obtener_ubicacion.php?envio_id=<?php echo $envio_id; ?>')
+            .then(r => r.json())
+            .then(data => {
+                if (data.lat && data.lng) {
+                    marker.setLatLng([data.lat, data.lng]);
+                    map.setView([data.lat, data.lng], 15);
+                }
+            });
+    }
+    setInterval(actualizarMapa, 10000); // cada 10 segundos
+    actualizarMapa();
     </script>
 </body>
 
