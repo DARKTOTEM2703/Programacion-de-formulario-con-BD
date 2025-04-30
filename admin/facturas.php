@@ -108,10 +108,14 @@ $total_pages = ceil($total_records / $limit);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/admin.css">
-
 </head>
 
 <body>
+    <!-- Botón hamburguesa para dispositivos móviles -->
+    <button class="toggle-sidebar" id="toggleSidebar">
+        <i class="bi bi-list"></i>
+    </button>
+
     <?php include 'components/sidebar.php'; ?>
 
     <div class="main-content">
@@ -121,27 +125,23 @@ $total_pages = ceil($total_records / $limit);
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaFacturaModal">
                     <i class="bi bi-plus-lg"></i> Nueva Factura
                 </button>
-                <!-- Botón hamburguesa para dispositivos móviles -->
-                <button class="toggle-sidebar" id="toggleSidebar">
-                    <i class="bi bi-list"></i>
-                </button>
             </div>
 
             <!-- Mensajes de sistema -->
             <?php if (isset($_SESSION['success'])): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['success'];
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['success'];
                     unset($_SESSION['success']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['error'];
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['error'];
                     unset($_SESSION['error']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <?php endif; ?>
 
             <!-- Filtros -->
@@ -197,15 +197,15 @@ $total_pages = ceil($total_records / $limit);
                             </thead>
                             <tbody>
                                 <?php if (count($facturas) > 0): ?>
-                                    <?php foreach ($facturas as $factura): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($factura['numero_factura']); ?></td>
-                                            <td><?php echo htmlspecialchars($factura['tracking_number']); ?></td>
-                                            <td><?php echo htmlspecialchars($factura['cliente_nombre']); ?></td>
-                                            <td>$<?php echo number_format($factura['monto'], 2); ?></td>
-                                            <td><?php echo date('d/m/Y H:i', strtotime($factura['fecha_emision'])); ?></td>
-                                            <td>
-                                                <span class="badge <?php
+                                <?php foreach ($facturas as $factura): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($factura['numero_factura']); ?></td>
+                                    <td><?php echo htmlspecialchars($factura['tracking_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($factura['cliente_nombre']); ?></td>
+                                    <td>$<?php echo number_format($factura['monto'], 2); ?></td>
+                                    <td><?php echo date('d/m/Y H:i', strtotime($factura['fecha_emision'])); ?></td>
+                                    <td>
+                                        <span class="badge <?php
                                                                     echo match ($factura['status']) {
                                                                         'pendiente' => 'bg-warning',
                                                                         'pagado' => 'bg-success',
@@ -214,35 +214,35 @@ $total_pages = ceil($total_records / $limit);
                                                                         default => 'bg-info'
                                                                     };
                                                                     ?>">
-                                                    <?php echo ucfirst(htmlspecialchars($factura['status'])); ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button class="btn btn-sm btn-outline-primary"
-                                                        onclick="verFactura(<?php echo $factura['id']; ?>)">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-success"
-                                                        onclick="registrarPago(<?php echo $factura['id']; ?>)">
-                                                        <i class="bi bi-cash"></i>
-                                                    </button>
-                                                    <a href="factura_pdf.php?id=<?php echo $factura['id']; ?>"
-                                                        class="btn btn-sm btn-outline-secondary" target="_blank">
-                                                        <i class="bi bi-file-pdf"></i>
-                                                    </a>
-                                                    <button class="btn btn-sm btn-outline-info"
-                                                        onclick="enviarPorEmail(<?php echo $factura['id']; ?>)">
-                                                        <i class="bi bi-envelope"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                            <?php echo ucfirst(htmlspecialchars($factura['status'])); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                onclick="verFactura(<?php echo $factura['id']; ?>)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success"
+                                                onclick="registrarPago(<?php echo $factura['id']; ?>)">
+                                                <i class="bi bi-cash"></i>
+                                            </button>
+                                            <a href="factura_pdf.php?id=<?php echo $factura['id']; ?>"
+                                                class="btn btn-sm btn-outline-secondary" target="_blank">
+                                                <i class="bi bi-file-pdf"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-info"
+                                                onclick="enviarPorEmail(<?php echo $factura['id']; ?>)">
+                                                <i class="bi bi-envelope"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
                                 <?php else: ?>
-                                    <tr>
-                                        <td colspan="7" class="text-center py-4">No se encontraron facturas</td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">No se encontraron facturas</td>
+                                </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -250,26 +250,26 @@ $total_pages = ceil($total_records / $limit);
 
                     <!-- Paginación -->
                     <?php if ($total_pages > 1): ?>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
-                                    <a class="page-link"
-                                        href="?page=<?php echo $page - 1; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>">Anterior</a>
-                                </li>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
+                                <a class="page-link"
+                                    href="?page=<?php echo $page - 1; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>">Anterior</a>
+                            </li>
 
-                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                    <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
-                                        <a class="page-link"
-                                            href="?page=<?php echo $i; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a>
-                                    </li>
-                                <?php endfor; ?>
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
+                                <a class="page-link"
+                                    href="?page=<?php echo $i; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a>
+                            </li>
+                            <?php endfor; ?>
 
-                                <li class="page-item <?php echo $page >= $total_pages ? 'disabled' : ''; ?>">
-                                    <a class="page-link"
-                                        href="?page=<?php echo $page + 1; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                            <li class="page-item <?php echo $page >= $total_pages ? 'disabled' : ''; ?>">
+                                <a class="page-link"
+                                    href="?page=<?php echo $page + 1; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
                     <?php endif; ?>
                 </div>
             </div>
@@ -295,9 +295,9 @@ $total_pages = ceil($total_records / $limit);
                                 if ($stmt) {
                                     while ($envio = $stmt->fetch_assoc()):
                                 ?>
-                                        <option value="<?php echo $envio['id']; ?>">
-                                            <?php echo $envio['tracking_number'] . ' - ' . $envio['name']; ?>
-                                        </option>
+                                <option value="<?php echo $envio['id']; ?>">
+                                    <?php echo $envio['tracking_number'] . ' - ' . $envio['name']; ?>
+                                </option>
                                 <?php endwhile;
                                 }
                                 ?>
@@ -314,53 +314,57 @@ $total_pages = ceil($total_records / $limit);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts específicos de la página -->
     <script>
-        function verFactura(id) {
-            window.location.href = 'detalle_factura.php?id=' + id;
-        }
+    function verFactura(id) {
+        window.location.href = 'detalle_factura.php?id=' + id;
+    }
 
-        function registrarPago(id) {
-            window.location.href = 'registrar_pago.php?id=' + id;
-        }
+    function registrarPago(id) {
+        window.location.href = 'registrar_pago.php?id=' + id;
+    }
 
-        function enviarPorEmail(id) {
-            // Confirmación antes de enviar
-            if (confirm('¿Desea enviar esta factura por correo electrónico?')) {
-                fetch('enviar_factura_email.php?id=' + id)
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error al enviar el correo electrónico');
-                    });
-            }
+    function enviarPorEmail(id) {
+        // Confirmación antes de enviar
+        if (confirm('¿Desea enviar esta factura por correo electrónico?')) {
+            fetch('enviar_factura_email.php?id=' + id)
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al enviar el correo electrónico');
+                });
         }
+    }
     </script>
+
+    <!-- Agregar script para manejar el sidebar -->
     <script>
-        // Script para manejar el sidebar responsive
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle sidebar en móvil
-            const toggleButton = document.getElementById('toggleSidebar');
-            const sidebar = document.querySelector('.sidebar');
+    // Asegúrate de que este script esté al final de tu archivo o incluido en footer.php
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle sidebar en móvil
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.querySelector('.sidebar');
 
-            toggleButton.addEventListener('click', function() {
-                sidebar.classList.toggle('show');
-                // Añadir animación sutil al botón
-                this.classList.add('clicked');
-                setTimeout(() => {
-                    this.classList.remove('clicked');
-                }, 300);
-            });
-
-            // Cerrar sidebar al hacer clic en el contenido principal en móvil
-            document.querySelector('.main-content').addEventListener('click', function() {
-                if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
-                    sidebar.classList.remove('show');
-                }
-            });
+        toggleButton.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+            // Añadir animación sutil al botón
+            this.classList.add('clicked');
+            setTimeout(() => {
+                this.classList.remove('clicked');
+            }, 300);
         });
+
+        // Cerrar sidebar al hacer clic en el contenido principal en móvil
+        document.querySelector('.main-content').addEventListener('click', function() {
+            if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+    });
     </script>
 </body>
 
