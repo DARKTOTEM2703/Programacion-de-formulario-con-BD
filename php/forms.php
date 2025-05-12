@@ -21,42 +21,13 @@ if (empty($_SESSION['csrf_token'])) {
     <?php include '../components/header.php'; ?>
 
     <div class="form-container">
-        <!-- Mostrar mensajes de éxito o error -->
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                <?php echo $_SESSION['success']; ?>
-            </div>
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <?php echo $_SESSION['error']; ?>
-            </div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Nuevo Envío</li>
-            </ol>
-        </nav>
-
-        <h2 class="mb-4"><i class="bi bi-box-seam me-2"></i>Solicitud de Servicio de Envío</h2>
-
-        <!-- Indicador de progreso -->
-        <div class="progress mb-4" style="height: 10px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0"
-                aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-        </div>
+        <!-- Mensajes de éxito/error aquí si los necesitas -->
 
         <form action="../components/form_handler.php" method="POST" id="shipping-form" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <input type="hidden" name="usuario_id"
                 value="<?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : ''; ?>">
+            <input type="hidden" id="hidden_calculated_cost" name="hidden_calculated_cost">
 
             <!-- Paso 1: Información del remitente -->
             <div class="form-section" data-step="1">
@@ -66,8 +37,6 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="form-group">
                         <label for="name"><i class="bi bi-person me-1"></i> Nombre Completo *</label>
                         <input type="text" id="name" name="name" class="form-control" required>
-                        <small class="form-text text-muted">Nombre y apellido como aparecen en tu
-                            identificación.</small>
                     </div>
                     <div class="form-group">
                         <label for="email"><i class="bi bi-envelope me-1"></i> Email *</label>
@@ -78,8 +47,7 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="phone"><i class="bi bi-phone me-1"></i> Celular *</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="123-456-7890"
-                            required>
+                        <input type="tel" id="phone" name="phone" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="office-phone"><i class="bi bi-telephone me-1"></i> Teléfono de oficina</label>
@@ -99,16 +67,83 @@ if (empty($_SESSION['csrf_token'])) {
                 <p class="warning"><i class="bi bi-exclamation-triangle-fill me-1"></i> Especifica si el envío es para
                     algún municipio en particular dentro o fuera de la ciudad</p>
 
+                <!-- Dirección de origen -->
+                <h5>Dirección de origen</h5>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="origin"><i class="bi bi-cursor-fill me-1"></i> Dirección de origen *</label>
-                        <input type="text" id="origin" name="origin" class="form-control" required>
-                        <small class="form-text text-muted">Incluye calle, número, colonia y código postal.</small>
+                        <label for="origin_street"><i class="bi bi-cursor-fill me-1"></i> Calle *</label>
+                        <input type="text" id="origin_street" name="origin_street" class="form-control" required
+                            placeholder="Ejemplo: C. 55ᴬ">
                     </div>
                     <div class="form-group">
-                        <label for="destination"><i class="bi bi-geo me-1"></i> Dirección Destino *</label>
-                        <input type="text" id="destination" name="destination" class="form-control" required>
-                        <small class="form-text text-muted">Incluye calle, número, colonia y código postal.</small>
+                        <label for="origin_number"><i class="bi bi-hash me-1"></i> Número *</label>
+                        <input type="text" id="origin_number" name="origin_number" class="form-control" required
+                            placeholder="Ejemplo: 359">
+                    </div>
+                    <div class="form-group">
+                        <label for="origin_colony"><i class="bi bi-house me-1"></i> Colonia *</label>
+                        <input type="text" id="origin_colony" name="origin_colony" class="form-control" required
+                            placeholder="Ejemplo: Juan Pablo II">
+                    </div>
+                    <div class="form-group">
+                        <label for="origin_postal_code"><i class="bi bi-envelope me-1"></i> Código Postal *</label>
+                        <input type="text" id="origin_postal_code" name="origin_postal_code" class="form-control"
+                            required placeholder="Ejemplo: 97246">
+                    </div>
+                    <div class="form-group">
+                        <label for="origin_city"><i class="bi bi-geo me-1"></i> Ciudad *</label>
+                        <input type="text" id="origin_city" name="origin_city" class="form-control" required
+                            placeholder="Ejemplo: Mérida">
+                    </div>
+                    <div class="form-group">
+                        <label for="origin_state"><i class="bi bi-map me-1"></i> Estado *</label>
+                        <input type="text" id="origin_state" name="origin_state" class="form-control" required
+                            placeholder="Ejemplo: Yuc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="origin_country"><i class="bi bi-globe me-1"></i> País *</label>
+                        <input type="text" id="origin_country" name="origin_country" class="form-control" required
+                            placeholder="Ejemplo: México">
+                    </div>
+                </div>
+
+                <!-- Dirección de destino -->
+                <h5>Dirección de destino</h5>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="destination_street"><i class="bi bi-cursor-fill me-1"></i> Calle *</label>
+                        <input type="text" id="destination_street" name="destination_street" class="form-control"
+                            required placeholder="Ejemplo: Av. Pallaresa">
+                    </div>
+                    <div class="form-group">
+                        <label for="destination_number"><i class="bi bi-hash me-1"></i> Número *</label>
+                        <input type="text" id="destination_number" name="destination_number" class="form-control"
+                            required placeholder="Ejemplo: 103">
+                    </div>
+                    <div class="form-group">
+                        <label for="destination_colony"><i class="bi bi-house me-1"></i> Colonia *</label>
+                        <input type="text" id="destination_colony" name="destination_colony" class="form-control"
+                            placeholder="Ejemplo: Santa Coloma de Gramenet">
+                    </div>
+                    <div class="form-group">
+                        <label for="destination_postal_code"><i class="bi bi-envelope me-1"></i> Código Postal *</label>
+                        <input type="text" id="destination_postal_code" name="destination_postal_code"
+                            class="form-control" required placeholder="Ejemplo: 08924">
+                    </div>
+                    <div class="form-group">
+                        <label for="destination_city"><i class="bi bi-geo me-1"></i> Ciudad *</label>
+                        <input type="text" id="destination_city" name="destination_city" class="form-control" required
+                            placeholder="Ejemplo: Barcelona">
+                    </div>
+                    <div class="form-group">
+                        <label for="destination_state"><i class="bi bi-map me-1"></i> Provincia/Estado *</label>
+                        <input type="text" id="destination_state" name="destination_state" class="form-control" required
+                            placeholder="Ejemplo: Cataluña">
+                    </div>
+                    <div class="form-group">
+                        <label for="destination_country"><i class="bi bi-globe me-1"></i> País *</label>
+                        <input type="text" id="destination_country" name="destination_country" class="form-control"
+                            required placeholder="Ejemplo: España">
                     </div>
                 </div>
 
@@ -121,6 +156,12 @@ if (empty($_SESSION['csrf_token'])) {
 
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="weight"><i class="bi bi-speedometer2 me-1"></i> Peso aproximado (kg) *</label>
+                        <input type="number" id="weight" name="weight" min="0.1" step="0.1" class="form-control"
+                            required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="package_type"><i class="bi bi-box me-1"></i> Tipo de paquete *</label>
                         <select id="package_type" name="package_type" class="form-select" required>
                             <option value="">Selecciona una opción</option>
@@ -131,23 +172,22 @@ if (empty($_SESSION['csrf_token'])) {
                             <option value="carga_voluminosa">Carga voluminosa</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="weight"><i class="bi bi-speedometer2 me-1"></i> Peso aproximado (kg) *</label>
-                        <input type="number" id="weight" name="weight" min="0.1" step="0.1" class="form-control"
-                            required>
-                    </div>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="description"><i class="bi bi-card-text me-1"></i> Descripción de la mercancía *</label>
+                    <label for="description"><i class="bi bi-card-text me-1"></i> Descripción de la mercancía
+                        *</label>
                     <textarea id="description" name="description" class="form-control" required></textarea>
                     <small class="form-text text-muted">Describe brevemente el contenido de tu envío.</small>
                 </div>
 
+                <!-- Contenedor para el enlace de pago -->
+                <div id="payment-link-container" style="display: none; margin-top: 20px;"></div>
+
                 <div class="text-between mt-3">
                     <button type="button" class="btn btn-secondary prev-step"><i class="bi bi-arrow-left"></i>
                         Anterior</button>
-                    <button type="button" class="btn btn-primary next-step">Siguiente <i
+                    <button type="button" class="btn btn-primary next-step" id="calcular-y-siguiente">Siguiente <i
                             class="bi bi-arrow-right"></i></button>
                 </div>
             </div>
@@ -159,13 +199,21 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="form-row value-row mb-3">
                     <div class="form-group value-group">
                         <label for="value"><i class="bi bi-currency-dollar me-1"></i> Valor aproximado de toda la
-                            mercancía</label>
+                            mercancía
+                        </label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="number" id="value" name="value" step="0.01" class="form-control">
                             <span class="input-group-text">.00 M/N</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Nuevo campo para mostrar el costo total actualizado -->
+                <div class="form-group mb-3">
+                    <label for="calculated_cost"><i class="bi bi-currency-dollar me-1"></i> Costo Total del
+                        Envío</label>
+                    <input type="text" id="calculated_cost" class="form-control" readonly>
                 </div>
 
                 <div class="form-check mb-3">
@@ -191,7 +239,8 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="package_image"><i class="bi bi-image me-1"></i> Foto de la mercancía (opcional)</label>
+                    <label for="package_image"><i class="bi bi-image me-1"></i> Foto de la mercancía
+                        (opcional)</label>
                     <input type="file" id="package_image" name="package_image" class="form-control" accept="image">
                     <small class="form-text text-muted">Formato: JPG, PNG (máx. 2MB)</small>
                 </div>
@@ -209,74 +258,8 @@ if (empty($_SESSION['csrf_token'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/formenvioalert.js"></script>
     <script src="../js/form_validation.js"></script>
-    <script>
-        // Control de pasos del formulario
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('shipping-form');
-            const progressBar = document.querySelector('.progress-bar');
-            const sections = document.querySelectorAll('.form-section');
-            const nextButtons = document.querySelectorAll('.next-step');
-            const prevButtons = document.querySelectorAll('.prev-step');
-            const totalSteps = sections.length;
-
-            // Controlar botones "Siguiente"
-            nextButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const currentSection = button.closest('.form-section');
-                    const currentStep = parseInt(currentSection.dataset.step);
-                    const nextStep = currentStep + 1;
-
-                    // Validar campos requeridos en la sección actual
-                    const requiredFields = currentSection.querySelectorAll(
-                        'input[required], select[required], textarea[required]');
-                    let isValid = true;
-
-                    requiredFields.forEach(field => {
-                        if (!field.value.trim()) {
-                            field.classList.add('is-invalid');
-                            isValid = false;
-                        } else {
-                            field.classList.remove('is-invalid');
-                        }
-                    });
-
-                    if (!isValid) {
-                        return;
-                    }
-
-                    // Avanzar al siguiente paso
-                    currentSection.classList.add('d-none');
-                    const nextSection = document.querySelector(
-                        `.form-section[data-step="${nextStep}"]`);
-                    if (nextSection) {
-                        nextSection.classList.remove('d-none');
-                        const progress = (nextStep / totalSteps) * 100;
-                        progressBar.style.width = `${progress}%`;
-                        progressBar.setAttribute('aria-valuenow', progress);
-                    }
-                });
-            });
-
-            // Controlar botones "Anterior"
-            prevButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const currentSection = button.closest('.form-section');
-                    const currentStep = parseInt(currentSection.dataset.step);
-                    const prevStep = currentStep - 1;
-
-                    currentSection.classList.add('d-none');
-                    const prevSection = document.querySelector(
-                        `.form-section[data-step="${prevStep}"]`);
-                    if (prevSection) {
-                        prevSection.classList.remove('d-none');
-                        const progress = (prevStep / totalSteps) * 100;
-                        progressBar.style.width = `${progress}%`;
-                        progressBar.setAttribute('aria-valuenow', progress);
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="../js/pasosForms.js"></script>
+    <script src="../js/calculadorCosto.js"></script>
 </body>
 
 </html>

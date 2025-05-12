@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../components/db_connection.php';
+require_once 'components/email_facturas.php'; // Cambiado a email_facturas.php
 header('Content-Type: application/json');
 
 // Verificar si el usuario está autenticado como administrador
@@ -36,81 +37,38 @@ if (empty($factura['cfdi_pdf']) || !file_exists('../' . $factura['cfdi_pdf'])) {
 }
 
 try {
-    // En un entorno real, aquí usarías PHPMailer, Swift Mailer o la función mail() de PHP
-    // Este es un ejemplo simulado
-    
-    // Preparar el mensaje
-    $to = $factura['cliente_email'];
-    $subject = 'Factura ' . $factura['numero_factura'] . ' - MENDEZ TRANSPORTES';
-    $message = "
-    <html>
-    <head>
-        <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #0057B8; color: white; padding: 10px 20px; text-align: center; }
-            .content { padding: 20px; border: 1px solid #ddd; border-top: none; }
-            .footer { font-size: 12px; text-align: center; margin-top: 20px; color: #777; }
-            .button { display: inline-block; background-color: #0057B8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
-        </style>
-    </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <h2>MENDEZ TRANSPORTES</h2>
-            </div>
-            <div class='content'>
-                <p>Estimado/a " . htmlspecialchars($factura['cliente_nombre']) . ",</p>
-                <p>Adjunto encontrará la factura correspondiente al servicio de envío con número de tracking " . htmlspecialchars($factura['tracking_number']) . ".</p>
-                <p><strong>Detalles:</strong></p>
-                <ul>
-                    <li>Número de factura: " . htmlspecialchars($factura['numero_factura']) . "</li>
-                    <li>Fecha de emisión: " . date('d/m/Y', strtotime($factura['fecha_emision'])) . "</li>
-                    <li>Monto: $" . number_format($factura['monto'], 2) . " MXN</li>
-                    <li>Estado: " . ucfirst($factura['status']) . "</li>
-                </ul>
-                " . ($factura['status'] == 'pendiente' ? "<p>Esta factura vence el " . date('d/m/Y', strtotime($factura['fecha_vencimiento'])) . ".</p>" : "") . "
-                <p>Si tiene alguna pregunta sobre esta factura, no dude en contactarnos.</p>
-                <p>Atentamente,</p>
-                <p>Equipo MENDEZ TRANSPORTES</p>
-            </div>
-            <div class='footer'>
-                <p>Este correo electrónico fue enviado automáticamente. Por favor no responda a este mensaje.</p>
-                <p>© " . date('Y') . " MENDEZ TRANSPORTES. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    ";
-    
-    // Registrar el envío en la base de datos
-    $stmt = $conn->prepare("
-        INSERT INTO notificaciones (
-            tipo, usuario_id, email, asunto, contenido, status, created_at
-        ) VALUES ('factura_email', ?, ?, ?, ?, 'enviado', NOW())
-    ");
-    
-    $stmt->bind_param(
-        "isss", 
-        $_SESSION['usuario_id'], 
-        $to, 
-        $subject, 
-        $message
+    // Ruta completa del archivo PDF
+    $pdf_path = '../' . $factura['cfdi_pdf'];
+
+    // Enviar el correo usando PHPMailer
+    $resultado = enviarFacturaEmail(
+        $factura['cliente_email'],
+        $factura['numero_factura'],
+        $pdf_path
     );
-    
-    $stmt->execute();
-    
-    // En un entorno real, aquí se enviaría el correo
-    // Para este ejemplo, simulamos éxito
-    $success = true;
-    
-    if ($success) {
+
+    if ($resultado === true) {
+        // Registrar el envío en la base de datos
+        $stmt = $conn->prepare("
+            INSERT INTO notificaciones (
+                tipo, usuario_id, email, asunto, contenido, status, created_at
+            ) VALUES ('factura_email', ?, ?, ?, ?, 'enviado', NOW())
+        ");
+        $asunto = 'Factura ' . $factura['numero_factura'] . ' - MENDEZ TRANSPORTES';
+        $contenido = 'Factura enviada correctamente.';
+        $stmt->bind_param(
+            "isss",
+            $_SESSION['usuario_id'],
+            $factura['cliente_email'],
+            $asunto,
+            $contenido
+        );
+        $stmt->execute();
+
         echo json_encode(['success' => true, 'message' => 'Factura enviada correctamente a ' . $factura['cliente_email']]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Error al enviar el correo']);
+        echo json_encode(['success' => false, 'message' => $resultado]);
     }
-    
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
-?>
