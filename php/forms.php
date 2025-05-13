@@ -29,6 +29,12 @@ if (empty($_SESSION['csrf_token'])) {
                 value="<?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : ''; ?>">
             <input type="hidden" id="hidden_calculated_cost" name="hidden_calculated_cost">
 
+            <!-- Barra de progreso -->
+            <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0"
+                    aria-valuemax="100"></div>
+            </div>
+
             <!-- Paso 1: Información del remitente -->
             <div class="form-section" data-step="1">
                 <h3><i class="bi bi-person-fill me-2"></i>INFORMACIÓN DEL REMITENTE</h3>
@@ -36,22 +42,26 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name"><i class="bi bi-person me-1"></i> Nombre Completo *</label>
-                        <input type="text" id="name" name="name" class="form-control" required>
+                        <input type="text" id="name" name="name" class="form-control" required
+                            placeholder="Ej: Juan Pérez Rodríguez">
                     </div>
                     <div class="form-group">
                         <label for="email"><i class="bi bi-envelope me-1"></i> Email *</label>
-                        <input type="email" id="email" name="email" class="form-control" required>
+                        <input type="email" id="email" name="email" class="form-control" required
+                            placeholder="Ej: correo@ejemplo.com">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="phone"><i class="bi bi-phone me-1"></i> Celular *</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                        <input type="tel" id="phone" name="phone" class="form-control" required
+                            placeholder="Ej: 999 123 4567">
                     </div>
                     <div class="form-group">
                         <label for="office-phone"><i class="bi bi-telephone me-1"></i> Teléfono de oficina</label>
-                        <input type="tel" id="office-phone" name="office_phone" class="form-control">
+                        <input type="tel" id="office-phone" name="office_phone" class="form-control"
+                            placeholder="Ej: (999) 123 4567">
                     </div>
                 </div>
 
@@ -184,11 +194,19 @@ if (empty($_SESSION['csrf_token'])) {
                 <!-- Contenedor para el enlace de pago -->
                 <div id="payment-link-container" style="display: none; margin-top: 20px;"></div>
 
+                <!-- Agregar este botón al final del paso 2, justo antes de los botones de navegación -->
+                <div class="form-group mt-4">
+                    <div id="resultado-calculo" class="alert alert-info d-none">
+                        Calculando...
+                    </div>
+                </div>
+
                 <div class="text-between mt-3">
                     <button type="button" class="btn btn-secondary prev-step"><i class="bi bi-arrow-left"></i>
                         Anterior</button>
-                    <button type="button" class="btn btn-primary next-step" id="calcular-y-siguiente">Siguiente <i
-                            class="bi bi-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary next-step" id="calcular-y-siguiente">
+                        <i class="bi bi-calculator me-2"></i>Calcular y Continuar <i class="bi bi-arrow-right"></i>
+                    </button>
                 </div>
             </div>
 
@@ -196,24 +214,15 @@ if (empty($_SESSION['csrf_token'])) {
             <div class="form-section d-none" data-step="3">
                 <h3><i class="bi bi-info-circle-fill me-2"></i>INFORMACIÓN ADICIONAL</h3>
 
-                <div class="form-row value-row mb-3">
-                    <div class="form-group value-group">
-                        <label for="value"><i class="bi bi-currency-dollar me-1"></i> Valor aproximado de toda la
-                            mercancía
-                        </label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" id="value" name="value" step="0.01" class="form-control">
-                            <span class="input-group-text">.00 M/N</span>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Nuevo campo para mostrar el costo total actualizado -->
                 <div class="form-group mb-3">
-                    <label for="calculated_cost"><i class="bi bi-currency-dollar me-1"></i> Costo Total del
-                        Envío</label>
+                    <label for="calculated_cost">
+                        <i class="bi bi-currency-dollar me-1"></i> Costo Total del Envío
+                    </label>
                     <input type="text" id="calculated_cost" class="form-control" readonly>
+                    <input type="hidden" id="hidden_calculated_cost" name="hidden_calculated_cost">
                 </div>
 
                 <div class="form-check mb-3">
