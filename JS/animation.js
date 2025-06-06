@@ -345,3 +345,29 @@ window.addEventListener("scroll", function () {
     AOS.refresh();
   }
 });
+
+// Código para cerrar el menú hamburguesa al hacer clic en un enlace
+document.addEventListener("DOMContentLoaded", function () {
+  // Seleccionar todos los enlaces del menú de navegación
+  const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+
+  // Referencia al elemento colapsable del navbar
+  const navbarCollapse = document.getElementById("navbarNav");
+
+  // Agregar evento de clic a cada enlace del navbar
+  navLinks.forEach(function (link) {
+    link.addEventListener("click", function () {
+      // Verificar si estamos en modo móvil (el botón hamburguesa es visible)
+      if (
+        window.getComputedStyle(document.querySelector(".navbar-toggler"))
+          .display !== "none"
+      ) {
+        // Usar la API de Bootstrap para cerrar el menú
+        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+        if (bsCollapse) {
+          bsCollapse.hide();
+        }
+      }
+    });
+  });
+});
