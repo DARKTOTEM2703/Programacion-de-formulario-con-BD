@@ -119,7 +119,9 @@ if ($result && $result->num_rows > 0) {
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <a href="#" class="sidebar-logo">MÉNDEZ</a>
+                <a href="#" class="sidebar-logo">
+                    <img src="../img/logo.png" alt="MÉNDEZ Transportes" class="img-fluid">
+                </a>
             </div>
 
             <div class="user-profile">

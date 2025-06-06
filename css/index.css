@@ -536,97 +536,34 @@ nav ul li a:hover {
 /* Estilos para la sección de servicios */
 #servicios {
   padding: 80px 0;
-  background-color: #f8f9fa;
+  background-color: #f8f9fa; /* Fondo claro por defecto */
   transition: background-color 0.3s, color 0.3s;
-  color: white;
+  color: #000000; /* Texto negro por defecto */
 }
 
 #servicios .section-title {
-  color: #003366;
+  color: #003366; /* Azul oscuro para títulos */
   font-weight: 700;
   position: relative;
   padding-bottom: 15px;
 }
 
 #servicios .lead {
-  color: white;
-}
-
-.service-card {
-  border: none;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.service-img-container {
-  height: 220px; /* Altura fija para todas las imágenes */
-  overflow: hidden;
-  position: relative;
-}
-
-.service-img-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Esto es crucial para mantener proporción */
-  object-position: center; /* Centra la imagen */
-  transition: transform 0.5s ease;
-}
-
-.service-card:hover .service-img-container img {
-  transform: scale(1.1);
-}
-
-.service-icon {
-  color: #f1c40f;
-  margin-bottom: 1.5rem;
-}
-
-.service-card .card-title {
-  color: #003366;
-  font-weight: 600;
-}
-
-.service-card .btn-outline-primary {
-  color: #003366;
-  border-color: #003366;
-  transition: all 0.3s ease;
-}
-
-.service-card .btn-outline-primary:hover {
-  background-color: #003366;
-  color: white;
-}
-
-/* Asegura que el botón quede al final */
-.card-body a.btn {
-  margin-top: auto;
-}
-
-.service-card .card-body {
-  padding: 1.5rem;
-}
-.black {
-  color: black !important;
+  color: #333333; /* Gris oscuro para mejor legibilidad */
 }
 
 /* Modo oscuro para la sección de servicios */
 @media (prefers-color-scheme: dark) {
   #servicios {
-    background-color: #121212;
+    background-color: #121212; /* Fondo oscuro en modo oscuro */
   }
 
   #servicios .section-title {
-    color: #ffffff;
+    color: #ffffff; /* Títulos blancos en modo oscuro */
+  }
+
+  #servicios .lead {
+    color: #ffffff; /* Texto blanco en modo oscuro */
   }
 
   .service-card {
@@ -651,53 +588,6 @@ nav ul li a:hover {
     background-color: #f1c40f;
     color: #1e1e1e;
     border-color: #f1c40f;
-  }
-}
-
-/* Ajustar el color del texto en modo oscuro */
-@media (prefers-color-scheme: dark) {
-  #servicios p {
-    color: #ffffff; /* Cambiar a blanco para mejor visibilidad */
-  }
-}
-
-/* Estilo para la sección de servicios */
-#servicios {
-  background-color: #121212; /* Fondo oscuro */
-  color: #ffffff; /* Texto blanco por defecto */
-  padding: 60px 0;
-}
-
-#servicios .section-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-#servicios .single-bar {
-  width: 80px;
-  height: 4px;
-  background-color: #f1c40f; /* Amarillo */
-  margin: 0 auto 15px auto;
-}
-
-#servicios .lead {
-  font-size: 1.2rem;
-  color: #ffffff; /* Texto blanco por defecto */
-}
-
-/* Modo claro: Cambiar el texto a negro */
-@media (prefers-color-scheme: light) {
-  #servicios {
-    background-color: #f8f9fa; /* Fondo claro */
-  }
-
-  #servicios .lead {
-    color: #000000; /* Texto negro */
-  }
-
-  #servicios .section-title {
-    color: #000000; /* Título negro */
   }
 }
 
@@ -991,4 +881,16 @@ nav ul li a:hover {
     flex-direction: column;
     align-items: center;
   }
+}
+/* Aplicar scroll-margin-top directamente a las secciones con ID */
+#servicios,
+#unidades,
+#certificaciones,
+#acerca-de {
+  scroll-margin-top: 100px; /* Un poco más de margen que la altura de la navbar */
+}
+
+/* Opcionalmente, puedes mantener la clase scroll-offset existente para otros elementos */
+.scroll-offset {
+  scroll-margin-top: 100px;
 }

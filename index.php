@@ -59,7 +59,7 @@
         </div>
     </section>
     <!-- Sección de Servicios -->
-    <section id="servicios" class="py-5">
+    <section id="servicios" class="py-5 scroll-offset">
         <div class="container">
             <div class="row mb-5" data-aos="fade-up" data-aos-delay="100">
                 <div class="col-12 text-center">
@@ -196,7 +196,7 @@
     </section>
 
     <!-- Sección de Unidades -->
-    <section id="unidades" class="py-5 bg-light">
+    <section id="unidades" class="py-5 bg-light scroll-offset">
         <div class="container">
             <div class="row mb-5">
                 <div class="col-12 text-center">
@@ -388,7 +388,7 @@
 
     </div>
     <div class="container_2">
-        <div id="certificaciones" class="py-5">
+        <div id="certificaciones" class="py-5 scroll-offset">
             <h1 class="text-center">Certificaciones</h1>
             <p class="text-center">Contamos con certificaciones que avalan la calidad y seguridad de nuestros servicios.
             </p>
@@ -415,7 +415,7 @@
         </div>
     </div>
     <div class="container">
-        <div id="acerca-de" class="py-5">
+        <div id="acerca-de" class="py-5 scroll-offset">
             <div class="row">
                 <div class="col-lg-6 mb-4">
                     <h1 class="section-title mb-4">Acerca de MENDEZ</h1>

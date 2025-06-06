@@ -89,6 +89,10 @@ body {
   font-weight: 700;
   text-decoration: none;
   letter-spacing: 1px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 8px;
+  display: inline-block;
 }
 
 .user-profile {
@@ -590,56 +594,62 @@ textarea.form-control {
 
   .sidebar {
     transform: translateX(-100%);
+    position: fixed;
+    z-index: 2000;
+    width: 270px; /* Ancho fijo para móviles */
+    height: 100vh;
+    transition: transform 0.3s ease;
+    box-shadow: none;
   }
 
   .sidebar.active {
     transform: translateX(0);
-    width: 270px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   }
 
-  .toggle-sidebar {
+  /* Overlay para cuando el sidebar está activo */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1500;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .sidebar-overlay.active {
     display: block;
+    opacity: 1;
   }
 
+  /* Ajusta el contenido principal */
   .main-content {
+    margin-left: 0;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  /* Eliminar margen del contenido cuando sidebar está activo */
+  .main-content.sidebar-active {
     margin-left: 0;
   }
 
-  .main-content.sidebar-active {
-    margin-left: 270px;
-  }
-
-  .stats-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .buttons {
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 6.5rem;
-    align-items: center; /* Centra los botones horizontalmente */
-  }
-
-  .btn {
-    width: 90%;
-    margin: 0 auto;
-    padding: 12px 0;
-    font-size: 14px;
-    text-align: center; /* Asegura que el texto esté centrado */
-  }
-
-  .logout {
-    text-align: center; /* Centra el botón de logout */
+  /* Asegura que el botón de hamburguesa siempre sea visible */
+  .toggle-sidebar {
+    display: block;
+    z-index: 2001;
+    position: relative;
   }
 }
 
+/* Ajustes adicionales para pantallas muy pequeñas */
 @media (max-width: 576px) {
-  .stats-container {
-    grid-template-columns: 1fr;
-  }
-
-  .main-content {
-    padding: 15px;
+  .sidebar {
+    width: 250px;
   }
 }
 
@@ -702,6 +712,73 @@ textarea.form-control {
 
   .card {
     background-color: #1e1e1e;
+    color: #ffffff;
+  }
+
+  /* Mejorar contraste en el panel principal */
+  .main-content {
+    color: #e0e0e0;
+  }
+
+  /* Mejorar contraste en las tarjetas de envíos */
+  .shipment-item {
+    background-color: #2a2a2a;
+    border-left-color: #0d6efd;
+  }
+
+  .shipment-title {
+    color: #ffffff;
+  }
+
+  .shipment-details span {
+    color: #cccccc;
+  }
+
+  .shipment-tracking {
+    color: #aaaaaa;
+  }
+
+  /* Mejorar contraste en el formulario de soporte */
+  .support-panel {
+    background-color: #2a2a2a;
+  }
+
+  .support-panel .panel-title,
+  .contact-title {
+    color: #ffffff;
+  }
+
+  .form-control,
+  .form-control:focus {
+    background-color: #333333;
+    color: #ffffff;
+    border-color: #555555;
+  }
+
+  .form-control::placeholder {
+    color: #aaaaaa;
+  }
+
+  label {
+    color: #e0e0e0;
+  }
+
+  .contact-methods li {
+    color: #cccccc;
+  }
+
+  /* Mejorar contraste en botones y otros elementos */
+  .btn-submit {
+    background-color: #0d6efd;
+    color: white;
+  }
+
+  .text-muted {
+    color: #adb5bd !important;
+  }
+
+  /* Asegurar que los títulos sean legibles */
+  .panel-title {
     color: #ffffff;
   }
 }
