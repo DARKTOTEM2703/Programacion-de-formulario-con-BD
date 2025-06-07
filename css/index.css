@@ -177,19 +177,19 @@ nav ul li a:hover {
 }
 
 .hero .btn-video {
-  background-color: #f1c40f;
-  color: #003366;
-  padding: 10px 20px;
+  background-color: #003366;
+  color: #ffffff;
+  padding: 10px 30px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
+  margin-right: 25px;
 }
 
 .hero .btn-video:hover {
-  background-color: #d4ac0d;
-  color: white;
+  color: #000000;
 }
 
 .bg-dark {

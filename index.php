@@ -46,14 +46,14 @@
     <section class="hero" data-aos="fade-in" data-aos-duration="1200">
         <div class="container text-center py-5">
             <div class="hero-overlay"></div>
-            <div class="container text-center hero-content">
+            <div class="container text-center hero-content p-4">
                 <h1 class="display-3 fw-bold">Llevamos tu carga, impulsamos tu éxito</h1>
                 <p>
                     Somos la mejor opción de servicios integrales de logística y distribución de paquetería y carga.
                     Hemos consolidado una red de logística, servicio y comunicación de la más alta calidad que nos
                     permite ofrecer siempre el mejor servicio a nuestros clientes.
                 </p>
-                <a href="https://www.youtube.com/watch?v=I56LwrvY_lk" class="btn btn-light btn-lg" target="_blank"
+                <a href="https://www.youtube.com/watch?v=I56LwrvY_lk" class="btn btn-video btn-lg" target="_blank"
                     rel="noopener noreferrer">Ver Video ▶</a>
                 <a href="php/login.php" class="btn btn-warning btn-lg" target="_blank">Iniciar Sesión</a>
             </div>
