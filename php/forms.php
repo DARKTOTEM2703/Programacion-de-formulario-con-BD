@@ -21,6 +21,14 @@ if (empty($_SESSION['csrf_token'])) {
     <?php include '../components/header.php'; ?>
 
     <div class="form-container">
+        <!-- Botón para volver al dashboard -->
+        <div class="dashboard-header">
+            <button class="btn-back" onclick="window.location.href='dashboard.php'">
+                <i class="bi bi-arrow-left me-1"></i> Regresar al Dashboard
+            </button>
+            <h2><i class="bi bi-box-seam me-2"></i>Historial de Envíos</h2>
+        </div>
+
         <!-- Mensajes de éxito/error aquí si los necesitas -->
 
         <form action="../components/form_handler.php" method="POST" id="shipping-form" enctype="multipart/form-data">
