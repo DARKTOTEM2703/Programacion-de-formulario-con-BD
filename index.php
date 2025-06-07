@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/chatbot.css">
     <!-- Agrega en el <head> después de tus CSS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
     <link rel="stylesheet"
@@ -478,6 +479,67 @@
             </div>
         </div>
     </div>
+    <!-- Chatbot asistente con IA -->
+    <div id="mendez-chatbot" class="chatbot-container">
+        <div class="chatbot-toggle">
+            <i class="fas fa-comment-alt"></i>
+            <span class="notification-badge">1</span>
+        </div>
+        <div class="chatbot-box">
+            <div class="chatbot-header">
+                <img src="img/logo.png" alt="MENDEZ" class="chatbot-logo">
+                <div>
+                    <h4>Asistente MENDEZ</h4>
+                    <p class="status"><span class="status-dot"></span> En línea</p>
+                </div>
+                <button class="minimize-btn"><i class="fas fa-minus"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <p>¡Hola! Soy el asistente virtual de MENDEZ. ¿En qué puedo ayudarte hoy?</p>
+                        <div class="suggestion-chips">
+                            <button class="suggestion-chip">Cotizar envío</button>
+                            <button class="suggestion-chip">Rastrear paquete</button>
+                            <button class="suggestion-chip">Servicios</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="message bot-message interactive-message">
+                    <div class="message-content">
+                        <p><strong>💡 Prueba estos ejemplos:</strong></p>
+                        <div class="interactive-examples">
+                            <div class="example-card">
+                                <div class="example-icon"><i class="fas fa-truck"></i></div>
+                                <div class="example-content">
+                                    <h5>Cotizar envío</h5>
+                                    <p>Obtén un precio estimado</p>
+                                </div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-icon"><i class="fas fa-search-location"></i></div>
+                                <div class="example-content">
+                                    <h5>Rastrear paquete</h5>
+                                    <p>Consulta el estado de tu envío</p>
+                                </div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                                <div class="example-content">
+                                    <h5>Comparar tarifas</h5>
+                                    <p>Ver opciones por volumen</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="userInput" placeholder="Escribe tu pregunta..." autocomplete="off">
+                <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
     <?php include 'components/footer.php'; ?>
 
     <!-- Bootstrap JS -->
@@ -488,6 +550,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="js/animation.js"></script>
+    <!-- Script para el chatbot -->
+    <script src="js/chatbot.js"></script>
 </body>
 
 </html>
