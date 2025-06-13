@@ -198,6 +198,33 @@ function calcularCostoEnvio(distancia, peso, tipoPaquete) {
   );
 }
 
+// Función para cálculo simple (sin distancia)
+function calcularCostoSimple(peso, tipoPaquete) {
+  const tarifaBase = 50; // Costo base en MXN
+  const costoPorKg = 15; // Costo por kilogramo (más alto para compensar la falta de distancia)
+
+  let factorPaquete = 1.0;
+  switch (tipoPaquete) {
+    case "documento":
+      factorPaquete = 1.0;
+      break;
+    case "paquete_pequeno":
+      factorPaquete = 1.2;
+      break;
+    case "paquete_mediano":
+      factorPaquete = 1.5;
+      break;
+    case "paquete_grande":
+      factorPaquete = 2.0;
+      break;
+    case "carga_voluminosa":
+      factorPaquete = 3.0;
+      break;
+  }
+
+  return tarifaBase + peso * costoPorKg * factorPaquete;
+}
+
 // Variables globales
 let costoCalculado = false;
 let costoBase = 0;
@@ -301,6 +328,9 @@ async function realizarCalculoCosto(resultadoCalculo) {
       return false;
     }
 
+    // Declarar variable distancia aquí para que sea accesible en todo el ámbito
+    let distancia = 0;
+
     try {
       // Obtener coordenadas
       const originCoords = await obtenerCoordenadas(origin);
@@ -312,7 +342,7 @@ async function realizarCalculoCosto(resultadoCalculo) {
         mostrarResultadoSimple(resultadoCalculo, parseFloat(peso), tipoPaquete);
       } else {
         // Calcular distancia
-        const distancia = await calcularDistancia(
+        distancia = await calcularDistancia(
           originCoords,
           destinationCoords
         );
@@ -341,16 +371,15 @@ async function realizarCalculoCosto(resultadoCalculo) {
         }
       }
 
-      // Guardar el valor en campos ocultos y visibles
-      costoBase =
-        distancia > 0
-          ? calcularCostoEnvio(distancia, parseFloat(peso), tipoPaquete)
-          : calcularCostoSimple(parseFloat(peso), tipoPaquete);
+      // Ahora distancia es accesible aquí
+      costoBase = distancia > 0
+        ? calcularCostoEnvio(distancia, parseFloat(peso), tipoPaquete)
+        : calcularCostoSimple(parseFloat(peso), tipoPaquete);
 
       const hiddenCost = document.getElementById("hidden_calculated_cost");
       if (hiddenCost) {
         hiddenCost.value = costoBase.toFixed(2);
-        console.log("Costo calculado y guardado:", costoBase.toFixed(2)); // Para depuración
+        console.log("Costo calculado y guardado:", costoBase.toFixed(2));
       }
 
       // Marcar como calculado

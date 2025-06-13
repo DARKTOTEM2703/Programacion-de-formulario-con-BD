@@ -265,38 +265,6 @@ function initAboutAnimations() {
   });
 }
 
-// Botón "Volver arriba" con animación mejorada
-window.addEventListener("scroll", function () {
-  if (window.scrollY > 500) {
-    if (!document.getElementById("backToTop")) {
-      const backToTop = document.createElement("button");
-      backToTop.id = "backToTop";
-      backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
-      backToTop.className = "back-to-top";
-      backToTop.addEventListener("click", () => {
-        gsap.to(window, { duration: 1.5, scrollTo: 0, ease: "power4.inOut" });
-      });
-      document.body.appendChild(backToTop);
-
-      // Animar entrada
-      gsap.from(backToTop, { opacity: 0, y: 50, duration: 0.5 });
-    }
-  } else {
-    const backToTop = document.getElementById("backToTop");
-    if (backToTop) {
-      gsap.to(backToTop, {
-        opacity: 0,
-        y: 50,
-        duration: 0.5,
-        onComplete: () => {
-          if (backToTop.parentNode) {
-            backToTop.parentNode.removeChild(backToTop);
-          }
-        },
-      });
-    }
-  }
-});
 // Garantiza que AOS se inicialice cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", function () {
   // Inicializar AOS con opciones básicas
