@@ -21,6 +21,13 @@
 
             <?php
             session_start();
+
+            // Si el usuario ya está autenticado, redirigir al dashboard
+            if (isset($_SESSION['usuario_id'])) {
+                header("Location: dashboard.php");
+                exit();
+            }
+
             if (isset($_SESSION['error'])) {
                 echo '<div class="alert alert-danger text-center" role="alert">' . $_SESSION['error'] . '</div>';
                 unset($_SESSION['error']); // Elimina el mensaje después de mostrarlo

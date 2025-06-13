@@ -35,7 +35,6 @@ if (empty($_SESSION['csrf_token'])) {
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <input type="hidden" name="usuario_id"
                 value="<?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : ''; ?>">
-            <input type="hidden" id="hidden_calculated_cost" name="hidden_calculated_cost">
 
             <!-- Barra de progreso -->
             <div class="progress mb-4">

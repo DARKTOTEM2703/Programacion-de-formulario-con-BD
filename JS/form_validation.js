@@ -106,4 +106,18 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelector(".is-invalid").focus();
     }
   });
+
+  document.getElementById('shipping-form').addEventListener('submit', function(e) {
+    // Verificar si el costo está establecido antes de enviar
+    const hiddenCost = document.getElementById('hidden_calculated_cost');
+    if (!hiddenCost || !hiddenCost.value || parseFloat(hiddenCost.value) <= 0) {
+        e.preventDefault();
+        alert('No se ha calculado el costo del envío. Por favor, vuelva al paso anterior y calcule el costo.');
+        return false;
+    }
+    
+    // Registrar el costo para depuración
+    console.log('Enviando formulario con costo:', hiddenCost.value);
+    return true;
+});
 });

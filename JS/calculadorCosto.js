@@ -342,8 +342,16 @@ async function realizarCalculoCosto(resultadoCalculo) {
       }
 
       // Guardar el valor en campos ocultos y visibles
+      costoBase =
+        distancia > 0
+          ? calcularCostoEnvio(distancia, parseFloat(peso), tipoPaquete)
+          : calcularCostoSimple(parseFloat(peso), tipoPaquete);
+
       const hiddenCost = document.getElementById("hidden_calculated_cost");
-      if (hiddenCost) hiddenCost.value = costoBase.toFixed(2);
+      if (hiddenCost) {
+        hiddenCost.value = costoBase.toFixed(2);
+        console.log("Costo calculado y guardado:", costoBase.toFixed(2)); // Para depuración
+      }
 
       // Marcar como calculado
       costoCalculado = true;
@@ -419,21 +427,23 @@ function formatearTipoPaquete(tipo) {
 
 // Función para actualizar el costo mostrado
 function actualizarCostoMostrado() {
-  // Recuperar el costo base del campo oculto
-  let costoBase =
-    parseFloat(document.getElementById("hidden_calculated_cost").value) || 0;
+  // Recuperar el costo base del cálculo (usar la variable global)
+  let costoTotal = costoBase;
 
   // Recuperar checkboxes
   const seguro = document.getElementById("insurance");
   const urgente = document.getElementById("urgent");
 
-  // Calcular costo total con modificadores
-  let costoTotal = costoBase;
-
   // Agregar costo de seguro si está seleccionado
   if (seguro && seguro.checked) {
-    const valorDeclarado =
-      parseFloat(document.getElementById("value").value) || 0;
+    const valorDeclaradoField = document.getElementById("value");
+    let valorDeclarado = 0;
+
+    // Si el campo existe, obtener su valor
+    if (valorDeclaradoField) {
+      valorDeclarado = parseFloat(valorDeclaradoField.value) || 0;
+    }
+
     const costoSeguro = valorDeclarado * 0.05; // 5% del valor declarado
     costoTotal += costoSeguro;
   }
@@ -443,17 +453,19 @@ function actualizarCostoMostrado() {
     costoTotal *= 1.25; // 25% adicional por servicio urgente
   }
 
-  // Actualizar campos
+  // Actualizar el campo visible
   const calculatedCostField = document.getElementById("calculated_cost");
   if (calculatedCostField) {
     calculatedCostField.value = `$${costoTotal.toFixed(2)} MXN`;
   }
 
+  // Actualizar TODOS los campos hidden de costos
   const hiddenCalculatedCostField = document.getElementById(
     "hidden_calculated_cost"
   );
   if (hiddenCalculatedCostField) {
     hiddenCalculatedCostField.value = costoTotal.toFixed(2);
+    console.log("Costo actualizado:", costoTotal.toFixed(2)); // Para depuración
   }
 }
 

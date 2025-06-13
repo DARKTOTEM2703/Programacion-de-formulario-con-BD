@@ -1,6 +1,9 @@
 <?php
 session_start();
 include 'db_connection.php';
+
+// Cargar variables de entorno antes de incluir email_confirmacion.php
+require_once __DIR__ . '/../config/load_env.php';
 include 'email_confirmacion.php'; // Añade esta línea
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,8 +22,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $phone = htmlspecialchars(trim($_POST['phone']));
     $office_phone = htmlspecialchars(trim($_POST['office_phone'] ?? ''));
-    $origin = htmlspecialchars(trim($_POST['origin']));
-    $destination = htmlspecialchars(trim($_POST['destination']));
+
+    // Construir la dirección de origen completa
+    $origin = htmlspecialchars(trim($_POST['origin_street'])) . ' ' .
+        htmlspecialchars(trim($_POST['origin_number'])) . ', ' .
+        htmlspecialchars(trim($_POST['origin_colony'])) . ', ' .
+        htmlspecialchars(trim($_POST['origin_postal_code'])) . ', ' .
+        htmlspecialchars(trim($_POST['origin_city'])) . ', ' .
+        htmlspecialchars(trim($_POST['origin_state'])) . ', ' .
+        htmlspecialchars(trim($_POST['origin_country']));
+
+    // Construir la dirección de destino completa
+    $destination = htmlspecialchars(trim($_POST['destination_street'])) . ' ' .
+        htmlspecialchars(trim($_POST['destination_number'])) . ', ' .
+        htmlspecialchars(trim($_POST['destination_colony'] ?? '')) . ', ' .
+        htmlspecialchars(trim($_POST['destination_postal_code'])) . ', ' .
+        htmlspecialchars(trim($_POST['destination_city'])) . ', ' .
+        htmlspecialchars(trim($_POST['destination_state'])) . ', ' .
+        htmlspecialchars(trim($_POST['destination_country']));
+
     $description = htmlspecialchars(trim($_POST['description']));
     $value = filter_var(trim($_POST['value'] ?? 0), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
@@ -32,12 +52,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $urgent = isset($_POST['urgent']) ? 1 : 0;
     $additional_notes = isset($_POST['additional_notes']) ? htmlspecialchars(trim($_POST['additional_notes'])) : null;
 
-    // Validar campos requeridos
-    if (empty($name) || empty($email) || empty($phone) || empty($origin) || empty($destination) || empty($description) || empty($package_type) || empty($weight)) {
-        $_SESSION['error'] = "Por favor, completa todos los campos obligatorios.";
-        header("Location: ../php/forms.php");
-        exit();
+    // Obtener el costo calculado del formulario
+    $estimated_cost = 0; // Valor predeterminado
+    if (isset($_POST['hidden_calculated_cost']) && trim($_POST['hidden_calculated_cost']) !== '') {
+        $estimated_cost = filter_var(
+            trim($_POST['hidden_calculated_cost']),
+            FILTER_SANITIZE_NUMBER_FLOAT,
+            FILTER_FLAG_ALLOW_FRACTION
+        );
     }
+
+    // Si después del filtrado sigue sin ser numérico, asegurar que sea 0
+    if (!is_numeric($estimated_cost)) {
+        $estimated_cost = 0;
+    }
+
+    // Generar número de seguimiento único
+    $tracking_number = 'MENDEZ-' . strtoupper(substr(md5(uniqid()), 0, 8));
+
+    // Estado de pago inicial
+    $estado_pago = 'pendiente';
 
     // Manejo de imágenes
     $image_path = ''; // Inicializar con cadena vacía en lugar de null
@@ -74,59 +108,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Generar número de seguimiento único
-    $tracking_number = 'MENDEZ-' . strtoupper(substr(md5(uniqid()), 0, 8));
-
-    // Calcular costo estimado (ejemplo simple)
-    $base_cost = 100; // Costo base en pesos
-    $weight_cost = $weight * 10; // 10 pesos por kg
-    $urgent_cost = $urgent ? 200 : 0; // Cargo adicional por urgente
-    $insurance_cost = $insurance ? ($value * 0.05) : 0; // 5% del valor declarado
-    $estimated_cost = $base_cost + $weight_cost + $urgent_cost + $insurance_cost;
-
-    // Asegurarse que ninguna variable sea NULL
-    $usuario_id = (int)($usuario_id ?? 0);
-    $name = $name ?? '';
-    $email = $email ?? '';
-    $phone = $phone ?? '';
-    $office_phone = $office_phone ?? '';
-    $origin = $origin ?? '';
-    $destination = $destination ?? '';
-    $description = $description ?? '';
-    $value = (float)($value ?? 0);
-    $tracking_number = $tracking_number ?? '';
-    $delivery_date = $delivery_date ?? '';
-    $package_type = $package_type ?? '';
-    $weight = (float)($weight ?? 0);
-    $insurance = (int)($insurance ?? 0);
-    $urgent = (int)($urgent ?? 0);
-    $additional_notes = $additional_notes ?? '';
-    $image_path = $image_path ?? '';
-    $estimated_cost = (float)($estimated_cost ?? 0);
-
-    // Asegurarse que los valores sean del tipo correcto para bind_param
-    $usuario_id = (int)$usuario_id;  // Convertir a entero
-    $value = (float)$value;  // Convertir a float
-    $weight = (float)$weight;  // Convertir a float
-    $insurance = (int)$insurance;  // Asegurar que sea entero
-    $urgent = (int)$urgent;  // Asegurar que sea entero
-    $estimated_cost = (float)$estimated_cost;  // Convertir a float
-
-    // Si $delivery_date es NULL, convertirlo a cadena vacía
-    $delivery_date = $delivery_date ?? '';
-    $additional_notes = $additional_notes ?? '';
-
     // Insertar datos en la base de datos con campos actualizados
     $stmt = $conn->prepare(
         "INSERT INTO envios (
             usuario_id, name, email, phone, office_phone, origin, destination, 
             description, value, tracking_number, delivery_date, package_type, 
-            weight, insurance, urgent, additional_notes, package_image, estimated_cost
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            weight, insurance, urgent, additional_notes, package_image, estimated_cost, estado_pago
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
 
     $stmt->bind_param(
-        "isssssssdsssdiissd", // Corregido el último carácter (d en lugar de s)
+        "isssssssdsssdiissds",
         $usuario_id,
         $name,
         $email,
@@ -144,21 +136,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $urgent,
         $additional_notes,
         $image_path,
-        $estimated_cost   // Este es double (d), no string (s)
+        $estimated_cost,
+        $estado_pago
     );
 
     if ($stmt->execute()) {
-        $_SESSION['success'] = "Envío registrado exitosamente. Tu número de seguimiento es: $tracking_number";
+        // Generar enlace de pago
+        $payment_link = "http://localhost/Programacion-de-formulario-con-BD/payment.php?tracking=" . urlencode($tracking_number) . "&amount=" . $estimated_cost;
 
-        // Enviar correo con detalles del envío
-        if (function_exists('enviarCorreoConfirmacion')) {
-            enviarCorreoConfirmacion($email, $name, $tracking_number, $estimated_cost);
+        // Registrar lo que estamos enviando para depuración
+        error_log("Enviando correo a: $email, Tracking: $tracking_number, Monto: $estimated_cost, Link: $payment_link");
+
+        try {
+            // Enviar correo con enlace de pago y capturar el resultado
+            $correo_enviado = enviarCorreoConfirmacionConPago($email, $name, $tracking_number, $estimated_cost, $payment_link);
+
+            if ($correo_enviado === true) {
+                $_SESSION['success'] = "Envío registrado exitosamente. Se ha enviado un correo con instrucciones para completar el pago.";
+            } else {
+                $_SESSION['warning'] = "Envío registrado, pero hubo un problema al enviar el correo. Usa el botón de pago en esta página.";
+                error_log("Error al enviar correo: " . print_r($correo_enviado, true));
+            }
+        } catch (Exception $e) {
+            $_SESSION['warning'] = "Envío registrado, pero hubo un problema al enviar el correo. Usa el botón de pago en esta página.";
+            error_log("Excepción al enviar correo: " . $e->getMessage());
         }
 
-        header("Location: ../php/forms.php");
+        // Redirigir a una página de confirmación
+        header("Location: ../php/submit_success.php?tracking=" . urlencode($tracking_number));
         exit();
     } else {
-        $_SESSION['error'] = "Error al guardar el envío: " . $stmt->error;
+        $_SESSION['error'] = "Error al registrar el envío: " . $stmt->error;
         header("Location: ../php/forms.php");
         exit();
     }
