@@ -1,12 +1,9 @@
 <?php
-require_once '../vendor/autoload.php'; // Asegúrate de instalar Stripe con Composer
+require_once '../vendor/autoload.php';
 require_once '../components/db_connection.php';
+require_once '../config/stripe_config.php'; // Nuevo archivo de configuración
 
 header('Content-Type: application/json');
-
-// Configurar la clave secreta de Stripe
-// En producción, usa una variable de entorno o archivo de configuración
-\Stripe\Stripe::setApiKey('sk_test_TU_CLAVE_DE_STRIPE'); // Reemplaza con tu clave de prueba
 
 $data = json_decode(file_get_contents('php://input'), true);
 
