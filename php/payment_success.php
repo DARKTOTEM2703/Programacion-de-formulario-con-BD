@@ -137,7 +137,12 @@ if ($session_id) {
     }
 
     @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
             transform: translateY(0);
         }
 
@@ -235,12 +240,12 @@ if ($session_id) {
                         <p class="mb-4">Tu pago ha sido procesado correctamente y tu envío será procesado en breve.</p>
 
                         <?php if (isset($_SESSION['tracking_number'])): ?>
-                            <div class="alert alert-info">
-                                <p>Número de seguimiento:
-                                    <strong><?php echo htmlspecialchars($_SESSION['tracking_number']); ?></strong>
-                                </p>
-                                <p class="mb-0">Puedes usar este número para dar seguimiento a tu envío.</p>
-                            </div>
+                        <div class="alert alert-info">
+                            <p>Número de seguimiento:
+                                <strong><?php echo htmlspecialchars($_SESSION['tracking_number']); ?></strong>
+                            </p>
+                            <p class="mb-0">Puedes usar este número para dar seguimiento a tu envío.</p>
+                        </div>
                         <?php endif; ?>
 
                         <div class="mt-4">
@@ -249,10 +254,10 @@ if ($session_id) {
                             </a>
 
                             <?php if (isset($_SESSION['tracking_number'])): ?>
-                                <a href="tracking.php?tracking=<?php echo urlencode($_SESSION['tracking_number']); ?>"
-                                    class="btn btn-outline-primary">
-                                    <i class="bi bi-search me-1"></i> Ver Seguimiento
-                                </a>
+                            <a href="tracking.php?tracking=<?php echo urlencode($_SESSION['tracking_number']); ?>"
+                                class="btn btn-outline-primary">
+                                <i class="bi bi-search me-1"></i> Ver Seguimiento
+                            </a>
                             <?php endif; ?>
                         </div>
                     </div>

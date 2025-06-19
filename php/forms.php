@@ -220,9 +220,6 @@ if (empty($_SESSION['csrf_token'])) {
             <!-- Paso 3: Información adicional -->
             <div class="form-section d-none" data-step="3">
                 <h3><i class="bi bi-info-circle-fill me-2"></i>INFORMACIÓN ADICIONAL</h3>
-
-
-
                 <!-- Nuevo campo para mostrar el costo total actualizado -->
                 <div class="form-group mb-3">
                     <label for="calculated_cost">

@@ -25,8 +25,18 @@ if ($sig_header) {
     fwrite($log_file, "Signature value: " . $sig_header . "\n");
 }
 
-// Obtener la clave de webhook desde .env
-$endpoint_secret = $_ENV['whsec_TU_CLAVE_DEL_WEBHOOK'] ?? 'whsec_1ec5591dde073e4dcbc38591dd4c0dd053ef3e8d587812a8f010929ef1fda96f';
+// Obtener la clave de webhook desde .env de forma segura
+$endpoint_secret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? null;
+
+// Verificar si la clave existe
+if (!$endpoint_secret && !$isLocalTesting) {
+    fwrite($log_file, "ERROR: No se ha configurado STRIPE_WEBHOOK_SECRET en el archivo .env\n");
+    http_response_code(500);
+    echo json_encode(['error' => 'Error de configuración del servidor']);
+    fclose($log_file);
+    exit();
+}
+
 fwrite($log_file, "Using endpoint secret: " . substr($endpoint_secret, 0, 10) . "...\n");
 
 // Modo de prueba local
