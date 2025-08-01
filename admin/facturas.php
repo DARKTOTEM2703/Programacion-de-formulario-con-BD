@@ -1,371 +1,274 @@
 <?php
 session_start();
 require_once '../components/db_connection.php';
+require_once 'components/factura_controller.php';
 
-// Verificar si el usuario está autenticado como administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] != 1) {
-    header("Location: ../php/login.php");
-    exit();
+// Verificar autenticación del administrador
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: index.php');
+    exit;
 }
 
-// Verificar si la tabla facturas existe
-$result = $conn->query("SHOW TABLES LIKE 'facturas'");
-if ($result->num_rows == 0) {
-    // Crear la tabla facturas si no existe
-    $sql = "CREATE TABLE facturas (
-        id INT(11) NOT NULL AUTO_INCREMENT,
-        numero_factura VARCHAR(50) NOT NULL,
-        envio_id INT(11) NOT NULL,
-        fecha_emision DATETIME DEFAULT CURRENT_TIMESTAMP,
-        fecha_vencimiento DATETIME,
-        monto DECIMAL(10,2) NOT NULL,
-        status ENUM('pendiente', 'pagado', 'cancelado', 'vencido') DEFAULT 'pendiente',
-        fecha_pago DATETIME NULL,
-        cfdi_xml VARCHAR(255),
-        cfdi_pdf VARCHAR(255),
-        PRIMARY KEY (id),
-        FOREIGN KEY (envio_id) REFERENCES envios(id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+$factura_controller = new FacturaController($conn);
 
-    $conn->query($sql);
-
-    // Crear tabla movimientos_contables si no existe
-    $sql = "CREATE TABLE movimientos_contables (
-        id INT(11) NOT NULL AUTO_INCREMENT,
-        tipo ENUM('ingreso', 'egreso') NOT NULL,
-        factura_id INT(11) NULL,
-        concepto VARCHAR(255) NOT NULL,
-        monto DECIMAL(10,2) NOT NULL,
-        fecha_movimiento DATE NOT NULL,
-        categoria VARCHAR(50) DEFAULT 'otros',
-        created_by INT(11) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (id),
-        FOREIGN KEY (factura_id) REFERENCES facturas(id) ON DELETE SET NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-
-    $conn->query($sql);
-}
-
-// Paginación
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
-
-// Filtros
-$status = isset($_GET['status']) ? $_GET['status'] : 'all';
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-
-// Construir consulta
-$query = "SELECT f.*, e.tracking_number, e.name AS cliente_nombre, 
-          u.nombre_usuario AS usuario_nombre
-          FROM facturas f 
-          LEFT JOIN envios e ON f.envio_id = e.id
-          LEFT JOIN usuarios u ON e.usuario_id = u.id
-          WHERE 1=1";
-
-$count_query = "SELECT COUNT(*) as total FROM facturas f 
-               LEFT JOIN envios e ON f.envio_id = e.id
-               WHERE 1=1";
-
-// Aplicar filtros
-if ($status != 'all') {
-    $query .= " AND f.status = '$status'";
-    $count_query .= " AND f.status = '$status'";
-}
-
-if (!empty($search)) {
-    $search = $conn->real_escape_string("%$search%");
-    $query .= " AND (f.numero_factura LIKE '$search' OR e.tracking_number LIKE '$search' OR e.name LIKE '$search')";
-    $count_query .= " AND (f.numero_factura LIKE '$search' OR e.tracking_number LIKE '$search' OR e.name LIKE '$search')";
-}
-
-// Ordenar por fecha de emisión más reciente
-$query .= " ORDER BY f.fecha_emision DESC LIMIT $offset, $limit";
-
-// Ejecutar la consulta
-$result = $conn->query($query);
-$facturas = [];
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $facturas[] = $row;
+// Acción para generar nueva factura
+if (isset($_POST['accion']) && $_POST['accion'] === 'generar') {
+    $envio_id = $_POST['envio_id'] ?? 0;
+    $monto = $_POST['monto'] ?? 0;
+    
+    $resultado = $factura_controller->generarFactura($envio_id, $monto);
+    
+    if ($resultado['success']) {
+        $_SESSION['mensaje'] = "Factura generada correctamente: " . $resultado['numero_factura'];
+    } else {
+        $_SESSION['error'] = "Error al generar factura: " . ($resultado['message'] ?? 'Error desconocido');
     }
 }
 
-// Obtener el conteo total para paginación
-$result = $conn->query($count_query);
-$total_records = $result->fetch_assoc()['total'];
-$total_pages = ceil($total_records / $limit);
+// Acción para actualizar estado
+if (isset($_POST['accion']) && $_POST['accion'] === 'actualizar_estado') {
+    $factura_id = $_POST['factura_id'] ?? 0;
+    $nuevo_estado = $_POST['nuevo_estado'] ?? '';
+    
+    $resultado = $factura_controller->actualizarEstadoFactura($factura_id, $nuevo_estado);
+    
+    if ($resultado['success']) {
+        $_SESSION['mensaje'] = "Estado actualizado correctamente";
+    } else {
+        $_SESSION['error'] = "Error al actualizar estado: " . ($resultado['message'] ?? 'Error desconocido');
+    }
+}
+
+// Obtener listado de facturas
+$facturas = $factura_controller->obtenerFacturas();
+
+// Obtener envíos sin factura para el formulario de creación
+$query_envios = "
+    SELECT e.id, e.tracking_number, e.name, e.estimated_cost, e.fecha_pago
+    FROM envios e
+    LEFT JOIN facturas f ON e.id = f.envio_id
+    WHERE e.estado_pago = 'pagado' 
+    AND f.id IS NULL
+    ORDER BY e.fecha_pago DESC
+";
+$result_envios = $conn->query($query_envios);
+$envios_sin_factura = [];
+while ($row = $result_envios->fetch_assoc()) {
+    $envios_sin_factura[] = $row;
+}
+
+// Incluir la plantilla de encabezado
+$titulo = "Gestión de Facturas | MENDEZ";
+include 'components/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Facturas - MENDEZ</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/admin.css">
-</head>
-
-<body>
-    <!-- Botón hamburguesa para dispositivos móviles -->
-    <button class="toggle-sidebar" id="toggleSidebar">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <?php include 'components/sidebar.php'; ?>
-
-    <div class="main-content">
-        <div class="container-fluid py-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1><i class="bi bi-receipt"></i> Gestión de Facturas</h1>
+<div class="container-fluid">
+    <div class="row">
+        <?php include 'components/sidebar.php'; ?>
+        
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2"><i class="bi bi-receipt me-2"></i>Gestión de Facturas</h1>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaFacturaModal">
-                    <i class="bi bi-plus-lg"></i> Nueva Factura
+                    <i class="bi bi-plus-circle me-1"></i> Nueva Factura
                 </button>
             </div>
-
-            <!-- Mensajes de sistema -->
-            <?php if (isset($_SESSION['success'])): ?>
+            
+            <?php if (isset($_SESSION['mensaje'])): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['success'];
-                    unset($_SESSION['success']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <?php echo $_SESSION['mensaje']; unset($_SESSION['mensaje']); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
             <?php endif; ?>
-
+            
             <?php if (isset($_SESSION['error'])): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['error'];
-                    unset($_SESSION['error']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                 </div>
             <?php endif; ?>
-
-            <!-- Filtros -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <form method="GET" class="row g-3">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control"
-                                    placeholder="Buscar por número, tracking o cliente..." name="search"
-                                    value="<?php echo htmlspecialchars($search); ?>">
-                                <button class="btn btn-outline-secondary" type="submit">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <select name="status" class="form-select" onchange="this.form.submit()">
-                                <option value="all" <?php echo $status == 'all' ? 'selected' : ''; ?>>Todos los estados
-                                </option>
-                                <option value="pendiente" <?php echo $status == 'pendiente' ? 'selected' : ''; ?>>
-                                    Pendiente</option>
-                                <option value="pagado" <?php echo $status == 'pagado' ? 'selected' : ''; ?>>Pagado
-                                </option>
-                                <option value="cancelado" <?php echo $status == 'cancelado' ? 'selected' : ''; ?>>
-                                    Cancelado</option>
-                                <option value="vencido" <?php echo $status == 'vencido' ? 'selected' : ''; ?>>Vencido
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="facturas.php" class="btn btn-outline-secondary w-100">Limpiar</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Tabla de Facturas -->
+            
             <div class="card shadow mb-4">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Factura</th>
-                                    <th>Envío</th>
-                                    <th>Cliente</th>
-                                    <th>Monto</th>
-                                    <th>Fecha Emisión</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (count($facturas) > 0): ?>
-                                    <?php foreach ($facturas as $factura): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($factura['numero_factura']); ?></td>
-                                            <td><?php echo htmlspecialchars($factura['tracking_number']); ?></td>
-                                            <td><?php echo htmlspecialchars($factura['cliente_nombre']); ?></td>
-                                            <td>$<?php echo number_format($factura['monto'], 2); ?></td>
-                                            <td><?php echo date('d/m/Y H:i', strtotime($factura['fecha_emision'])); ?></td>
-                                            <td>
-                                                <span class="badge <?php
-                                                                    echo match ($factura['status']) {
-                                                                        'pendiente' => 'bg-warning',
-                                                                        'pagado' => 'bg-success',
-                                                                        'cancelado' => 'bg-danger',
-                                                                        'vencido' => 'bg-secondary',
-                                                                        default => 'bg-info'
-                                                                    };
-                                                                    ?>">
-                                                    <?php echo ucfirst(htmlspecialchars($factura['status'])); ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button class="btn btn-sm btn-outline-primary"
-                                                        onclick="verFactura(<?php echo $factura['id']; ?>)">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-success"
-                                                        onclick="registrarPago(<?php echo $factura['id']; ?>)">
-                                                        <i class="bi bi-cash"></i>
-                                                    </button>
-                                                    <a href="factura_pdf.php?id=<?php echo $factura['id']; ?>"
-                                                        class="btn btn-sm btn-outline-secondary" target="_blank">
-                                                        <i class="bi bi-file-pdf"></i>
-                                                    </a>
-                                                    <button class="btn btn-sm btn-outline-info"
-                                                        onclick="enviarPorEmail(<?php echo $factura['id']; ?>)">
-                                                        <i class="bi bi-envelope"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="7" class="text-center py-4">No se encontraron facturas</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Facturas Emitidas</h6>
+                    <div class="input-group" style="width: 300px;">
+                        <input type="text" class="form-control" id="buscarFactura" placeholder="Buscar factura...">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
-
-                    <!-- Paginación -->
-                    <?php if ($total_pages > 1): ?>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
-                                    <a class="page-link"
-                                        href="?page=<?php echo $page - 1; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>">Anterior</a>
-                                </li>
-
-                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                    <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
-                                        <a class="page-link"
-                                            href="?page=<?php echo $i; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a>
-                                    </li>
-                                <?php endfor; ?>
-
-                                <li class="page-item <?php echo $page >= $total_pages ? 'disabled' : ''; ?>">
-                                    <a class="page-link"
-                                        href="?page=<?php echo $page + 1; ?>&status=<?php echo $status; ?>&search=<?php echo urlencode($search); ?>">Siguiente</a>
-                                </li>
-                            </ul>
-                        </nav>
+                </div>
+                <div class="card-body">
+                    <?php if (empty($facturas)): ?>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i> No hay facturas registradas.
+                        </div>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nº Factura</th>
+                                        <th>Cliente</th>
+                                        <th>Tracking</th>
+                                        <th>Fecha</th>
+                                        <th>Monto</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($facturas as $factura): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($factura['numero_factura']); ?></td>
+                                        <td><?php echo htmlspecialchars($factura['cliente_nombre']); ?></td>
+                                        <td>
+                                            <span class="badge bg-info text-dark">
+                                                <?php echo htmlspecialchars($factura['tracking_number']); ?>
+                                            </span>
+                                        </td>
+                                        <td><?php echo date('d/m/Y', strtotime($factura['fecha_emision'])); ?></td>
+                                        <td>$<?php echo number_format($factura['monto'], 2); ?></td>
+                                        <td>
+                                            <?php if ($factura['status'] == 'pendiente'): ?>
+                                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                            <?php elseif ($factura['status'] == 'pagado'): ?>
+                                                <span class="badge bg-success">Pagado</span>
+                                            <?php elseif ($factura['status'] == 'cancelado'): ?>
+                                                <span class="badge bg-danger">Cancelado</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="detalle_factura.php?id=<?php echo $factura['id']; ?>" class="btn btn-info">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="../uploads/facturas/<?php echo $factura['numero_factura']; ?>.pdf" target="_blank" class="btn btn-primary">
+                                                    <i class="bi bi-file-pdf"></i>
+                                                </a>
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" href="enviar_factura_email.php?id=<?php echo $factura['id']; ?>">
+                                                            <i class="bi bi-envelope me-2"></i> Enviar por email
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="../uploads/facturas/<?php echo $factura['numero_factura']; ?>.xml" download>
+                                                            <i class="bi bi-file-earmark-code me-2"></i> Descargar XML
+                                                        </a>
+                                                    </li>
+                                                    <?php if ($factura['status'] == 'pendiente'): ?>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <li>
+                                                        <form action="" method="post">
+                                                            <input type="hidden" name="accion" value="actualizar_estado">
+                                                            <input type="hidden" name="factura_id" value="<?php echo $factura['id']; ?>">
+                                                            <input type="hidden" name="nuevo_estado" value="pagado">
+                                                            <button type="submit" class="dropdown-item text-success">
+                                                                <i class="bi bi-check-circle me-2"></i> Marcar como pagada
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form action="" method="post">
+                                                            <input type="hidden" name="accion" value="actualizar_estado">
+                                                            <input type="hidden" name="factura_id" value="<?php echo $factura['id']; ?>">
+                                                            <input type="hidden" name="nuevo_estado" value="cancelado">
+                                                            <button type="submit" class="dropdown-item text-danger">
+                                                                <i class="bi bi-x-circle me-2"></i> Cancelar factura
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <?php endif; ?>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
+</div>
 
-    <!-- Modal Nueva Factura -->
-    <div class="modal fade" id="nuevaFacturaModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Generar Nueva Factura</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="procesar_factura.php" method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="envio_id" class="form-label">Seleccionar Envío</label>
-                            <select name="envio_id" id="envio_id" class="form-select" required>
-                                <option value="">-- Selecciona un envío --</option>
-                                <?php
-                                $stmt = $conn->query("SELECT id, tracking_number, name FROM envios WHERE status = 'Entregado' AND id NOT IN (SELECT envio_id FROM facturas)");
-                                if ($stmt) {
-                                    while ($envio = $stmt->fetch_assoc()):
-                                ?>
-                                        <option value="<?php echo $envio['id']; ?>">
-                                            <?php echo $envio['tracking_number'] . ' - ' . $envio['name']; ?>
-                                        </option>
-                                <?php endwhile;
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Generar Factura</button>
-                    </div>
-                </form>
+<!-- Modal para nueva factura -->
+<div class="modal fade" id="nuevaFacturaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Generar Nueva Factura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form action="" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="accion" value="generar">
+                    
+                    <div class="mb-3">
+                        <label for="envio_id" class="form-label">Seleccionar Envío</label>
+                        <select class="form-select" id="envio_id" name="envio_id" required>
+                            <option value="">-- Seleccione un envío --</option>
+                            <?php foreach ($envios_sin_factura as $envio): ?>
+                            <option value="<?php echo $envio['id']; ?>" data-monto="<?php echo $envio['estimated_cost']; ?>">
+                                <?php echo $envio['tracking_number'] . ' - ' . $envio['name']; ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="monto" class="form-label">Monto ($)</label>
+                        <input type="number" class="form-control" id="monto" name="monto" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Generar Factura</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Autocompletar monto al seleccionar envío
+document.getElementById('envio_id').addEventListener('change', function() {
+    const option = this.options[this.selectedIndex];
+    if (option && option.dataset.monto) {
+        document.getElementById('monto').value = option.dataset.monto;
+    } else {
+        document.getElementById('monto').value = '';
+    }
+});
 
-    <!-- Scripts específicos de la página -->
-    <script>
-        function verFactura(id) {
-            window.location.href = 'detalle_factura.php?id=' + id;
-        }
-
-        function registrarPago(id) {
-            window.location.href = 'registrar_pago.php?id=' + id;
-        }
-
-        function enviarPorEmail(id) {
-            // Confirmación antes de enviar
-            if (confirm('¿Desea enviar esta factura por correo electrónico?')) {
-                fetch('enviar_factura_email.php?id=' + id)
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error al enviar el correo electrónico');
-                    });
+// Filtro de búsqueda para la tabla
+document.getElementById('buscarFactura').addEventListener('keyup', function() {
+    const texto = this.value.toLowerCase();
+    const tabla = document.querySelector('table');
+    const filas = tabla.getElementsByTagName('tr');
+    
+    for (let i = 1; i < filas.length; i++) { // Empezar desde 1 para omitir el encabezado
+        const celdas = filas[i].getElementsByTagName('td');
+        let mostrar = false;
+        
+        for (let j = 0; j < celdas.length; j++) {
+            if (celdas[j].textContent.toLowerCase().indexOf(texto) > -1) {
+                mostrar = true;
+                break;
             }
         }
-    </script>
+        
+        filas[i].style.display = mostrar ? '' : 'none';
+    }
+});
+</script>
 
-    <!-- Agregar script para manejar el sidebar -->
-    <script>
-        // Asegúrate de que este script esté al final de tu archivo o incluido en footer.php
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle sidebar en móvil
-            const toggleButton = document.getElementById('toggleSidebar');
-            const sidebar = document.querySelector('.sidebar');
-
-            toggleButton.addEventListener('click', function() {
-                sidebar.classList.toggle('show');
-                // Añadir animación sutil al botón
-                this.classList.add('clicked');
-                setTimeout(() => {
-                    this.classList.remove('clicked');
-                }, 300);
-            });
-
-            // Cerrar sidebar al hacer clic en el contenido principal en móvil
-            document.querySelector('.main-content').addEventListener('click', function() {
-                if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
-                    sidebar.classList.remove('show');
-                }
-            });
-        });
-    </script>
-</body>
-
-</html>
+<?php include 'components/footer.php'; ?>

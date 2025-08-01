@@ -22,7 +22,8 @@ function enviarCorreoConfirmacion($email, $nombre_usuario, $tracking_number, $es
         $mail->addAddress($email, $nombre_usuario);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Confirmación de Envío #' . $tracking_number;
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = "Confirmación de Envío #$tracking_number";
 
         // Construir el cuerpo del correo con un diseño profesional
         $mail->Body = '
@@ -120,8 +121,9 @@ function enviarCorreoConfirmacionConPago($email, $nombre, $tracking_number, $cos
         $mail->Port = $_ENV['SMTP_PORT'] ?? 587;
         $mail->setFrom($_ENV['SMTP_FROM_EMAIL'] ?? 'envios@mendez.com', $_ENV['SMTP_FROM_NAME'] ?? 'MENDEZ Transportes');
         $mail->addAddress($email, $nombre);
-
         $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+        $mail->Subject = "Confirmación de Envío #$tracking_number - Pendiente de Pago";
         $mail->Subject = 'Confirmación de Envío #' . $tracking_number . ' - Pendiente de Pago';
 
         // Asegurarse que $costo sea numérico para evitar errores
