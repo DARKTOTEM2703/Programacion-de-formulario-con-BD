@@ -375,13 +375,16 @@ async function realizarCalculoCosto(resultadoCalculo) {
           : calcularCostoSimple(parseFloat(peso), tipoPaquete);
 
       // Guardar el costo calculado en la variable global
-      costoBase = distancia > 0 ?
-        calcularCostoEnvio(distancia, parseFloat(peso), tipoPaquete) :
-        calcularCostoSimple(parseFloat(peso), tipoPaquete);
+      costoBase =
+        distancia > 0
+          ? calcularCostoEnvio(distancia, parseFloat(peso), tipoPaquete)
+          : calcularCostoSimple(parseFloat(peso), tipoPaquete);
 
       // Actualizar todos los campos hidden
-      const hiddenFields = document.querySelectorAll("[name='hidden_calculated_cost']");
-      hiddenFields.forEach(field => {
+      const hiddenFields = document.querySelectorAll(
+        "[name='hidden_calculated_cost']"
+      );
+      hiddenFields.forEach((field) => {
         field.value = costoBase.toFixed(2);
       });
 

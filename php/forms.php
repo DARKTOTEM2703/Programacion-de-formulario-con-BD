@@ -179,6 +179,15 @@ if (empty($_SESSION['csrf_token'])) {
                     </div>
 
                     <div class="form-group">
+                        <label for="value"><i class="bi bi-currency-dollar me-1"></i> Valor declarado (MXN) *</label>
+                        <input type="number" id="value" name="value" min="1" step="0.01" class="form-control" required
+                            placeholder="Ejemplo: 1500.00">
+                        <small class="form-text text-muted">
+                            Valor aproximado del contenido del paquete para efectos de seguro y responsabilidad legal
+                        </small>
+                    </div>
+
+                    <div class="form-group">
                         <label for="package_type"><i class="bi bi-box me-1"></i> Tipo de paquete *</label>
                         <select id="package_type" name="package_type" class="form-select" required>
                             <option value="">Selecciona una opción</option>

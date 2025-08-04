@@ -112,6 +112,7 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 
    ```bash
    composer install
+   composer require stripe/stripe-php
    composer require phpmailer/phpmailer
    composer require vlucas/phpdotenv
    composer require --dev phpunit/phpunit
