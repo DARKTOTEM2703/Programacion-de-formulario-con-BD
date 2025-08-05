@@ -122,6 +122,7 @@ $repartidores = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -219,17 +220,17 @@ $repartidores = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
             <!-- Mensajes -->
             <?php if (isset($_SESSION['success'])): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             <?php endif; ?>
 
             <!-- Lista de repartidores -->
@@ -241,17 +242,20 @@ $repartidores = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <form method="GET" class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label for="buscar" class="form-label">Buscar Repartidor</label>
-                            <input type="text" class="form-control" id="buscar" name="buscar" 
-                                   value="<?php echo htmlspecialchars($busqueda); ?>" 
-                                   placeholder="Nombre, email o teléfono...">
+                            <input type="text" class="form-control" id="buscar" name="buscar"
+                                value="<?php echo htmlspecialchars($busqueda); ?>"
+                                placeholder="Nombre, email o teléfono...">
                         </div>
                         <div class="col-md-3">
                             <label for="status" class="form-label">Estado</label>
                             <select class="form-select" id="status" name="status">
                                 <option value="">Todos</option>
-                                <option value="activo" <?php echo $filtro_status == 'activo' ? 'selected' : ''; ?>>Activos</option>
-                                <option value="pendiente" <?php echo $filtro_status == 'pendiente' ? 'selected' : ''; ?>>Pendientes</option>
-                                <option value="suspendido" <?php echo $filtro_status == 'suspendido' ? 'selected' : ''; ?>>Suspendidos</option>
+                                <option value="activo" <?php echo $filtro_status == 'activo' ? 'selected' : ''; ?>>
+                                    Activos</option>
+                                <option value="pendiente"
+                                    <?php echo $filtro_status == 'pendiente' ? 'selected' : ''; ?>>Pendientes</option>
+                                <option value="suspendido"
+                                    <?php echo $filtro_status == 'suspendido' ? 'selected' : ''; ?>>Suspendidos</option>
                             </select>
                         </div>
                         <div class="col-md-3 d-flex align-items-end">
@@ -281,38 +285,43 @@ $repartidores = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                             </thead>
                             <tbody>
                                 <?php if (empty($repartidores)): ?>
-                                    <tr>
-                                        <td colspan="9" class="text-center py-4">
-                                            <i class="bi bi-inbox fs-1 text-muted"></i>
-                                            <p class="mt-2">No se encontraron repartidores</p>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="9" class="text-center py-4">
+                                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                                        <p class="mt-2">No se encontraron repartidores</p>
+                                    </td>
+                                </tr>
                                 <?php else: ?>
-                                    <?php foreach ($repartidores as $repartidor): ?>
-                                        <tr>
-                                            <td><?php echo $repartidor['id']; ?></td>
-                                            <td>
-                                                <strong><?php echo htmlspecialchars($repartidor['nombre_usuario']); ?></strong><br>
-                                                <small class="text-muted"><?php echo htmlspecialchars($repartidor['email']); ?></small>
-                                            </td>
-                                            <td>
-                                                <i class="bi bi-telephone"></i> <?php echo htmlspecialchars($repartidor['telefono'] ?? 'No disponible'); ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($repartidor['vehiculo']): ?>
-                                                    <strong><?php echo htmlspecialchars($repartidor['vehiculo']); ?></strong><br>
-                                                    <small>Placa: <?php echo htmlspecialchars($repartidor['placa'] ?? 'N/A'); ?></small><br>
-                                                    <small>Carga: <?php echo htmlspecialchars($repartidor['capacidad_carga'] ?? 'N/A'); ?> kg</small>
-                                                <?php else: ?>
-                                                    <span class="text-muted">No especificado</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?php echo htmlspecialchars($repartidor['tipo_licencia'] ?? 'No especificada'); ?><br>
-                                                <small><?php echo $repartidor['anos_experiencia'] ? $repartidor['anos_experiencia'] . ' años exp.' : ''; ?></small>
-                                            </td>
-                                            <td>
-                                                <span class="badge <?php 
+                                <?php foreach ($repartidores as $repartidor): ?>
+                                <tr>
+                                    <td><?php echo $repartidor['id']; ?></td>
+                                    <td>
+                                        <strong><?php echo htmlspecialchars($repartidor['nombre_usuario']); ?></strong><br>
+                                        <small
+                                            class="text-muted"><?php echo htmlspecialchars($repartidor['email']); ?></small>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-telephone"></i>
+                                        <?php echo htmlspecialchars($repartidor['telefono'] ?? 'No disponible'); ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($repartidor['vehiculo']): ?>
+                                        <strong><?php echo htmlspecialchars($repartidor['vehiculo']); ?></strong><br>
+                                        <small>Placa:
+                                            <?php echo htmlspecialchars($repartidor['placa'] ?? 'N/A'); ?></small><br>
+                                        <small>Carga:
+                                            <?php echo htmlspecialchars($repartidor['capacidad_carga'] ?? 'N/A'); ?>
+                                            kg</small>
+                                        <?php else: ?>
+                                        <span class="text-muted">No especificado</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo htmlspecialchars($repartidor['tipo_licencia'] ?? 'No especificada'); ?><br>
+                                        <small><?php echo $repartidor['anos_experiencia'] ? $repartidor['anos_experiencia'] . ' años exp.' : ''; ?></small>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?php 
                                                     echo match($repartidor['status']) {
                                                         'activo' => 'bg-success',
                                                         'pendiente' => 'bg-warning',
@@ -320,34 +329,38 @@ $repartidores = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                                         default => 'bg-secondary'
                                                     };
                                                 ?>">
-                                                    <?php echo ucfirst($repartidor['status']); ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-info"><?php echo $repartidor['envios_asignados']; ?></span>
-                                            </td>
-                                            <td><?php echo date('d/m/Y', strtotime($repartidor['created_at'])); ?></td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm">
-                                                    <?php if ($repartidor['status'] == 'pendiente'): ?>
-                                                        <button class="btn btn-outline-success" onclick="aprobarRepartidor(<?php echo $repartidor['id']; ?>)">
-                                                            <i class="bi bi-check"></i>
-                                                        </button>
-                                                    <?php endif; ?>
-                                                    
-                                                    <?php if ($repartidor['status'] == 'activo'): ?>
-                                                        <button class="btn btn-outline-warning" onclick="suspenderRepartidor(<?php echo $repartidor['id']; ?>)">
-                                                            <i class="bi bi-pause"></i>
-                                                        </button>
-                                                    <?php endif; ?>
-                                                    
-                                                    <button class="btn btn-outline-danger" onclick="eliminarRepartidor(<?php echo $repartidor['id']; ?>)">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                            <?php echo ucfirst($repartidor['status']); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge bg-info"><?php echo $repartidor['envios_asignados']; ?></span>
+                                    </td>
+                                    <td><?php echo date('d/m/Y', strtotime($repartidor['created_at'])); ?></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <?php if ($repartidor['status'] == 'pendiente'): ?>
+                                            <button class="btn btn-outline-success"
+                                                onclick="aprobarRepartidor(<?php echo $repartidor['id']; ?>)">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <?php endif; ?>
+
+                                            <?php if ($repartidor['status'] == 'activo'): ?>
+                                            <button class="btn btn-outline-warning"
+                                                onclick="suspenderRepartidor(<?php echo $repartidor['id']; ?>)">
+                                                <i class="bi bi-pause"></i>
+                                            </button>
+                                            <?php endif; ?>
+
+                                            <button class="btn btn-outline-danger"
+                                                onclick="eliminarRepartidor(<?php echo $repartidor['id']; ?>)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -365,34 +378,35 @@ $repartidores = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function aprobarRepartidor(repartidorId) {
-            if (confirm('¿Está seguro que desea aprobar este repartidor?')) {
-                document.getElementById('accion').value = 'aprobar';
-                document.getElementById('repartidor_id').value = repartidorId;
-                document.getElementById('actionForm').submit();
-            }
+    function aprobarRepartidor(repartidorId) {
+        if (confirm('¿Está seguro que desea aprobar este repartidor?')) {
+            document.getElementById('accion').value = 'aprobar';
+            document.getElementById('repartidor_id').value = repartidorId;
+            document.getElementById('actionForm').submit();
         }
+    }
 
-        function suspenderRepartidor(repartidorId) {
-            if (confirm('¿Está seguro que desea suspender este repartidor?')) {
-                document.getElementById('accion').value = 'suspender';
-                document.getElementById('repartidor_id').value = repartidorId;
-                document.getElementById('actionForm').submit();
-            }
+    function suspenderRepartidor(repartidorId) {
+        if (confirm('¿Está seguro que desea suspender este repartidor?')) {
+            document.getElementById('accion').value = 'suspender';
+            document.getElementById('repartidor_id').value = repartidorId;
+            document.getElementById('actionForm').submit();
         }
+    }
 
-        function eliminarRepartidor(repartidorId) {
-            if (confirm('¿Está seguro que desea eliminar este repartidor? Esta acción no se puede deshacer.')) {
-                document.getElementById('accion').value = 'eliminar';
-                document.getElementById('repartidor_id').value = repartidorId;
-                document.getElementById('actionForm').submit();
-            }
+    function eliminarRepartidor(repartidorId) {
+        if (confirm('¿Está seguro que desea eliminar este repartidor? Esta acción no se puede deshacer.')) {
+            document.getElementById('accion').value = 'eliminar';
+            document.getElementById('repartidor_id').value = repartidorId;
+            document.getElementById('actionForm').submit();
         }
+    }
 
-        // Toggle sidebar
-        document.getElementById('toggleSidebar').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('show');
-        });
+    // Toggle sidebar
+    document.getElementById('toggleSidebar').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('show');
+    });
     </script>
 </body>
+
 </html>

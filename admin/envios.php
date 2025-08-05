@@ -115,6 +115,18 @@ if (!empty($params)) {
 $stmt->execute();
 $envios = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+// Función helper para obtener clase de status
+function getStatusClass($status)
+{
+    return match ($status) {
+        'Procesando' => 'procesando',
+        'En tránsito' => 'transito',
+        'Entregado' => 'entregado',
+        'Cancelado' => 'cancelado',
+        default => 'procesando'
+    };
+}
+
 // Obtener repartidores activos para asignación
 $repartidores_activos = [];
 $result = $conn->query("

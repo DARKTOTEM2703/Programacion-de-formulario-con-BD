@@ -330,3 +330,1123 @@ body {
     padding-top: 60px; /* Espacio adicional en la parte superior */
   }
 }
+
+/* =================== MEJORAS DE TABLAS MODERNAS - REEMPLAZAR SECCIÓN EXISTENTE =================== */
+
+/* Contenedor de tabla mejorado */
+.table-responsive {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* TODAS las tablas del admin - aplicar automáticamente */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* Header moderno para TODAS las tablas */
+.table thead {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #0046a1 100%);
+  position: relative;
+  z-index: 2;
+}
+
+.table thead th {
+  padding: 1rem 1.25rem;
+  color: white !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  border: none;
+  position: relative;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table thead th:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Filas del cuerpo para TODAS las tablas */
+.table tbody tr {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--card-bg);
+  position: relative;
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(0, 87, 184, 0.02);
+}
+
+.table tbody tr:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 87, 184, 0.08) 0%,
+    rgba(0, 87, 184, 0.04) 50%,
+    rgba(0, 87, 184, 0.08) 100%
+  );
+  transform: translateX(3px);
+  box-shadow: 0 3px 12px rgba(0, 87, 184, 0.15);
+  z-index: 5;
+}
+
+/* Celdas para TODAS las tablas */
+.table tbody td {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+  border: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Mejorar elementos comunes en tablas */
+
+/* Números de tracking y IDs */
+.table tbody td strong,
+.table tbody td:first-child {
+  font-family: "SF Mono", "Monaco", "Consolas", monospace;
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+  background: rgba(0, 87, 184, 0.05);
+  border: 1px solid rgba(0, 87, 184, 0.1);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-color);
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover td strong,
+.table tbody tr:hover td:first-child {
+  background: rgba(0, 87, 184, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 87, 184, 0.2);
+}
+
+/* Badges modernos automáticos */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border: 2px solid transparent;
+  min-width: 85px;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Colores específicos de badges */
+.bg-success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+  color: #065f46 !important;
+  border-color: #10b981;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+  color: #92400e !important;
+  border-color: #f59e0b;
+}
+
+.bg-info {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%) !important;
+  color: #1e40af !important;
+  border-color: #3b82f6;
+}
+
+.bg-danger {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%) !important;
+  color: #991b1b !important;
+  border-color: #ef4444;
+}
+
+.bg-primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    #0046a1 100%
+  ) !important;
+  color: white !important;
+  border-color: var(--primary-color);
+}
+
+.bg-secondary {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  color: #475569 !important;
+  border-color: #64748b;
+}
+
+/* Información de clientes/usuarios mejorada */
+.table tbody td:has(strong) {
+  position: relative;
+}
+
+.table tbody tr:hover td {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* Información de contacto */
+.table tbody td small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.table tbody tr:hover td small {
+  color: var(--primary-color);
+  opacity: 0.8;
+}
+
+/* Dinero y números */
+.table tbody td:contains("$") {
+  font-family: "SF Mono", monospace;
+  font-weight: 600;
+  color: var(--success);
+  font-size: 0.95rem;
+}
+
+/* Fechas */
+.table tbody td:matches([title*="fecha"]) {
+  font-family: "SF Mono", monospace;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Botones de acción mejorados */
+.btn-group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 15;
+}
+
+.btn-group .btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid;
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 0.9rem;
+  position: relative;
+  padding: 0;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary {
+  color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.btn-outline-success {
+  color: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+.btn-outline-success:hover {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.btn-outline-warning {
+  color: #f59e0b !important;
+  border-color: #f59e0b !important;
+}
+
+.btn-outline-warning:hover {
+  background-color: #f59e0b !important;
+  color: white !important;
+}
+
+.btn-outline-danger {
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+.btn-outline-secondary {
+  color: #6b7280 !important;
+  border-color: #6b7280 !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6b7280 !important;
+  color: white !important;
+}
+
+/* Dropdown mejorado */
+.dropdown {
+  position: relative;
+  z-index: 20;
+}
+
+.dropdown .dropdown-toggle {
+  position: relative;
+  z-index: 21;
+}
+
+.dropdown .dropdown-menu {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  min-width: 160px;
+  background: var(--card-bg);
+  z-index: 1050;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  transform: translateY(4px);
+}
+
+.dropdown .dropdown-item {
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 1px 0;
+  color: var(--text-color);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.dropdown .dropdown-item:hover {
+  background: rgba(0, 87, 184, 0.1);
+  transform: translateX(4px);
+  color: var(--primary-color);
+}
+
+.dropdown .dropdown-item.text-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* Estado vacío mejorado */
+.table tbody tr:only-child td[colspan] {
+  padding: 60px 40px;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--card-bg);
+}
+
+.table tbody tr:only-child td[colspan] i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.4;
+  display: block;
+}
+
+.table tbody tr:only-child td[colspan] p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Iconos en headers */
+.table thead th i {
+  margin-right: 8px;
+  opacity: 0.8;
+  font-size: 1rem;
+}
+
+/* Responsive mejorado */
+@media (max-width: 768px) {
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .table tbody td strong,
+  .table tbody td:first-child {
+    min-width: 70px;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .btn-group {
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .btn-group .btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  .badge {
+    min-width: 70px;
+    font-size: 0.7rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .dropdown .dropdown-menu {
+    min-width: 140px;
+    right: -10px;
+    transform: translateY(4px) translateX(-10px);
+  }
+}
+
+@media (max-width: 576px) {
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .badge {
+    min-width: 60px;
+    font-size: 0.65rem;
+  }
+
+  .btn-group .btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dropdown .dropdown-menu {
+    position: fixed;
+    top: auto !important;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    width: auto;
+    min-width: auto;
+  }
+}
+
+/* Fixes para overflow y z-index */
+.card-body {
+  overflow: visible;
+  position: relative;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+}
+
+/* Fix para Bootstrap table-responsive */
+.table-responsive .dropdown-menu {
+  position: fixed;
+}
+
+/* Ajustes para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .dropdown .dropdown-menu {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .dropdown .dropdown-item {
+    color: var(--text-color);
+  }
+
+  .dropdown .dropdown-item:hover {
+    background: rgba(0, 87, 184, 0.2);
+    color: white;
+  }
+
+  .table tbody td strong,
+  .table tbody td:first-child {
+    background: rgba(0, 87, 184, 0.1);
+    border-color: rgba(0, 87, 184, 0.2);
+    color: var(--text-color);
+  }
+
+  .btn-group .btn {
+    background: var(--card-bg);
+  }
+
+  /* Badges en modo oscuro */
+  .bg-success {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+  }
+
+  .bg-warning {
+    background: rgba(245, 158, 11, 0.2) !important;
+    color: #fbbf24 !important;
+  }
+
+  .bg-info {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+  }
+
+  .bg-danger {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+  }
+}
+
+/* Animaciones adicionales */
+@keyframes tableRowSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.table tbody tr {
+  animation: tableRowSlide 0.3s ease-out;
+}
+
+.table tbody tr:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.table tbody tr:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.table tbody tr:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.table tbody tr:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.table tbody tr:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+/* Mejoras específicas para celdas con contenido especial */
+
+/* Para emails */
+.table tbody td[title*="email"],
+.table tbody td:contains("@") {
+  font-family: "SF Mono", monospace;
+  font-size: 0.85rem;
+}
+
+/* Para teléfonos */
+.table tbody td:contains("bi-telephone") {
+  font-family: "SF Mono", monospace;
+}
+
+/* Para vehículos y placas */
+.table tbody td:has(small) {
+  line-height: 1.4;
+}
+
+.table tbody td small {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+/* =================== DISEÑO DE TABLAS EMPRESARIAL ELEGANTE =================== */
+
+/* Forzar tema oscuro siempre */
+:root {
+  /* Override para forzar tema oscuro empresarial */
+  --bg-color: #0f1419 !important;
+  --card-bg: #1a1f2e !important;
+  --text-color: #e2e8f0 !important;
+  --text-muted: #94a3b8 !important;
+  --border-color: rgba(148, 163, 184, 0.12) !important;
+
+  /* Paleta empresarial oscura */
+  --table-header-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --table-hover-bg: rgba(59, 130, 246, 0.08);
+  --table-border: rgba(148, 163, 184, 0.1);
+  --dropdown-bg: #1e293b;
+  --dropdown-border: rgba(148, 163, 184, 0.2);
+  --shadow-dark: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+/* Contenedor principal de tabla */
+.table-responsive {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-dark);
+  overflow: visible; /* CRÍTICO: cambiar de hidden a visible */
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--table-border);
+}
+
+/* Tabla principal - Diseño empresarial */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+  background: transparent;
+  color: var(--text-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header empresarial elegante */
+.table thead {
+  background: var(--table-header-bg);
+  position: relative;
+  z-index: 5;
+}
+
+.table thead th {
+  padding: 1.25rem 1.5rem;
+  color: #f8fafc !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  border: none;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  vertical-align: middle;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.table thead th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.table thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.table thead th:hover {
+  background: rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+.table thead th i {
+  margin-right: 8px;
+  opacity: 0.9;
+  font-size: 1rem;
+}
+
+/* Filas del cuerpo - Estilo empresarial */
+.table tbody tr {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid var(--table-border);
+  background: var(--card-bg);
+  position: relative;
+  z-index: 10;
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(59, 130, 246, 0.03);
+}
+
+.table tbody tr:hover {
+  background: var(--table-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  z-index: 50; /* ALTO para estar por encima de todo */
+}
+
+.table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+/* Celdas empresariales */
+.table tbody td {
+  padding: 1.25rem 1.5rem;
+  vertical-align: middle;
+  border: none;
+  transition: all 0.3s ease;
+  position: relative;
+  background: inherit;
+}
+
+/* Tracking numbers - Estilo profesional */
+.table tbody td:first-child,
+.table tbody td strong {
+  font-family: "JetBrains Mono", "SF Mono", "Monaco", "Consolas", monospace;
+  font-weight: 600;
+  padding: 0.625rem 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-left: 3px solid #3b82f6;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #60a5fa;
+  display: inline-block;
+  min-width: 140px;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.table tbody tr:hover td:first-child,
+.table tbody tr:hover td strong {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+/* Badges empresariales premium */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.625rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  min-width: 100px;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.badge::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.badge:hover::before {
+  left: 100%;
+}
+
+.badge:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Estados específicos - Colores empresariales */
+.bg-success {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.2) 0%,
+    rgba(16, 185, 129, 0.1) 100%
+  ) !important;
+  color: #4ade80 !important;
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
+}
+
+.bg-warning {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.2) 0%,
+    rgba(217, 119, 6, 0.1) 100%
+  ) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+}
+
+.bg-info {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.2) 0%,
+    rgba(37, 99, 235, 0.1) 100%
+  ) !important;
+  color: #60a5fa !important;
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.bg-danger {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.2) 0%,
+    rgba(220, 38, 38, 0.1) 100%
+  ) !important;
+  color: #f87171 !important;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+}
+
+/* Información de usuario elegante */
+.table tbody tr:hover td {
+  color: #cbd5e1;
+}
+
+.table tbody td small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* Montos con estilo financiero */
+.table tbody td:has(span[title*="$"]),
+.table tbody td:contains("$") {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  color: #4ade80;
+  font-size: 1rem;
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+/* Botones de acción premium */
+.btn-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 100; /* MUY ALTO */
+}
+
+.btn-group .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(30, 41, 59, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+  padding: 0;
+  backdrop-filter: blur(8px);
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: currentColor;
+}
+
+.btn-outline-primary {
+  color: #60a5fa !important;
+}
+
+.btn-outline-primary:hover {
+  background: rgba(59, 130, 246, 0.2) !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.btn-outline-success {
+  color: #4ade80 !important;
+}
+
+.btn-outline-success:hover {
+  background: rgba(34, 197, 94, 0.2) !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4) !important;
+}
+
+.btn-outline-secondary {
+  color: #94a3b8 !important;
+}
+
+.btn-outline-secondary:hover {
+  background: rgba(148, 163, 184, 0.2) !important;
+  box-shadow: 0 0 20px rgba(148, 163, 184, 0.3) !important;
+}
+
+/* DROPDOWN MEJORADO - SOLUCION DEFINITIVA AL Z-INDEX */
+.dropdown {
+  position: relative;
+  z-index: 1000; /* SUPER ALTO */
+}
+
+.dropdown-toggle {
+  position: relative;
+  z-index: 1001;
+}
+
+.dropdown-menu {
+  border-radius: 12px !important;
+  border: 1px solid var(--dropdown-border) !important;
+  box-shadow: var(--shadow-dark) !important;
+  padding: 8px !important;
+  min-width: 200px !important;
+  background: var(--dropdown-bg) !important;
+  z-index: 9999 !important; /* MÁXIMO Z-INDEX */
+  position: fixed !important; /* FIXED en lugar de absolute */
+  transform: translateY(8px) !important;
+  backdrop-filter: blur(16px) !important;
+  margin: 0 !important;
+}
+
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--dropdown-bg);
+  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.dropdown-item {
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 2px 0 !important;
+  color: var(--text-color) !important;
+  background: transparent !important;
+  border: none !important;
+  width: 100% !important;
+  text-align: left !important;
+  font-size: 0.875rem !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+  transform: translateX(6px) !important;
+  color: #60a5fa !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+}
+
+.dropdown-item.text-danger {
+  color: #f87171 !important;
+}
+
+.dropdown-item.text-danger:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
+}
+
+.dropdown-divider {
+  border-color: var(--dropdown-border) !important;
+  margin: 8px 0 !important;
+}
+
+/* Estado vacío elegante */
+.table tbody tr:only-child td[colspan] {
+  padding: 80px 40px;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--card-bg);
+}
+
+.table tbody tr:only-child td[colspan] i {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  opacity: 0.3;
+  display: block;
+  color: #475569;
+}
+
+.table tbody tr:only-child td[colspan] h5 {
+  color: var(--text-color);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.table tbody tr:only-child td[colspan] p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Responsive empresarial */
+@media (max-width: 768px) {
+  .table thead th,
+  .table tbody td {
+    padding: 1rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .table tbody td:first-child,
+  .table tbody td strong {
+    min-width: 100px;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .btn-group .btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .badge {
+    min-width: 80px;
+    font-size: 0.7rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Dropdown móvil - MEJOR POSICIONAMIENTO */
+  .dropdown-menu {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 20px !important;
+    left: 20px !important;
+    right: 20px !important;
+    transform: none !important;
+    width: auto !important;
+    min-width: auto !important;
+    z-index: 9999 !important;
+  }
+}
+
+/* Fixes adicionales para z-index */
+.card {
+  position: relative;
+  z-index: 1;
+}
+
+.card-body {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  overflow-y: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Animaciones suaves */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table tbody tr {
+  animation: slideInUp 0.4s ease-out;
+}
+
+.table tbody tr:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.table tbody tr:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.table tbody tr:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.table tbody tr:nth-child(4) {
+  animation-delay: 0.25s;
+}
+.table tbody tr:nth-child(5) {
+  animation-delay: 0.3s;
+}
+
+/* Glow effect para elementos interactivos */
+.table tbody tr:hover .badge,
+.table tbody tr:hover .btn {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* Mejoras tipográficas */
+.table {
+  font-feature-settings: "liga", "kern";
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbar personalizado para dropdown */
+.dropdown-menu {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.3);
+  border-radius: 3px;
+}
