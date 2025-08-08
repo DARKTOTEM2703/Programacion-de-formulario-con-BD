@@ -774,6 +774,170 @@ body {
   }
 }
 
+/* Media Queries para Tablas Responsivas */
+
+/* Tablets (992px y menos) */
+@media screen and (max-width: 992px) {
+  .table-responsive {
+    margin: 0 -15px;
+    width: calc(100% + 30px);
+    border-radius: 0;
+  }
+
+  .table thead th {
+    padding: 0.875rem 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+  }
+
+  .table tbody td {
+    padding: 0.875rem 1rem;
+  }
+
+  .table tbody td:first-child {
+    min-width: 40px;
+    max-width: 60px;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .table tbody td strong {
+    min-width: 120px;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Móviles (768px y menos) */
+@media screen and (max-width: 768px) {
+  /* Scrollbar horizontal optimizado */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+  }
+
+  /* Indicador visual de scroll horizontal */
+  .table-responsive::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    background: linear-gradient(
+      90deg,
+      rgba(26, 31, 46, 0) 0%,
+      rgba(26, 31, 46, 0.8) 100%
+    );
+    pointer-events: none;
+    opacity: 0.7;
+    z-index: 10;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  /* Ajustes de tabla */
+  .table {
+    min-width: 768px; /* Fuerza scrollbar en móviles */
+  }
+
+  .table thead th {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .table tbody td {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Ajustes específicos para IDs y tracking */
+  .table tbody td:first-child {
+    min-width: 36px;
+    max-width: 50px;
+    margin-top: 0.75rem !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    height: 32px !important;
+    font-size: 0.75rem;
+  }
+
+  /* Reducir botones de acción */
+  .btn-group .btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+
+  /* Mejorar badges */
+  .badge {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.65rem;
+    min-width: 70px;
+  }
+}
+
+/* Móviles pequeños (576px y menos) */
+@media screen and (max-width: 576px) {
+  /* Ajustes adicionales para pantallas muy pequeñas */
+  .table {
+    min-width: 650px; /* Ajustado para móviles pequeños */
+  }
+
+  .table thead th {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.6rem;
+  }
+
+  .table tbody td {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .table tbody td:first-child {
+    min-width: 30px;
+    max-width: 40px;
+    padding: 0.375rem;
+    margin-top: 0.5rem !important;
+    height: 28px !important;
+    font-size: 0.7rem;
+  }
+
+  .table tbody td strong {
+    min-width: 80px;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  /* Botones más pequeños */
+  .btn-group {
+    gap: 2px;
+  }
+
+  .btn-group .btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+
+  /* Mejorar experiencia de scroll */
+  .table-responsive::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .table-responsive::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 2px;
+  }
+}
+
 /* Fixes para overflow y z-index */
 .card-body {
   overflow: visible;
@@ -1327,8 +1491,8 @@ body {
     font-size: 0.85rem;
   }
 
-  .table tbody td:first-child,
-  .table tbody td strong {
+  .table tbody td strong,
+  .table tbody td:first-child {
     min-width: 120px;
     font-size: 0.8rem;
   }
@@ -1626,4 +1790,152 @@ body {
 /* Asegurar que la altura total de la celda se mantiene */
 .table tbody td {
   height: auto !important;
+}
+/* ============== RESPONSIVE TABLES ============== */
+
+/* Desktop medio */
+@media (max-width: 1200px) {
+  .table thead th {
+    font-size: 0.72rem;
+  }
+  .table tbody td {
+    font-size: 0.78rem;
+  }
+  .table tbody td strong {
+    min-width: 120px;
+  }
+}
+
+/* Tablets landscape */
+@media (max-width: 992px) {
+  .table thead th {
+    padding: 0.85rem 0.9rem;
+  }
+  .table tbody td {
+    padding: 0.85rem 0.9rem;
+  }
+  .table tbody td:first-child {
+    min-width: 50px;
+  }
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.45rem 0.6rem;
+  }
+  .btn-group .btn {
+    width: 38px;
+    height: 38px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Tablets portrait / móviles grandes */
+@media (max-width: 820px) {
+  .table-responsive {
+    position: relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .table-responsive::-webkit-scrollbar {
+    height: 6px;
+  }
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.45);
+    border-radius: 3px;
+  }
+  .table {
+    min-width: 900px;
+  } /* fuerza scroll horizontal conservando columnas */
+  .table thead th,
+  .table tbody td {
+    white-space: nowrap;
+  }
+}
+
+/* Móviles (<=768px) */
+@media (max-width: 768px) {
+  .table {
+    min-width: 880px;
+  }
+  .table thead th {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.62rem;
+  }
+  .table tbody td {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.72rem;
+  }
+  .table tbody td strong {
+    min-width: 100px;
+    font-size: 0.7rem;
+  }
+  .table tbody td:first-child {
+    min-width: 42px;
+    max-width: 50px;
+    font-size: 0.65rem;
+  }
+  .badge {
+    min-width: 64px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.6rem;
+  }
+  .btn-group .btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.65rem;
+  }
+  .table-responsive::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 22px;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(15, 23, 42, 0.85) 100%
+    );
+    pointer-events: none;
+  }
+}
+
+/* Móviles pequeños (<=576px) */
+@media (max-width: 576px) {
+  .table {
+    min-width: 760px;
+  }
+  .table thead th {
+    padding: 0.6rem 0.55rem;
+    font-size: 0.58rem;
+  }
+  .table tbody td {
+    padding: 0.6rem 0.55rem;
+    font-size: 0.68rem;
+  }
+  .table tbody td strong {
+    min-width: 90px;
+    font-size: 0.65rem;
+    padding: 0.45rem 0.55rem;
+  }
+  .table tbody td:first-child {
+    min-width: 38px;
+    max-width: 44px;
+    font-size: 0.62rem;
+  }
+  .btn-group {
+    gap: 2px;
+  }
+  .btn-group .btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.6rem;
+  }
+  .badge {
+    font-size: 0.55rem;
+    padding: 0.3rem 0.45rem;
+  }
+  .table-responsive::-webkit-scrollbar {
+    height: 4px;
+  }
 }
