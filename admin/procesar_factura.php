@@ -107,3 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: facturas.php");
     exit();
 }
+$stmt = $conn->prepare("CALL sp_generar_factura_envio(?, ?, @ok,@msg)");
+$stmt->bind_param("ii",$envio_id,$_SESSION['usuario_id']);
+$stmt->execute();
+$r = $conn->query("SELECT @ok ok,@msg msg")->fetch_assoc();
+if (!$r['ok']) {
+  throw new Exception($r['msg']);
+}

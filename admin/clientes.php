@@ -8,34 +8,58 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] != 1) {
     exit();
 }
 
-// Procesamiento de acciones (activar/desactivar/eliminar)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $accion = $_POST['accion'] ?? '';
-    $cliente_id = $_POST['cliente_id'] ?? 0;
+// ======================================================================
+// BLOQUE REFACTORIZADO: Procesamiento de acciones usando Stored Procedure
+// Objetivo:
+//  - Centralizar la lógica de cambio de estado en sp_toggle_cliente_status
+//  - Evitar duplicación y riesgos (DELETE físico) -> usar soft delete (status='eliminado')
+//  - Proveer trazabilidad futura (si añades audit dentro del SP)
+// ======================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {                  // Verifica que la petición sea POST (seguridad básica)
+    $accion     = $_POST['accion']      ?? '';                // Lee acción solicitada (toggle_status | eliminar)
+    $cliente_id = (int)($_POST['cliente_id'] ?? 0);           // Convierte a entero para evitar inyección
 
-    switch ($accion) {
-        case 'toggle_status':
-            $nuevo_status = $_POST['nuevo_status'] ?? 'activo';
-            $stmt = $conn->prepare("UPDATE usuarios SET status = ? WHERE id = ? AND rol_id = 2");
-            $stmt->bind_param("si", $nuevo_status, $cliente_id);
-            if ($stmt->execute()) {
-                $_SESSION['success'] = "Estado del cliente actualizado correctamente";
+    // Pequeña función local para invocar el SP y simplificar código repetido
+    $callToggle = function(mysqli $conn, int $id, string $nuevoStatus): array {
+        $stmt = $conn->prepare("CALL sp_toggle_cliente_status(?, ?, @p_ok)"); // Prepara llamada al SP con parámetros IN y variable OUT
+        $stmt->bind_param("is", $id, $nuevoStatus);          // Vincula: i = entero (id), s = string (nuevo estado)
+        $stmt->execute();                                    // Ejecuta el SP en el servidor
+        $stmt->close();                                      // Cierra el statement para liberar recursos
+        $res = $conn->query("SELECT @p_ok AS ok")->fetch_assoc(); // Recupera valor OUT (@p_ok) mediante SELECT
+        return ['ok' => (int)($res['ok'] ?? 0), 'status' => $nuevoStatus]; // Normaliza respuesta
+    };
+
+    switch ($accion) {                                       // Evalúa la acción recibida
+        case 'toggle_status':                                // Cambio de estado (activo <-> inactivo)
+            $nuevo_status = $_POST['nuevo_status'] ?? 'activo'; // Estado de destino solicitado desde el formulario
+            $resultado = $callToggle($conn, $cliente_id, $nuevo_status); // Llama al SP y captura resultado
+            if ($resultado['ok']) {                          // Si el SP reporta éxito
+                $_SESSION['success'] = "Estado actualizado a '{$resultado['status']}'"; // Mensaje positivo
             } else {
-                $_SESSION['error'] = "Error al actualizar el estado del cliente";
+                $_SESSION['error']   = "No se pudo cambiar el estado (sin filas afectadas)"; // Mensaje de error genérico
             }
             break;
 
-        case 'eliminar':
-            $stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ? AND rol_id = 2");
-            $stmt->bind_param("i", $cliente_id);
-            if ($stmt->execute()) {
-                $_SESSION['success'] = "Cliente eliminado correctamente";
+        case 'eliminar':                                     // Eliminación (soft delete)
+            $resultado = $callToggle($conn, $cliente_id, 'eliminado'); // Marca el usuario como eliminado
+            if ($resultado['ok']) {
+                $_SESSION['success'] = "Cliente marcado como eliminado"; // Éxito soft delete
             } else {
-                $_SESSION['error'] = "Error al eliminar el cliente";
+                $_SESSION['error']   = "No se pudo marcar como eliminado"; // Error soft delete
             }
             break;
+
+        default:                                             // Acción no reconocida
+            $_SESSION['error'] = "Acción no válida";         // Mensaje defensivo
     }
+
+    header("Location: clientes.php");                        // Redirección Post/Redirect/Get (evita repost)
+    exit();                                                  // Termina ejecución tras la redirección
 }
+
+// ======================================================================
+// FIN BLOQUE REFACTORIZADO
+// ======================================================================
 
 // Obtener estadísticas de clientes
 $stats = [

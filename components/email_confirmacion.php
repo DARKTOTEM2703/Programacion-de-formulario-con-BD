@@ -107,7 +107,7 @@ El equipo de MENDEZ";
 /**
  * Envía un correo electrónico con la confirmación del envío e instrucciones de pago
  */
-function enviarCorreoConfirmacionConPago($email, $nombre, $tracking_number, $costo, $payment_link)
+function enviarCorreoConfirmacionConPago($email, $nombre, $tracking_number, $costo, $payment_link, $attachment_path = null)
 {
     $mail = new PHPMailer(true);
 
@@ -128,6 +128,15 @@ function enviarCorreoConfirmacionConPago($email, $nombre, $tracking_number, $cos
 
         // Asegurarse que $costo sea numérico para evitar errores
         $costo = is_numeric($costo) ? (float)$costo : 0;
+
+        // ✅ ADJUNTAR IMAGEN SI EXISTE
+        if ($attachment_path && file_exists($attachment_path)) {
+            $mail->addAttachment(
+                $attachment_path, 
+                'imagen_paquete_' . $tracking_number . '.' . pathinfo($attachment_path, PATHINFO_EXTENSION)
+            );
+            error_log("📎 Adjunto agregado: " . $attachment_path);
+        }
 
         // Construir el cuerpo del correo con un diseño profesional
         $mail->Body = '

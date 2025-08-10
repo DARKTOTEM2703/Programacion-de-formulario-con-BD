@@ -1,8 +1,12 @@
 <?php
 session_start();
-if (empty($_SESSION['csrf_token'])) {
+
+// ✅ GENERAR TOKEN CSRF si no existe
+if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+require_once '../components/db_connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -32,9 +36,11 @@ if (empty($_SESSION['csrf_token'])) {
         <!-- Mensajes de éxito/error aquí si los necesitas -->
 
         <form action="../components/form_handler.php" method="POST" id="shipping-form" enctype="multipart/form-data">
-            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-            <input type="hidden" name="usuario_id"
-                value="<?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : ''; ?>">
+            <!-- ✅ AGREGAR TOKEN CSRF HIDDEN -->
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+            <!-- ✅ AGREGAR usuario_id HIDDEN -->
+            <input type="hidden" name="usuario_id" value="<?= $_SESSION['usuario_id'] ?? '' ?>">
 
             <!-- Barra de progreso -->
             <div class="progress mb-4">

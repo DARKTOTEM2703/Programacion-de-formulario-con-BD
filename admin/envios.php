@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: text/html; charset=UTF-8'); // AÑADIDO: header UTF-8
 require_once '../components/db_connection.php';
 
 // Verificar autenticación de administrador
@@ -8,48 +9,68 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['rol_id'] != 1) {
     exit();
 }
 
-// Procesamiento de acciones
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $accion = $_POST['accion'] ?? '';
-    $envio_id = $_POST['envio_id'] ?? 0;
-
-    switch ($accion) {
-        case 'asignar_repartidor':
-            $repartidor_id = $_POST['repartidor_id'] ?? 0;
-            if ($repartidor_id > 0) {
-                $stmt = $conn->prepare("
-                    INSERT INTO repartidores_envios (usuario_id, envio_id, fecha_asignacion) 
-                    VALUES (?, ?, NOW()) 
-                    ON DUPLICATE KEY UPDATE fecha_asignacion = NOW()
-                ");
-                $stmt->bind_param("ii", $repartidor_id, $envio_id);
-
-                if ($stmt->execute()) {
-                    // Actualizar estado del envío
-                    $stmt2 = $conn->prepare("UPDATE envios SET status = 'En tránsito' WHERE id = ?");
-                    $stmt2->bind_param("i", $envio_id);
-                    $stmt2->execute();
-
-                    $_SESSION['success'] = "Repartidor asignado correctamente";
-                } else {
-                    $_SESSION['error'] = "Error al asignar repartidor";
-                }
-            }
-            break;
-
-        case 'cambiar_estado':
-            $nuevo_estado = $_POST['nuevo_estado'] ?? '';
-            $stmt = $conn->prepare("UPDATE envios SET status = ? WHERE id = ?");
-            $stmt->bind_param("si", $nuevo_estado, $envio_id);
-
-            if ($stmt->execute()) {
-                $_SESSION['success'] = "Estado del envío actualizado correctamente";
-            } else {
-                $_SESSION['error'] = "Error al actualizar el estado";
-            }
-            break;
-    }
+// AÑADIDO: Función para mostrar texto seguro UTF-8
+function e($text) {
+    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
 }
+
+// ================== ACCIONES (REFORMULADAS A STORED PROCEDURES) ==================
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {                     // Solo procesa si es POST (evita ejecuciones accidentales por GET)
+    $accion  = $_POST['accion']   ?? '';                        // Lee la acción enviada desde los formularios ocultos o modal
+    $envio_id = (int)($_POST['envio_id'] ?? 0);                 // Convierte a entero (sanitiza)
+    switch ($accion) {                                          // Despacha según acción
+        case 'asignar_repartidor':                              // Asignar / reasignar repartidor
+            $repartidor_id = (int)($_POST['repartidor_id'] ?? 0); // ID de usuario repartidor
+            if ($envio_id > 0 && $repartidor_id > 0) {          // Validación mínima
+                $stmt = $conn->prepare(                         // Prepara llamada a SP
+                  "CALL sp_asignar_repartidor(?,?,?,@ok,@msg)"); // SP maneja asignación + transición a 'En tránsito' si procede
+                $actor = $_SESSION['usuario_id'];               // Admin que ejecuta
+                $stmt->bind_param("iii",$envio_id,$repartidor_id,$actor); // Vincula parámetros IN
+                if ($stmt->execute()) {                         // Ejecuta SP
+                    $r = $conn->query("SELECT @ok ok,@msg msg")->fetch_assoc(); // Recupera OUT
+                    $_SESSION[$r['ok']?'success':'error'] =     // Setea mensaje según resultado
+                        $r['ok'] ? "Repartidor asignado" : $r['msg'];
+                } else {
+                    $_SESSION['error']="Error al llamar SP asignar"; // Falla SQL/SP
+                }
+                $stmt->close();                                 // Libera statement
+            }
+            break;
+
+        case 'cambiar_estado':                                  // Cambio de estado controlado
+            $nuevo_estado = $_POST['nuevo_estado'] ?? '';       // Estado destino
+            $lat = null; $lng = null;                           // No se capturan coords en panel (puedes añadir inputs si quieres)
+            $notes = 'Cambio manual panel';                     // Nota para auditoría
+            if ($envio_id > 0 && $nuevo_estado !== '') {        // Validación
+                $stmt = $conn->prepare(                         // Prepara SP de transición
+                  "CALL sp_cambiar_estado_envio(?,?,?,?,?,?,@ok,@msg)");
+                $user = $_SESSION['usuario_id'];                // Actor
+                $stmt->bind_param("isidds",
+                    $envio_id,                                  // p_envio_id
+                    $nuevo_estado,                              // p_nuevo_estado
+                    $user,                                      // p_usuario_id
+                    $lat,                                       // p_lat
+                    $lng,                                       // p_lng
+                    $notes                                      // p_notes
+                );
+                if ($stmt->execute()) {                         // Ejecuta SP
+                    $r = $conn->query("SELECT @ok ok,@msg msg")->fetch_assoc(); // OUT
+                    $_SESSION[$r['ok']?'success':'error'] =
+                        $r['ok'] ? "Estado actualizado" : $r['msg']; // Mensaje según validez transición
+                } else {
+                    $_SESSION['error']="Error al llamar SP estado"; // Error ejecutando
+                }
+                $stmt->close();
+            }
+            break;
+
+        default:                                                // Acción desconocida
+            $_SESSION['error']="Acción no válida";
+    }
+    header("Location: envios.php");                             // PRG pattern (evita reenvío en refresh)
+    exit();
+}
+// ================== FIN ACCIONES (SP) ==================
 
 // Obtener estadísticas
 $stats = [
@@ -145,7 +166,7 @@ while ($row = $result->fetch_assoc()) {
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> <!-- IMPORTANTE: Especifica UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Envíos - MENDEZ</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -318,9 +339,15 @@ while ($row = $result->fetch_assoc()) {
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($envios as $envio): ?>
+                                        <?php
+                                        // Generar URL del QR simple para cada envío
+                                        $qr_data = $envio['tracking_number']; // Datos simples por ahora
+                                        $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' . urlencode($qr_data);
+                                        ?>
                                         <tr>
                                             <td>
-                                                <strong><?php echo htmlspecialchars($envio['tracking_number']); ?></strong>
+                                                <strong><?php echo htmlspecialchars($envio['tracking_number']); ?></strong><br>
+                                                <img src="<?php echo $qr_url; ?>" alt="QR" title="QR para escaneo" style="max-width:80px;">
                                             </td>
                                             <td><?php echo htmlspecialchars($envio['cliente'] ?? $envio['name']); ?></td>
                                             <td><?php echo htmlspecialchars(substr($envio['destination'], 0, 30)) . '...'; ?>
@@ -335,7 +362,7 @@ while ($row = $result->fetch_assoc()) {
                                                                         default => 'bg-secondary'
                                                                     };
                                                                     ?>">
-                                                    <?php echo $envio['status']; ?>
+                                                    <?php echo e($envio['status']); ?> <!-- CAMBIADO: Usar e() -->
                                                 </span>
                                             </td>
                                             <td>
