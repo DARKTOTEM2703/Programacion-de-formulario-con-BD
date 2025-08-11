@@ -135,7 +135,7 @@ if (isset($_SESSION['success'])) {
                     <i class="bi bi-person-circle"></i>
                     General
                 </button>
-                <button type="button" class="role-tab" data-mode="repartidor">
+                <button type="button" class="role-tab" data-mode="repartidor" data-redirect="../pwa/login.php">
                     <i class="bi bi-truck"></i>
                     Repartidor
                 </button>
@@ -227,21 +227,29 @@ if (isset($_SESSION['success'])) {
             };
             const placeholders = {
                 general: {email:'tu@correo.com', pass:'Tu contraseña'},
-                repartidor: {email:'repartidor@empresa.com', pass:'Clave repartidor'},
                 bodega: {email:'bodega@empresa.com', pass:'Clave bodega'}
             };
             tabs.forEach(t=>{
                 t.addEventListener('click', ()=>{
+                    // Redirección directa si tiene data-redirect
+                    const redirect = t.dataset.redirect;
+                    if (redirect){
+                        window.location.href = redirect;
+                        return;
+                    }
                     tabs.forEach(x=>x.classList.remove('active'));
                     t.classList.add('active');
                     const mode = t.dataset.mode;
                     modeInput.value = mode;
-                    // Info panels
                     Object.keys(infos).forEach(k=>infos[k].classList.remove('active'));
                     if(infos[mode]) infos[mode].classList.add('active');
-                    // Placeholders
-                    email.placeholder = placeholders[mode].email;
-                    pass.placeholder  = placeholders[mode].pass;
+                    if(placeholders[mode]){
+                        email.placeholder = placeholders[mode].email;
+                        pass.placeholder  = placeholders[mode].pass;
+                    } else {
+                        email.placeholder = 'tu@correo.com';
+                        pass.placeholder = 'Tu contraseña';
+                    }
                     email.focus();
                 });
             });

@@ -41,16 +41,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Log de acceso
             error_log("Login exitoso: Usuario {$user['email']} (Rol: {$user['rol_nombre']})");
 
+            $login_mode = $_POST['login_mode'] ?? 'general';
+
+            // Validaciones por modo visual
+            if ($login_mode === 'bodega' && !in_array($user['rol_id'], [1,4,8])) {
+                $_SESSION['error'] = "Acceso restringido a Bodega";
+                header("Location: ../php/login.php"); exit();
+            }
+            if ($login_mode === 'general' && $user['rol_id'] == 3) {
+                $_SESSION['error'] = "Usa el acceso de Repartidor";
+                header("Location: ../pwa/login.php"); exit();
+            }
+
             // Redireccionar según rol
             $redirects = [
-                1 => '../admin/dashboard.php',       // Admin
-                2 => '../php/dashboard.php',         // Cliente  
-                3 => '../pwa/dashboard.php',         // Repartidor
-                4 => '../admin/bodega_panel.php',    // Bodeguista
-                5 => '../admin/dashboard.php',       // Soporte
-                6 => '../admin/dashboard.php',       // Supervisor
-                7 => '../admin/facturas.php',        // Contador
-                8 => '../admin/dashboard.php'        // Super Admin
+                1 => '../admin/dashboard.php',
+                2 => '../php/dashboard.php',
+                3 => '../pwa/dashboard.php',
+                4 => '../bodega/dashboard_bodega.php',
+                5 => '../soporte/dashboard_soporte.php',
+                6 => '../supervisor/dashboard_supervisor.php',
+                7 => '../contador/dashboard_contador.php',
+                8 => '../admin/dashboard.php'
             ];
 
             $redirect_url = $redirects[$user['rol_id']] ?? '../php/dashboard.php';
