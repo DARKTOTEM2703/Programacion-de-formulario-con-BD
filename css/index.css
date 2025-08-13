@@ -1377,3 +1377,33 @@ body.modal-service-open .modal-backdrop.show {
 .modal-service .modal-hero-overlay {
   pointer-events: none;
 }
+
+/* Estilo base para el backdrop (estado inicial) */
+.modal-backdrop {
+  background: rgba(15,18,26,0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: backdrop-filter 0.3s ease-out, 
+              -webkit-backdrop-filter 0.3s ease-out, 
+              background-color 0.3s ease-out;
+}
+
+/* Estado final del backdrop cuando está visible */
+.modal-backdrop.show {
+  background: rgba(15,18,26,0.6);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+}
+
+/* Ajustar la animación del modal para que coincida exactamente */
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out !important;
+}
+
+/* Asegurar que la transición sea suave incluso en dispositivos móviles */
+@media (prefers-reduced-motion: no-preference) {
+  .modal-backdrop,
+  .modal.fade .modal-dialog {
+    will-change: transform, backdrop-filter, background-color;
+  }
+}
