@@ -53,9 +53,10 @@
                     Hemos consolidado una red de logística, servicio y comunicación de la más alta calidad que nos
                     permite ofrecer siempre el mejor servicio a nuestros clientes.
                 </p>
-                <a href="https://www.youtube.com/watch?v=I56LwrvY_lk" class="btn btn-video btn-lg" target="_blank"
-                    rel="noopener noreferrer">Ver Video ▶</a>
-                <a href="php/login.php" class="btn btn-warning btn-lg" target="_blank">Iniciar Sesión</a>
+                <div class="hero-actions">
+                  <a href="https://www.youtube.com/watch?v=I56LwrvY_lk" class="btn btn-video btn-lg" target="_blank" rel="noopener noreferrer">Ver Video ▶</a>
+                  <a href="php/login.php" class="btn btn-warning btn-lg" target="_blank">Iniciar Sesión</a>
+                </div>
             </div>
         </div>
     </section>
@@ -85,7 +86,7 @@
                             <p class="card-text">Servicio de transporte de carga general y especializada a cualquier
                                 punto de la República Mexicana, con seguimiento en tiempo real y garantía de entrega.
                             </p>
-                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                            <button type="button" class="btn btn-outline-primary btn-service" data-service="transporte-nacional">Más detalles</button>
                         </div>
                     </div>
                 </div>
@@ -104,7 +105,7 @@
                             <h4 class="card-title">Logística Integral</h4>
                             <p class="card-text">Diseñamos e implementamos soluciones logísticas a medida que optimizan
                                 la cadena de suministro de tu empresa, reduciendo costos y tiempos.</p>
-                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                            <button type="button" class="btn btn-outline-primary btn-service" data-service="logistica-integral">Más detalles</button>
                         </div>
                     </div>
                 </div>
@@ -123,7 +124,7 @@
                             <h4 class="card-title">Almacenaje y Distribución</h4>
                             <p class="card-text">Contamos con almacenes estratégicamente ubicados para el resguardo y
                                 distribución de tus productos, con control de inventario en tiempo real.</p>
-                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                            <button type="button" class="btn btn-outline-primary btn-service" data-service="almacenaje-distribucion">Más detalles</button>
                         </div>
                     </div>
                 </div>
@@ -142,7 +143,7 @@
                             <h4 class="card-title">Transporte Refrigerado</h4>
                             <p class="card-text">Especializados en el transporte de productos que requieren control de
                                 temperatura, garantizando la cadena de frío durante todo el trayecto.</p>
-                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                            <button type="button" class="btn btn-outline-primary btn-service" data-service="transporte-refrigerado">Más detalles</button>
                         </div>
                     </div>
                 </div>
@@ -161,7 +162,7 @@
                             <h4 class="card-title">Carga Especializada</h4>
                             <p class="card-text">Transportamos cargas de dimensiones especiales, maquinaria pesada y
                                 mercancías que requieren manejo especializado con total seguridad.</p>
-                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                            <button type="button" class="btn btn-outline-primary btn-service" data-service="carga-especializada">Más detalles</button>
                         </div>
                     </div>
                 </div>
@@ -180,7 +181,7 @@
                             <h4 class="card-title">Paquetería Express</h4>
                             <p class="card-text">Entrega de paquetes y documentos en tiempo récord, ideal para envíos
                                 urgentes que requieren máxima rapidez y seguridad.</p>
-                            <a href="#" class="btn btn-outline-primary">Más detalles</a>
+                            <button type="button" class="btn btn-outline-primary btn-service" data-service="paqueteria-express">Más detalles</button>
                         </div>
                     </div>
                 </div>
@@ -542,6 +543,70 @@
     </div>
     <?php include 'components/footer.php'; ?>
 
+    <!-- Modal dinámico de servicios -->
+    <div class="modal fade modal-service" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg">
+
+          <!-- Hero con imagen (object-fit: cover) -->
+          <div class="modal-hero">
+            <img id="serviceModalHeroImg" class="modal-hero-img" alt="">
+            <div class="modal-hero-overlay"></div>
+            <div class="modal-hero-content">
+              <span class="modal-chip">Servicio</span>
+              <h2 class="modal-title mb-1" id="serviceModalLabel"></h2>
+              <p class="modal-subtitle" id="serviceModalSubtitle"></p>
+            </div>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <!-- Barra de progreso (opcional) -->
+          <div class="modal-progress">
+            <div class="modal-progress-bar" id="serviceModalProgress"></div>
+          </div>
+
+            <!-- Barra / acciones (si las necesitas después puedes añadir botones de compartir/imprimir) -->
+            <!-- <div class="modal-toolbar px-4 py-2 d-flex justify-content-between">
+              <div class="small text-muted" id="serviceModalFootNote"></div>
+            </div> -->
+
+          <div class="modal-body">
+            <!-- Loading -->
+            <div id="serviceModalLoading" class="text-center py-4">
+              <div class="spinner-border text-warning"></div>
+              <p class="small mt-3 mb-0">Cargando...</p>
+            </div>
+
+            <!-- Contenido -->
+            <div id="serviceModalContent" class="d-none" aria-busy="false">
+              <!-- Imagen adicional opcional (para compatibilidad con JS que busque serviceModalImage) -->
+              <img id="serviceModalImage" class="w-100 mb-3 rounded d-none" alt="" style="max-height:280px;object-fit:cover;">
+
+              <p id="serviceModalResumen" class="mb-4"></p>
+
+              <h6 class="fw-bold mb-2">Características</h6>
+              <ul id="serviceModalFeatures" class="list-unstyled mb-4"></ul>
+
+              <div id="serviceModalExtra" class="mb-4"></div>
+
+              <div class="alert alert-warning py-2 px-3 small mb-4 d-flex align-items-start gap-2">
+                <i class="fas fa-info-circle mt-1"></i>
+                <span id="serviceModalFootNote"></span>
+              </div>
+
+              <div class="d-grid">
+                <button id="serviceModalCTA" class="btn btn-warning fw-semibold">
+                  Continuar
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- /Modal dinámico de servicios -->
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Pace.js para loader profesional -->
@@ -552,6 +617,7 @@
     <script src="js/animation.js"></script>
     <!-- Script para el chatbot -->
     <script src="js/chatbot.js"></script>
+    <!-- Modal dinámico servicios -->
+<script src="js/index.modals.js"></script>
 </body>
-
 </html>

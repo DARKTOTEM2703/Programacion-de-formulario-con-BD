@@ -1,0 +1,71 @@
+[
+  {
+    "id": "transporte-nacional",
+    "titulo": "Transporte Nacional",
+    "subtitulo": "Cobertura total en México",
+    "imagen": "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    "resumen": "Servicio integral de carga general y especializada con cobertura en los 32 estados, monitoreo 24/7 y SLAs garantizados.",
+    "caracteristicas": [
+      "Cobertura en los 32 estados de la República",
+      "Modalidades: consolidado (LTL) y carga completa (FTL)",
+      "Red de cross-dock y hubs regionales",
+      "Rastreo GPS en tiempo real + geocercas",
+      "Seguro de mercancías con ampliaciones opcionales",
+      "Gestión proactiva de incidencias y alertas",
+      "Ventanas de recolección y entrega programadas",
+      "Operaciones certificadas (ISO / OHS)",
+      "Panel de visibilidad para clientes",
+      "Soporte operativo 24/7 multicanal"
+    ],
+    "extraHtml": "<h6 class='fw-bold mt-3'>Cobertura y Modalidades</h6><p class='mb-2'>Operamos rutas troncales y capilares optimizadas con análisis de densidad y consolidación inteligente.</p><ul class='small mb-3'><li><strong>LTL:</strong> Optimización de costo por espacio.</li><li><strong>FTL:</strong> Tránsitos directos sin transbordos.</li><li><strong>Dedicated:</strong> Unidades asignadas con KPI personalizados.</li></ul><h6 class='fw-bold'>SLAs y Métricas</h6><ul class='small mb-3'><li>OTD (On-Time Delivery) objetivo: 96–98%</li><li>Índice de siniestralidad &lt; 0.5%</li><li>Tiempo promedio de liberación en andén: &lt; 45 min</li></ul><h6 class='fw-bold'>Seguridad</h6><p class='small mb-0'>Protocolos con monitoreo activo, rutas seguras, paradores autorizados y protocolos de contingencia escalables.</p>",
+    "cta": "Cotizar ahora",
+    "ctaLink": "php/login.php",
+    "nota": "Tiempo de respuesta a solicitudes: ~15 min."
+  },
+  {
+    "id": "logistica-integral",
+    "titulo": "Logística Integral",
+    "subtitulo": "Optimización de la cadena",
+    "imagen": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    "resumen": "Diseño, orquestación y control integral de tu cadena de suministro: planificación, ejecución, visibilidad y mejora continua.",
+    "caracteristicas": [
+      "Diagnóstico y mapeo de procesos end‑to‑end",
+      "Planificación de demanda y capacidad",
+      "Ingeniería y optimización de rutas (TMS)",
+      "Integración con WMS / ERP / EDI / API",
+      "KPIs y tableros en tiempo real (OTIF, Fill Rate)",
+      "Gestión de inventarios multicentro",
+      "Modelos dedicados, híbridos y escalamiento ágil",
+      "Simulación de costos y escenarios ‘what-if’",
+      "Control torre de monitoreo (Control Tower)",
+      "Ciclo PDCA de mejora continua"
+    ],
+    "extraHtml": "<h6 class='fw-bold mt-3'>Fases del Servicio</h6><ol class='small mb-3'><li><strong>Assessment:</strong> Recolección de datos, benchmarking y brechas.</li><li><strong>Diseño:</strong> Arquitectura operativa, layout, flujos y KPIs.</li><li><strong>Implementación:</strong> Integraciones técnicas y transición.</li><li><strong>Optimización:</strong> Análisis predictivo y automatización.</li></ol><h6 class='fw-bold'>Herramientas</h6><ul class='small mb-3'><li>Modelos de routing y clusterización.</li><li>Dashboards de desempeño SLA / OTIF.</li><li>Alertas tempranas de desvíos.</li></ul><h6 class='fw-bold'>Beneficios Clave</h6><p class='small mb-0'>Reducción de costos operativos (8–15%), mejora de servicio al cliente y escalabilidad operativa sostenible.</p>",
+    "cta": "Solicitar análisis",
+    "ctaLink": "php/login.php",
+    "nota": "Implementaciones típicas: 4–12 semanas según alcance."
+  },
+  {
+    "id": "almacenaje-distribucion",
+    "titulo": "Almacenaje y Distribución",
+    "subtitulo": "Centros estratégicos",
+    "imagen": "img/servicios/almacen-distribucion.jpg",
+    "resumen": "Soluciones modulares de almacenamiento, control de inventario, preparación de pedidos y distribución capilar.",
+    "caracteristicas": [
+      "Almacenes estratégicos multi‑cliente y dedicados",
+      "Layout optimizado (ABC / slotting dinámico)",
+      "Inventario en tiempo real (WMS integrado)",
+      "Procesos: recepción, cross-dock, picking, packing",
+      "Preparación: wave / batch / zone picking",
+      "Zonas climatizadas y control de temperatura",
+      "Trazabilidad por lote, serie y caducidad (FEFO)",
+      "Integraciones con e‑commerce y marketplaces",
+      "Auditorías cíclicas y conteos perpetuos",
+      "Ventanas de distribución y última milla"
+    ],
+    "extraHtml": "<h6 class='fw-bold mt-3'>Capacidades Operativas</h6><ul class='small mb-3'><li>Gestión de picos estacionales con escalamiento rápido.</li><li>KPIs: precisión de inventario &gt; 99.3%, exactitud picking &gt; 99%.</li><li>Cross-docking para reducción de tiempos de ciclo.</li></ul><h6 class='fw-bold'>Procesos de Calidad</h6><p class='small mb-2'>Checklists de recepción, control fotográfico, validación de sellos y trazabilidad digital.</p><h6 class='fw-bold'>Distribución</h6><p class='small mb-0'>Planificación de rutas optimizada, consolidación y seguimiento de entregas con confirmación POD.</p>",
+    "cta": "Solicitar espacio",
+    "ctaLink": "php/login.php",
+    "nota": "SLA de exactitud de inventario garantizado ≥ 99%."
+  }
+]

@@ -139,6 +139,10 @@ nav ul li a:hover {
 .hero-content {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .hero img {
@@ -536,7 +540,7 @@ nav ul li a:hover {
 /* Estilos para la sección de servicios */
 #servicios {
   padding: 80px 0;
-  background-color: #f8f9fa; /* Fondo claro por defecto */
+  background-color: #f8f9fa;
   transition: background-color 0.3s, color 0.3s;
   color: #000000; /* Texto negro por defecto */
 }
@@ -588,6 +592,79 @@ nav ul li a:hover {
     background-color: #f1c40f;
     color: #1e1e1e;
     border-color: #f1c40f;
+  }
+}
+
+/* === Nuevo: centrado vertical uniforme en las service-card === */
+.service-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* opcional: igual altura visual si las imágenes varían */
+  border: none;
+}
+
+.service-img-container {
+  flex: 0 0 180px;              /* altura consistente para todas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+.service-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.service-card:hover .service-img-container img {
+  transform: scale(1.06);
+}
+
+.service-card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;      /* centra verticalmente el icono + texto + botón */
+  padding: 1.5rem 1.25rem;
+}
+
+.service-card .service-icon {
+  margin-bottom: 0.75rem;
+}
+
+.service-card .card-title {
+  margin-bottom: 0.6rem;
+}
+
+.service-card .card-text {
+  margin-bottom: 1.2rem;
+  flex-grow: 0;
+}
+
+.service-card .btn {
+  margin-top: auto;             /* asegura que el botón quede al final si el texto crece */
+  align-self: center;
+}
+
+/* Responsive ajuste: reducir bloque imagen en móviles */
+@media (max-width: 576px) {
+  .service-img-container {
+    flex: 0 0 150px;
+  }
+}
+/* === Fin nuevo === */
+
+/* Modo oscuro ajustes para nuevas reglas */
+@media (prefers-color-scheme: dark) {
+  .service-card {
+    background-color: #1e1e1e;
+  }
+  .service-img-container {
+    background:#111;
   }
 }
 
@@ -894,3 +971,301 @@ nav ul li a:hover {
 .scroll-offset {
   scroll-margin-top: 100px;
 }
+
+/* Modal servicios refinado */
+#serviceModal .modal-content {
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,.35);
+}
+#serviceModal .modal-title {
+  font-weight: 700;
+}
+#serviceModalFeatures li {
+  background: transparent;
+  border: 0;
+  padding-left: 0;
+  font-size: .95rem;
+}
+@media (prefers-color-scheme: dark) {
+  #serviceModal .modal-content {
+    background:#1e1e1e;
+    color:#f8f9fa;
+  }
+  #serviceModalFeatures li {
+    color:#ddd;
+  }
+}
+
+/* Botones hero alineados con Flex/Grid */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;              /* separación horizontal */
+  margin-top: 1.5rem;
+  margin-bottom: 1.25rem;    /* separación inferior extra */
+}
+
+.hero-actions .btn {
+  margin: 0;                 /* limpiamos márgenes previos */
+  min-width: 190px;
+}
+
+.hero-actions .btn-video,
+.hero-actions .btn-warning {
+  margin-bottom: .75rem;     /* separación vertical cuando se apilan */
+}
+
+/* En pantallas pequeñas forzar columna */
+@media (max-width: 576px) {
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .9rem;
+  }
+  .hero-actions .btn {
+    width: 100%;
+  }
+}
+
+/* === Modal servicios: imagen hero full-width con object-fit cover === */
+.modal-service .modal-hero {
+  position: relative;
+  height: 260px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1rem 1rem 0 0;
+  background: #000;
+}
+
+.modal-service .modal-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          /* fuerza recorte sin deformar */
+  object-position: center;    /* centra la porción visible */
+  display: block;
+  filter: brightness(.92);
+  transition: transform .8s ease;
+}
+
+.modal-service .modal-hero:hover .modal-hero-img {
+  transform: scale(1.05);
+}
+
+.modal-service .modal-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55));
+}
+
+.modal-service .modal-hero-content {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 1.25rem 2rem 1.5rem;
+  color: #fff;
+  z-index: 2;
+}
+
+.modal-service .modal-chip {
+  display: inline-block;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+  padding: .35rem .75rem;
+  font-size: .75rem;
+  letter-spacing:.5px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  margin-bottom: .4rem;
+  color:#ffe600;
+  font-weight:600;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+/* Barra de progreso */
+.modal-service .modal-progress {
+  height: 4px;
+  background: #e9ecef;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-service .modal-progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg,#ffe600,#ffb400 55%,#ff8f00 100%);
+  transition: width .4s ease;
+}
+
+/* Body */
+.modal-service .modal-body {
+  padding: 2rem 2.2rem 2.2rem;
+  color: var(--ms-text);
+}
+@media (max-width: 768px) {
+  .modal-service .modal-body { padding: 1.25rem 1.1rem 1.6rem; }
+}
+
+.modal-service #serviceModalResumen {
+  font-size: 1.02rem;
+  line-height: 1.45;
+  color: var(--ms-text-soft);
+  margin-top: .25rem;
+}
+
+/* Lista de características */
+#serviceModalFeatures {
+  display: grid;
+  gap: .55rem .9rem;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+}
+#serviceModalFeatures li {
+  background: var(--ms-surface);
+  padding: .65rem .75rem .65rem .75rem;
+  border: 1px solid var(--ms-border);
+  border-radius: .85rem;
+  font-size: .82rem;
+  line-height: 1.2;
+  display: flex;
+  gap: .55rem;
+  align-items: flex-start;
+  position: relative;
+  transition: background .35s, border-color .35s;
+}
+#serviceModalFeatures li i {
+  color: #15b374;
+  margin-top: 1px;
+  font-size: .9rem;
+}
+#serviceModalFeatures li:hover {
+  background: rgba(var(--ms-accent-rgb),.12);
+  border-color: var(--ms-border-strong);
+}
+
+/* Extra section */
+#serviceModalExtra h6,
+#serviceModalExtra h5 {
+  font-size: .82rem;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  margin-top: 1.2rem;
+  margin-bottom: .35rem;
+  color: var(--ms-text);
+}
+#serviceModalExtra p,
+#serviceModalExtra ul,
+#serviceModalExtra ol {
+  font-size: .78rem;
+  line-height: 1.4;
+  color: var(--ms-text-soft);
+  margin-bottom: .6rem;
+}
+
+/* Nota / alerta */
+.modal-service .alert {
+  background: linear-gradient(135deg,rgba(var(--ms-accent-rgb),.15),rgba(var(--ms-accent-rgb),.05));
+  border: 1px solid rgba(var(--ms-accent-rgb),.35);
+  color: #4a4200;
+  border-radius: .9rem;
+  font-size: .75rem;
+  line-height: 1.25;
+  padding: .65rem .85rem;
+}
+@media (prefers-color-scheme: dark) {
+  .modal-service .alert {
+    color: #ffec8a;
+    background: linear-gradient(135deg,rgba(var(--ms-accent-rgb),.18),rgba(var(--ms-accent-rgb),.07));
+  }
+}
+
+/* CTA */
+#serviceModalCTA {
+  border-radius: .9rem;
+  font-weight: 600;
+  letter-spacing: .3px;
+  padding: .9rem 1.2rem;
+  box-shadow: 0 6px 18px -6px rgba(var(--ms-accent-rgb),.55);
+  transition: transform .2s, box-shadow .4s, background .3s;
+}
+#serviceModalCTA:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px -8px rgba(var(--ms-accent-rgb),.7);
+}
+#serviceModalCTA:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 16px -6px rgba(var(--ms-accent-rgb),.6);
+}
+
+/* Loading estado */
+#serviceModalLoading .spinner-border {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-width: .28rem;
+}
+
+/* Scrollbar (solo dentro del modal) */
+.modal-service .modal-dialog .modal-content ::-webkit-scrollbar {
+  width: 10px;
+}
+.modal-service .modal-dialog .modal-content ::-webkit-scrollbar-track {
+  background: var(--ms-scrollbar-track);
+}
+.modal-service .modal-dialog .modal-content ::-webkit-scrollbar-thumb {
+  background: var(--ms-scrollbar-thumb);
+  border-radius: 40px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Botón cerrar mejor visible */
+.modal-service .btn-close.btn-close-white {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+  opacity: .9;
+  transition: transform .25s, opacity .25s;
+}
+.modal-service .btn-close.btn-close-white:hover {
+  transform: scale(1.15) rotate(8deg);
+  opacity: 1;
+}
+
+/* Pequeños refinamientos tipográficos */
+.modal-service .modal-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+.modal-service .modal-subtitle {
+  font-size: .9rem;
+  font-weight: 500;
+  opacity: .9;
+  letter-spacing: .4px;
+  margin-bottom: 0;
+}
+
+/* Responsivo: 2 columnas se reducen a 1 en móviles para Features */
+@media (max-width: 460px) {
+  #serviceModalFeatures {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Transición suave dark/light */
+@media (prefers-reduced-motion: no-preference) {
+  .modal-service .modal-content,
+  :root {
+    transition: background-color .6s ease, color .6s ease, border-color .6s ease;
+  }
+}
+
+/* === Fin rediseño modal ================================================ */
