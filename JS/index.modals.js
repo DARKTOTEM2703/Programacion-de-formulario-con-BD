@@ -1,6 +1,5 @@
 /**
- * Gestión de modal dinámico para servicios / tarjetas
- * Sección: Servicios + Cards inferiores
+ * Modal dinámico servicios (versión verificada para móvil + escritorio)
  */
 (() => {
   const JSON_URL = 'data/services.json';
@@ -15,15 +14,15 @@
     currentId: null
   };
 
-  // Cache perezoso de elementos
   const $ = id => document.getElementById(id);
   const els = {
+    modalEl: () => $(MODAL_ID),
     title: () => $('serviceModalLabel'),
     subtitle: () => $('serviceModalSubtitle'),
     resumen: () => $('serviceModalResumen'),
     features: () => $('serviceModalFeatures'),
     extra: () => $('serviceModalExtra'),
-    image: () => $('serviceModalImage'),
+    image: () => $('serviceModalHeroImg') || $('serviceModalImage'),
     loading: () => $('serviceModalLoading'),
     content: () => $('serviceModalContent'),
     foot: () => $('serviceModalFootNote'),
@@ -31,42 +30,44 @@
     progress: () => $('serviceModalProgress')
   };
 
+  /* ========== DATA ========== */
   async function loadData() {
     if (state.loaded) return;
-    if (state.loadingPromise) return state.loadingPromise;
-
+    if (state.loadingPromise) { await state.loadingPromise; return; }
     state.loadingPromise = (async () => {
       try {
-        const res = await fetch(JSON_URL, { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const arr = await res.json();
+        const r = await fetch(JSON_URL, { cache: 'no-store' });
+        if (!r.ok) throw new Error(r.status);
+        const arr = await r.json();
         if (Array.isArray(arr)) {
           arr.forEach(o => { if (o && o.id) state.data[o.id] = o; });
         }
       } catch (e) {
-        console.error('[services] error cargando JSON:', e);
-        state.data = {};
+        console.error('[services] fallo JSON:', e);
       } finally {
         state.loaded = true;
+        state.loadingPromise = null;
       }
     })();
-    return state.loadingPromise;
+    await state.loadingPromise;
   }
 
-  function setLoading(isLoading) {
-    const l = els.loading(), c = els.content();
-    if (l && c) {
-      l.classList.toggle('d-none', !isLoading);
-      c.classList.toggle('d-none', isLoading);
-      c.setAttribute('aria-busy', isLoading ? 'true' : 'false');
-    }
-    progress(isLoading ? 10 : 100);
-  }
-
-  function progress(pct) {
+  /* ========== UI HELPERS ========== */
+  function progress(p) {
     const bar = els.progress();
     if (!bar) return;
-    requestAnimationFrame(() => { bar.style.width = pct + '%'; });
+    requestAnimationFrame(() => { bar.style.width = p + '%'; });
+  }
+
+  function setLoading(v) {
+    const l = els.loading();
+    const c = els.content();
+    if (l) l.classList.toggle('d-none', !v);
+    if (c) {
+      c.classList.toggle('d-none', v);
+      c.setAttribute('aria-busy', v ? 'true' : 'false');
+    }
+    progress(v ? 15 : 100);
   }
 
   function buildFallback(card) {
@@ -74,60 +75,41 @@
     const title = card.querySelector('.card-title')?.textContent?.trim() || '';
     const resumen = card.querySelector('.card-text')?.textContent?.trim() || '';
     const imgEl = card.querySelector('.service-img-container img, img.card-img-top, img');
-    const img = imgEl ? imgEl.getAttribute('src') : '';
     return {
       titulo: title,
       resumen,
-      imagen: img,
+      imagen: imgEl ? imgEl.src : '',
       caracteristicas: [
         'Atención personalizada',
         'Monitoreo y trazabilidad',
         'Optimización de costos'
       ],
-      extraHtml:
-        `<h6 class="fw-bold mt-3">Descripción ampliada</h6>
-         <p class="small mb-2">${resumen || 'Servicio adaptado a tus necesidades operativas.'}</p>
-         <p class="small mb-0">Amplía tu solicitud para recibir un análisis especializado.</p>`,
-      nota: 'Detalle generado (agrega extraHtml en tu JSON para reemplazar).'
+      extraHtml: `<h6 class="fw-bold mt-3">Descripción</h6>
+        <p class="small mb-2">${resumen || 'Servicio adaptado a tus necesidades.'}</p>
+        <p class="small mb-0">Amplía tu JSON para más detalle real.</p>`,
+      nota: 'Detalle generado automáticamente.'
     };
   }
 
-  function merge(raw, fallback) {
+  function merge(raw, fb) {
     return {
-      ...fallback,
+      ...fb,
       ...raw,
-      caracteristicas: (raw.caracteristicas && raw.caracteristicas.length)
-        ? raw.caracteristicas
-        : fallback.caracteristicas,
-      extraHtml: raw.extraHtml || raw.detalleLargo || fallback.extraHtml,
-      imagen: raw.imagen || fallback.imagen,
-      resumen: raw.resumen || fallback.resumen,
-      nota: raw.nota || fallback.nota
+      caracteristicas: raw?.caracteristicas?.length ? raw.caracteristicas : fb.caracteristicas,
+      extraHtml: raw.extraHtml || raw.detalleLargo || fb.extraHtml,
+      imagen: raw.imagen || fb.imagen,
+      resumen: raw.resumen || fb.resumen,
+      nota: raw.nota || fb.nota
     };
-  }
-
-  function sanitize(html) {
-    // Asumes control del JSON; si necesitas sanear más, aplica whitelist.
-    return html;
   }
 
   function render(id, card) {
     const raw = state.data[id];
     if (!raw && !card) {
       if (els.title()) els.title().textContent = 'Servicio no disponible';
-      if (els.resumen()) els.resumen().textContent = 'No se encontró información.';
-      if (els.features()) els.features().innerHTML = '';
-      if (els.image()) els.image().classList.add('d-none');
-      if (els.extra()) els.extra().innerHTML = '';
-      if (els.foot()) els.foot().textContent = '';
-      if (els.cta()) {
-        els.cta().textContent = 'Cerrar';
-        els.cta().onclick = () => state.modal?.hide();
-        els.cta().classList.add('disabled');
-      }
+      if (els.resumen()) els.resumen().textContent = 'No hay información.';
       return;
     }
-
     const data = merge(raw || {}, buildFallback(card));
     state.currentId = id;
 
@@ -135,24 +117,24 @@
     if (els.subtitle()) els.subtitle().textContent = data.subtitulo || '';
     if (els.resumen()) els.resumen().textContent = data.resumen || '';
 
-    if (els.image()) {
+    const img = els.image();
+    if (img) {
       if (data.imagen) {
-        els.image().src = data.imagen;
-        els.image().alt = data.titulo || 'Servicio';
-        els.image().classList.remove('d-none');
+        img.src = data.imagen;
+        img.alt = data.titulo || 'Servicio';
+        img.classList.remove('d-none');
       } else {
-        els.image().classList.add('d-none');
+        img.classList.add('d-none');
       }
     }
 
     if (els.features()) {
-      els.features().innerHTML = (data.caracteristicas || []).map(f =>
-        `<li class="mb-1 d-flex">
-           <i class="fas fa-check text-success me-2 mt-1"></i><span>${f}</span>
-         </li>`).join('') || '<li class="text-muted small">Sin características.</li>';
+      els.features().innerHTML = (data.caracteristicas || [])
+        .map(c => `<li class="mb-1 d-flex"><i class="fas fa-check text-success me-2 mt-1"></i><span>${c}</span></li>`)
+        .join('') || '<li class="text-muted small">Sin características.</li>';
     }
 
-    if (els.extra()) els.extra().innerHTML = sanitize(data.extraHtml || '');
+    if (els.extra()) els.extra().innerHTML = data.extraHtml || '';
     if (els.foot()) els.foot().textContent = data.nota || '';
     if (els.cta()) {
       els.cta().textContent = data.cta || 'Continuar';
@@ -161,44 +143,73 @@
     }
   }
 
+  /* ========== OPEN MODAL ========== */
   async function open(id, card) {
     progress(0);
     setLoading(true);
     await loadData();
-    progress(60);
+    progress(55);
     render(id, card);
     setLoading(false);
 
     if (!state.modal) {
-      const modalEl = $(MODAL_ID);
-      if (!modalEl) {
-        console.error('Modal no encontrado (id=' + MODAL_ID + ').');
-        return;
-      }
-      if (typeof bootstrap === 'undefined') {
-        console.error('Bootstrap JS no cargado.');
-        return;
-      }
-      state.modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: true });
-      modalEl.addEventListener('hidden.bs.modal', () => {
+      const el = els.modalEl();
+      if (!el) { console.error('No se encontró el modal #' + MODAL_ID); return; }
+      if (typeof bootstrap === 'undefined') { console.error('Bootstrap no cargado'); return; }
+
+      // Habilitar cierre por backdrop en móvil (quitamos 'static')
+      state.modal = new bootstrap.Modal(el, { backdrop: true, keyboard: true });
+
+      el.addEventListener('shown.bs.modal', () => document.body.classList.add('modal-service-open'));
+      el.addEventListener('hidden.bs.modal', () => {
+        document.body.classList.remove('modal-service-open');
         progress(0);
       });
+
+      // Cierra con gesto swipe-down (móvil)
+      let touchStartY = null;
+      el.addEventListener('touchstart', ev => {
+        if (ev.touches.length === 1) touchStartY = ev.touches[0].clientY;
+      }, { passive: true });
+      el.addEventListener('touchmove', ev => {
+        if (touchStartY === null) return;
+        const delta = ev.touches[0].clientY - touchStartY;
+        if (delta > 140) { // deslizó hacia abajo
+          touchStartY = null;
+          state.modal.hide();
+        }
+      }, { passive: true });
+      el.addEventListener('touchend', () => { touchStartY = null; });
     }
     state.modal.show();
   }
 
-  // Delegación global
+  /* ========== EVENT DELEGATION (click + teclado accesible) ========== */
+  function isActivator(el) {
+    return el && el.matches(BTN_SELECTOR);
+  }
+
   document.addEventListener('click', e => {
     const btn = e.target.closest(BTN_SELECTOR);
     if (!btn) return;
     e.preventDefault();
     const id = btn.getAttribute('data-service');
     if (!id) return;
-    const card = btn.closest('.service-card, .card');
-    open(id, card);
+    open(id, btn.closest('.service-card, .card'));
+  }, { passive: true });
+
+  // Activación con Enter / Space para accesibilidad
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const btn = e.target;
+    if (isActivator(btn)) {
+      e.preventDefault();
+      const id = btn.getAttribute('data-service');
+      if (id) open(id, btn.closest('.service-card, .card'));
+    }
   });
 
-  // Deep link (#servicio=ID)
+  /* ========== DEEP LINK (#servicio=ID) ========== */
   document.addEventListener('DOMContentLoaded', () => {
     const hash = location.hash.slice(1);
     if (hash.startsWith('servicio=')) {
@@ -207,4 +218,5 @@
       open(id, btn?.closest('.service-card, .card') || null);
     }
   });
+
 })();

@@ -1268,4 +1268,111 @@ nav ul li a:hover {
   }
 }
 
-/* === Fin rediseño modal ================================================ */
+/* Definir variables (si no estaban) */
+:root {
+  --ms-text: #1e1f23;
+  --ms-text-soft: #5d6169;
+  --ms-surface: rgba(255,255,255,0.55);
+  --ms-border: rgba(0,0,0,0.08);
+  --ms-border-strong: rgba(0,0,0,0.15);
+  --ms-accent: #ffe600;
+  --ms-accent-rgb: 255,230,0;
+}
+/* Asegurar cuerpo del modal usa fallback si variables faltan */
+.modal-service .modal-body {
+  color: var(--ms-text, #1e1f23);
+}
+.modal-service #serviceModalResumen {
+  color: var(--ms-text-soft, #5d6169);
+}
+/* Override al global .mb-4 que te lo dejaba blanco */
+.modal-service .mb-4 {
+  color: var(--ms-text-soft, #5d6169) !important;
+}
+/* Features y extra con fallback */
+#serviceModalFeatures li {
+  color: var(--ms-text, #1e1f23);
+}
+#serviceModalExtra,
+#serviceModalExtra p,
+#serviceModalExtra ul,
+#serviceModalExtra ol {
+  color: var(--ms-text-soft, #5d6169);
+}
+/* Dark (mantén contraste) */
+@media (prefers-color-scheme: dark) {
+  .modal-service .modal-body {
+    color: var(--ms-text, #f3f4f6);
+  }
+  .modal-service #serviceModalResumen,
+  .modal-service .mb-4 {
+    color: var(--ms-text-soft, #b5bac4);
+  }
+  #serviceModalFeatures li {
+    color: var(--ms-text, #f3f4f6);
+  }
+  #serviceModalExtra,
+  #serviceModalExtra p,
+  #serviceModalExtra ul,
+  #serviceModalExtra ol {
+    color: var(--ms-text-soft, #ffffff);
+  }
+}
+
+/* === Overrides modo oscuro: texto blanco y X blanca =================== */
+@media (prefers-color-scheme: dark) {
+  /* Todo lo que antes era gris pasa a blanco */
+  .modal-service #serviceModalResumen,
+  .modal-service .mb-4,
+  #serviceModalExtra,
+  #serviceModalExtra p,
+  #serviceModalExtra ul,
+  #serviceModalExtra ol,
+  #serviceModalFeatures li {
+    color: #ffffff !important;
+  }
+
+  /* Si quieres también la alerta con texto blanco */
+  .modal-service .alert {
+    color: #ffffff;
+  }
+
+  /* Botón cerrar con X blanca pura */
+  .modal-service .btn-close.btn-close-white {
+    /* SVG de la X en blanco */
+    --bs-btn-close-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 16 16' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 4l8 8M12 4L4 12'/%3E%3C/svg%3E");
+    background-image: var(--bs-btn-close-bg);
+    filter: none;
+    background-color: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.35);
+  }
+  .modal-service .btn-close.btn-close-white:hover,
+  .modal-service .btn-close.btn-close-white:focus {
+    background-color: rgba(255,255,255,0.3);
+  }
+}
+/* === Fin overrides modo oscuro ======================================== */
+
+/* Blur del fondo cuando el modal está abierto */
+body.modal-service-open .modal-backdrop.show {
+  background: rgba(15,18,26,0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Asegurar que la X sea tocable y arriba de cualquier capa */
+.modal-service .btn-close.btn-close-white {
+  z-index: 999;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+/* Evitar que algo encima bloquee la X */
+.modal-service .modal-hero,
+.modal-service .modal-hero * {
+  pointer-events: auto;
+}
+
+.modal-service .modal-hero-overlay {
+  pointer-events: none;
+}
