@@ -116,16 +116,24 @@ if ($busqueda) {
 
 $where_clause = implode(" AND ", $where_conditions);
 
+// vista_envios_detallados
+// $query = "
+//     SELECT e.*, u.nombre_usuario as cliente,
+//            ur.nombre_usuario as repartidor_nombre,
+//            re.fecha_asignacion
+//     FROM envios e
+//     LEFT JOIN usuarios u ON e.usuario_id = u.id
+//     LEFT JOIN repartidores_envios re ON e.id = re.envio_id
+//     LEFT JOIN usuarios ur ON re.usuario_id = ur.id
+//     WHERE $where_clause
+//     ORDER BY e.created_at DESC
+//     LIMIT 50
+// ";
+
 $query = "
-    SELECT e.*, u.nombre_usuario as cliente,
-           ur.nombre_usuario as repartidor_nombre,
-           re.fecha_asignacion
-    FROM envios e
-    LEFT JOIN usuarios u ON e.usuario_id = u.id
-    LEFT JOIN repartidores_envios re ON e.id = re.envio_id
-    LEFT JOIN usuarios ur ON re.usuario_id = ur.id
+    SELECT * from vista_envios_detallados
     WHERE $where_clause
-    ORDER BY e.created_at DESC
+    ORDER BY created_at DESC
     LIMIT 50
 ";
 
@@ -150,16 +158,14 @@ function getStatusClass($status)
 
 // Obtener repartidores activos para asignación
 $repartidores_activos = [];
-$result = $conn->query("
-    SELECT u.id, u.nombre_usuario 
-    FROM usuarios u 
-    INNER JOIN repartidores r ON u.id = r.usuario_id 
-    WHERE r.status = 'activo'
-    ORDER BY u.nombre_usuario
-");
+$stmt = $conn->prepare("CALL sp_obtener_repartidores_activos()");
+$stmt->execute();
+$result = $stmt->get_result();
+
 while ($row = $result->fetch_assoc()) {
     $repartidores_activos[] = $row;
 }
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -339,19 +345,12 @@ while ($row = $result->fetch_assoc()) {
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($envios as $envio): ?>
-                                        <?php
-                                        // Generar URL del QR simple para cada envío
-                                        $qr_data = $envio['tracking_number']; // Datos simples por ahora
-                                        $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' . urlencode($qr_data);
-                                        ?>
                                         <tr>
                                             <td>
-                                                <strong><?php echo htmlspecialchars($envio['tracking_number']); ?></strong><br>
-                                                <img src="<?php echo $qr_url; ?>" alt="QR" title="QR para escaneo" style="max-width:80px;">
+                                                <strong><?php echo htmlspecialchars($envio['tracking_number']); ?></strong>
                                             </td>
                                             <td><?php echo htmlspecialchars($envio['cliente'] ?? $envio['name']); ?></td>
-                                            <td><?php echo htmlspecialchars(substr($envio['destination'], 0, 30)) . '...'; ?>
-                                            </td>
+                                            <td><?php echo htmlspecialchars(substr($envio['destination'], 0, 30)) . '...'; ?></td>
                                             <td>
                                                 <span class="badge <?php
                                                                     echo match ($envio['status']) {
@@ -376,41 +375,39 @@ while ($row = $result->fetch_assoc()) {
                                             <td><?php echo date('d/m/Y', strtotime($envio['created_at'])); ?></td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <button class="btn btn-outline-primary"
-                                                        onclick="verDetalle(<?php echo $envio['id']; ?>)">
+                                                    <a href="detalle_envio.php?id=<?php echo $envio['id']; ?>" class="btn btn-outline-primary">
                                                         <i class="bi bi-eye"></i>
-                                                    </button>
-
+                                                    </a>
+                                                    
                                                     <?php if ($envio['status'] == 'Procesando'): ?>
                                                         <button class="btn btn-outline-success"
                                                             onclick="asignarRepartidor(<?php echo $envio['id']; ?>)">
-                                                            <i class="bi bi-person-plus"></i>
+                                                            <i class="bi bi-person-check"></i>
                                                         </button>
                                                     <?php endif; ?>
-
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                                            data-bs-toggle="dropdown">
-                                                            <i class="bi bi-gear"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button class="dropdown-item"
-                                                                    onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'Procesando')">Procesando</button>
+                                                    
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" 
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-gear"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <?php if ($envio['status'] == 'Procesando'): ?>
+                                                            <li><button class="dropdown-item" 
+                                                                onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'En tránsito')">
+                                                                Marcar en tránsito</button>
                                                             </li>
-                                                            <li><button class="dropdown-item"
-                                                                    onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'En tránsito')">En
-                                                                    tránsito</button></li>
-                                                            <li><button class="dropdown-item"
-                                                                    onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'Entregado')">Entregado</button>
+                                                        <?php endif; ?>
+                                                        <?php if ($envio['status'] == 'En tránsito'): ?>
+                                                            <li><button class="dropdown-item" 
+                                                                onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'Entregado')">
+                                                                Marcar entregado</button>
                                                             </li>
-                                                            <li>
-                                                                <hr class="dropdown-divider">
-                                                            </li>
-                                                            <li><button class="dropdown-item text-danger"
-                                                                    onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'Cancelado')">Cancelar</button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                        <?php endif; ?>
+                                                        <li><button class="dropdown-item text-danger"
+                                                            onclick="cambiarEstado(<?php echo $envio['id']; ?>, 'Cancelado')">
+                                                            Cancelar</button>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </td>
                                         </tr>
