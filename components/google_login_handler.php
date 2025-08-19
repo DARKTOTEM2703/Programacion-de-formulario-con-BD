@@ -30,85 +30,106 @@ if (!isset($_ENV['GOOGLE_CLIENT_ID'])) {
     exit();
 }
 
-// Manejar el token JWT recibido vía POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['credential'])) {
-    $jwt = $_POST['credential'];
+function getCredentialFromRequest(): ?string {
+    // 1) Envío estándar de GIS (form post: credential=...)
+    if (!empty($_POST['credential'])) return $_POST['credential'];
 
-    try {
-        // Dividir el JWT en sus partes: header.payload.signature
-        $parts = explode('.', $jwt);
-        if (count($parts) !== 3) {
-            throw new Exception("Token JWT inválido");
-        }
+    // 2) Envío vía fetch JSON (ver JS/googleconection.js)
+    $raw = file_get_contents('php://input');
+    if ($raw) {
+        $json = json_decode($raw, true);
+        if (!empty($json['credential'])) return $json['credential'];
+        if (!empty($json['token'])) return $json['token'];
+    }
+    return null;
+}
 
-        // Decodificar la parte del payload (segunda parte)
-        $payload = json_decode(base64_decode(str_replace(
-            ['-', '_'],
-            ['+', '/'],
-            $parts[1]
-        )), true);
+$jwt = getCredentialFromRequest();
+if (!$jwt) {
+    $_SESSION['error'] = "No se recibió el token de Google";
+    header('Location: ../php/login.php');
+    exit();
+}
 
-        if (!$payload) {
-            throw new Exception("No se pudo decodificar el payload del JWT");
-        }
-
-        error_log("Información de usuario: " . json_encode($payload));
-
-        // Extraer información del usuario
-        $google_id = $payload['sub'];
-        $name = $payload['name'];
-        $email = $payload['email'];
-
-        // Verificar usuario en la base de datos
-        $stmt = $conn->prepare("SELECT * FROM usuarios WHERE google_id = ?");
-        if (!$stmt) {
-            throw new Exception("Error preparando consulta: " . $conn->error);
-        }
-
-        $stmt->bind_param("s", $google_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            // Usuario existente
-            $user = $result->fetch_assoc();
-            $_SESSION['usuario_id'] = $user['id'];
-            $_SESSION['nombre_usuario'] = $user['nombre_usuario'];
-            $_SESSION['success'] = "Inicio de sesión exitoso";
-        } else {
-            // Nuevo usuario, registrarlo
-            $stmt = $conn->prepare("INSERT INTO usuarios (google_id, nombre_usuario, email) VALUES (?, ?, ?)");
-            if (!$stmt) {
-                throw new Exception("Error preparando consulta: " . $conn->error);
-            }
-
-            $stmt->bind_param("sss", $google_id, $name, $email);
-            if ($stmt->execute()) {
-                $_SESSION['usuario_id'] = $conn->insert_id;
-                $_SESSION['nombre_usuario'] = $name;
-                $_SESSION['success'] = "Cuenta creada con éxito";
-
-                // Enviar correo de bienvenida
-                $resultadoCorreo = enviarCorreo($email, $name);
-                if ($resultadoCorreo !== true) {
-                    error_log("Error al enviar correo: " . $resultadoCorreo);
-                }
-            } else {
-                throw new Exception("Error insertando usuario: " . $stmt->error);
-            }
-        }
-
-        header("Location: ../php/dashboard.php");
-        exit();
-    } catch (Exception $e) {
-        error_log("Error en autenticación JWT: " . $e->getMessage());
-        $_SESSION['error'] = "Error al autenticar con Google: " . $e->getMessage();
+try {
+    $clientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
+    if (!$clientId) {
+        $_SESSION['error'] = "Google Client ID no configurado";
         header('Location: ../php/login.php');
         exit();
     }
-} else {
-    // Si no hay credenciales en POST, redirigir con error
-    $_SESSION['error'] = "No se recibieron credenciales de autenticación";
+
+    // Validar token con librería oficial (verifica firma, exp, iss, aud)
+    $client = new Google_Client();
+    $client->setClientId($clientId);
+    $payload = $client->verifyIdToken($jwt);
+
+    if (!$payload) {
+        throw new Exception("ID token inválido");
+    }
+
+    // Validaciones adicionales recomendadas
+    $iss = $payload['iss'] ?? '';
+    if (!in_array($iss, ['https://accounts.google.com', 'accounts.google.com'])) {
+        throw new Exception("Issuer inválido");
+    }
+    if (empty($payload['email']) || empty($payload['email_verified'])) {
+        throw new Exception("Email no verificado");
+    }
+
+    $google_id = $payload['sub'];
+    $name      = $payload['name'] ?? ($payload['given_name'] ?? 'Usuario');
+    $email     = $payload['email'];
+
+    // Buscar o crear usuario
+    $stmt = $conn->prepare("SELECT id, nombre_usuario, email, rol_id FROM usuarios WHERE google_id = ? OR email = ? LIMIT 1");
+    $stmt->bind_param("ss", $google_id, $email);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($res->num_rows) {
+        $user = $res->fetch_assoc();
+        // Vincular google_id si faltaba
+        if (empty($user['google_id'])) {
+            $upd = $conn->prepare("UPDATE usuarios SET google_id=? WHERE id=?");
+            $upd->bind_param("si", $google_id, $user['id']);
+            $upd->execute();
+        }
+        $_SESSION['usuario_id']    = $user['id'];
+        $_SESSION['nombre_usuario']= $user['nombre_usuario'];
+        $_SESSION['rol_id']        = (int)$user['rol_id'];
+        $_SESSION['email']         = $user['email'];
+    } else {
+        // Alta mínima (rol cliente = 2)
+        $rol_id = 2;
+        $stmt = $conn->prepare("INSERT INTO usuarios (google_id, nombre_usuario, email, rol_id, status) VALUES (?, ?, ?, ?, 'activo')");
+        $stmt->bind_param("sssi", $google_id, $name, $email, $rol_id);
+        $stmt->execute();
+        $_SESSION['usuario_id']     = $stmt->insert_id;
+        $_SESSION['nombre_usuario'] = $name;
+        $_SESSION['rol_id']         = $rol_id;
+        $_SESSION['email']          = $email;
+    }
+
+    // Redirección por rol (mismo mapa usado en login normal)
+    $redirects = [
+        1 => '../admin/dashboard.php',
+        2 => '../php/dashboard.php',
+        3 => '../pwa/dashboard.php',
+        4 => '../bodega/dashboard_bodega.php',
+        5 => '../soporte/dashboard_soporte.php',
+        6 => '../supervisor/dashboard_supervisor.php',
+        7 => '../contador/dashboard_contador.php',
+        8 => '../admin/dashboard.php'
+    ];
+
+    $destino = $redirects[$_SESSION['rol_id']] ?? '../php/dashboard.php';
+    $_SESSION['success'] = "Inicio de sesión con Google exitoso";
+    header("Location: " . $destino);
+    exit();
+} catch (Exception $e) {
+    error_log("Google Auth error: " . $e->getMessage());
+    $_SESSION['error'] = "Error al validar Google: " . $e->getMessage();
     header('Location: ../php/login.php');
     exit();
 }
