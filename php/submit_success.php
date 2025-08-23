@@ -22,6 +22,7 @@ if ($result->num_rows === 0) {
 }
 
 $envio = $result->fetch_assoc();
+$qr_url = $_SESSION['qr_url'] ?? '';
 ?>
 
 <!DOCTYPE html>

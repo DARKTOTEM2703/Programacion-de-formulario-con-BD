@@ -183,12 +183,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         INSERT INTO envios (
             usuario_id, name, email, phone, office_phone, origin, destination, 
             description, value, tracking_number, delivery_date, package_type, 
-            weight, insurance, urgent, additional_notes, package_image, estimated_cost, estado_pago
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            weight, insurance, urgent, additional_notes, package_image, estimated_cost, estado_pago, pin_seguro
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $stmt->bind_param(
-        "isssssssdsssdiissds",
+        "isssssssdsssdiissdsi",
         $usuario_id,        // i
         $name,             // s
         $email,            // s  
@@ -207,7 +207,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $additional_notes, // s
         $image_path,       // s
         $estimated_cost,   // d
-        $estado_pago       // s
+        $estado_pago,      // s
+        $pin_seguro        // i
     );
 
     if ($stmt->execute()) {
@@ -223,13 +224,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 error_log("📎 Adjuntando imagen al correo: " . $attachment_path);
             }
 
-            $correo_enviado = enviarCorreoConfirmacionConPago(
-                $email, 
-                $name, 
-                $tracking_number, 
-                $estimated_cost, 
-                $payment_link,
-                $attachment_path
+            // Generar el QR del envío usando el tracking_number
+            $qr_data = $tracking_number; // Información que contendrá el QR
+            $qr_url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($qr_data);
+            error_log("✅ QR generado: " . $qr_url);
+
+            // Enviar correo
+            $correo_enviado = enviarCorreoEnvio(
+                $email,
+                $name,
+                $tracking_number,
+                $estimated_cost,
+                $qr_url,           // QR embebido
+                $payment_link,     // Enlace de pago
+                $attachment_path   // Foto adjunta
             );
 
             if ($correo_enviado === true) {

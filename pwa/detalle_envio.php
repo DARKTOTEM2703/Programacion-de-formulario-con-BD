@@ -397,6 +397,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- PIN de Entrega -->
+        <?php if ($envio['status'] === 'En tránsito'): ?>
+        <form id="entregarPedidoForm" method="POST">
+            <div class="mb-3">
+                <label for="pin_seguro" class="form-label">PIN de Entrega</label>
+                <input type="text" class="form-control" id="pin_seguro" name="pin_seguro" maxlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-success">Validar y Entregar</button>
+        </form>
+        <div id="pinResult" class="mt-3"></div>
+
+        <script>
+            document.getElementById('entregarPedidoForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const pin = document.getElementById('pin_seguro').value.trim();
+                const res = await fetch('../api/validate_pin.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tracking_number: '<?= $envio['tracking_number'] ?>', pin_seguro: pin })
+                });
+                const data = await res.json();
+                const resultDiv = document.getElementById('pinResult');
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    resultDiv.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+                }
+            });
+        </script>
+        <?php endif; ?>
     </div>
 
     <!-- Modal para actualizar estado -->

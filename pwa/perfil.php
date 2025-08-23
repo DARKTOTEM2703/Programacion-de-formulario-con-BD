@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_perfil']))
         <div class="card mb-4 shadow-sm border-0 rounded-4">
             <div class="card-body text-center">
                 <div class="mb-3">
-                    <img src="assets/img/profile-default.png" class="rounded-circle img-thumbnail shadow-sm"
+                    <img src="assets/img/xelagato.png" class="rounded-circle img-thumbnail shadow-sm"
                         style="width: 120px; height: 120px;">
                 </div>
                 <h5 class="card-title"><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></h5>

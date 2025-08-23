@@ -459,7 +459,17 @@ $total_pages = ceil($total_records / $records_per_page);
                                             </div>
                                         </div>
                                     <?php endif; ?>
-
+                                    <!-- Mostrar el QR del envío -->
+                                    <div class="row details-section">
+                                        <div class="col-12">
+                                            <h6><i class="bi bi-qr-code me-2"></i>Código QR del Envío</h6>
+                                            <?php if (!empty($row['tracking_number'])): ?>
+                                                
+                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=<?php echo urlencode($row['tracking_number']); ?>"
+                                                    alt="QR de seguimiento" class=" package-image">
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                     <?php if (isset($row['package_image']) && !empty($row['package_image'])) : ?>
                                         <div class="row details-section">
                                             <div class="col-12">

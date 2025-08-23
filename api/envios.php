@@ -19,7 +19,7 @@ switch ($action) {
         $stmt = $conn->prepare("
             SELECT COUNT(*) as total FROM envios e 
             JOIN repartidores_envios re ON e.id = re.envio_id 
-            WHERE re.repartidor_id = ? AND e.status = 'Entregado' 
+            WHERE re.usuario_id = ? AND e.status = 'Entregado' 
             AND DATE(e.updated_at) = ?
         ");
         $stmt->bind_param("is", $repartidor_id, $today);
@@ -49,7 +49,7 @@ switch ($action) {
         // Verificar que el envío esté asignado a este repartidor
         $stmt = $conn->prepare("
             SELECT COUNT(*) as count FROM repartidores_envios 
-            WHERE repartidor_id = ? AND envio_id = ?
+            WHERE usuario_id = ? AND envio_id = ?
         ");
         $stmt->bind_param("ii", $repartidor_id, $envio_id);
         $stmt->execute();

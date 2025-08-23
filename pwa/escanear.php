@@ -1,9 +1,10 @@
 <?php
 session_start();
 require_once '../components/db_connection.php';
+require_once '../components/email_envio_en_camino.php'; // Importar la función para enviar correos
 
 // Verificar autenticación
-if (!isset($_SESSION['usuario_id'])) {
+if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'repartidor') {
     header("Location: login.php");
     exit();
 }
@@ -21,53 +22,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
     $stmt = $conn->prepare("
         SELECT e.*, re.usuario_id 
         FROM envios e 
-        JOIN repartidores_envios re ON e.id = re.envio_id 
-        WHERE e.tracking_number = ? AND re.usuario_id = ?
+        LEFT JOIN repartidores_envios re ON e.id = re.envio_id 
+        WHERE e.tracking_number = ?
     ");
-    $stmt->bind_param("si", $tracking_code, $usuario_id);
+    $stmt->bind_param("s", $tracking_code);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $envio = $result->fetch_assoc();
 
-        // Actualizar estado según la acción seleccionada
-        if (isset($_POST['accion'])) {
-            $nuevo_estado = "";
-            switch ($_POST['accion']) {
-                case 'recoger':
-                    $nuevo_estado = "En camino";
-                    break;
-                case 'entruta':
-                    $nuevo_estado = "En ruta";
-                    break;
-                case 'entregar':
-                    $nuevo_estado = "Entregado";
-                    break;
-                case 'intentado':
-                    $nuevo_estado = "Intento fallido";
-                    break;
-            }
+        // Mapear las claves faltantes
+        $envio['recipient_name'] = $envio['name'];
+        $envio['recipient_address'] = $envio['destination'];
 
-            if (!empty($nuevo_estado)) {
-                $update = $conn->prepare("UPDATE envios SET status = ? WHERE id = ?");
-                $update->bind_param("si", $nuevo_estado, $envio['id']);
+        // Verificar si el envío está asignado al repartidor
+        if ($envio['usuario_id'] !== $usuario_id) {
+            // Asignar automáticamente el envío al repartidor
+            $stmt = $conn->prepare("INSERT INTO repartidores_envios (envio_id, usuario_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $envio['id'], $usuario_id);
+            $stmt->execute();
+        }
 
-                if ($update->execute()) {
-                    $mensaje = "Estado del envío #" . $tracking_code . " actualizado a: " . $nuevo_estado;
-                    $tipo_mensaje = "success";
-                } else {
-                    $mensaje = "Error al actualizar el estado del envío.";
-                    $tipo_mensaje = "danger";
-                }
+        // Cambiar el estado a "En tránsito"
+        $nuevo_estado = "En tránsito";
+        if ($nuevo_estado === 'En tránsito') {
+            // Generar PIN seguro
+            $pin_seguro = random_int(100000, 999999);
+
+            // Actualizar estado y PIN en la tabla `envios`
+            $update = $conn->prepare("UPDATE envios SET status = ?, pin_seguro = ?, updated_at = NOW() WHERE id = ?");
+            $update->bind_param("sii", $nuevo_estado, $pin_seguro, $envio['id']);
+            $update->execute();
+        }
+
+        if ($update->execute()) {
+            // Enviar correo al cliente con el PIN
+            $correo_enviado = enviarCorreoEnvioEnCamino($envio['email'], $envio['name'], $tracking_code, $pin_seguro);
+
+            if ($correo_enviado === true) {
+                $mensaje = "El estado del envío #" . $tracking_code . " ha cambiado a: " . $nuevo_estado . ". PIN generado y correo enviado.";
+                $tipo_mensaje = "success";
+            } else {
+                $mensaje = "El estado del envío #" . $tracking_code . " ha cambiado a: " . $nuevo_estado . ". PIN generado, pero no se pudo enviar el correo.";
+                $tipo_mensaje = "warning";
             }
         } else {
-            // Solo mostrar información del envío
-            $mensaje = "Envío #" . $tracking_code . " encontrado. Seleccione una acción.";
-            $tipo_mensaje = "info";
+            $mensaje = "Error al actualizar el estado del envío.";
+            $tipo_mensaje = "danger";
         }
     } else {
-        $mensaje = "El código escaneado no corresponde a ningún envío asignado a tu cuenta.";
+        $mensaje = "El código escaneado no corresponde a ningún envío.";
         $tipo_mensaje = "danger";
     }
 }
@@ -430,25 +435,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
                             </div>
                         </div>
                     </div>
-
-                    <form method="post">
-                        <input type="hidden" name="tracking_code" value="<?php echo htmlspecialchars($tracking_code); ?>">
-                        <div class="action-buttons">
-                            <button type="submit" name="accion" value="recoger" class="btn btn-outline-primary action-btn">
-                                <i class="bi bi-box-seam-fill me-2"></i>Recolectado
-                            </button>
-                            <button type="submit" name="accion" value="entruta" class="btn btn-outline-info action-btn">
-                                <i class="bi bi-truck me-2"></i>En transporte
-                            </button>
-                            <button type="submit" name="accion" value="entregar" class="btn btn-outline-success action-btn">
-                                <i class="bi bi-check-circle-fill me-2"></i>Entregado
-                            </button>
-                            <button type="submit" name="accion" value="intentado"
-                                class="btn btn-outline-warning action-btn">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>Entrega fallida
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         <?php endif; ?>

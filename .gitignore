@@ -25,3 +25,7 @@ Thumbs.db
 *~
 # Ignorar archivos de configuración de servidor
 .htaccess
+*.jpg
+*.jpeg
+*.png
+*.gif

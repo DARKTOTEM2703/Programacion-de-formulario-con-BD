@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 session_start();
 require_once '../components/db_connection.php';
+require_once '../components/email_envio_en_camino.php';
 
 // Verificar autenticación
 if (!isset($_SESSION['repartidor_id'])) {
@@ -49,11 +50,17 @@ $stmt = $conn->prepare("
 $stmt->bind_param("isssi", $envio_id, $status, $location, $notes, $repartidor_id);
 
 if ($stmt->execute()) {
+    $tracking_number = $stmt->insert_id;
     echo json_encode([
         'success' => true,
         'message' => 'Ubicación actualizada correctamente',
-        'tracking_id' => $conn->insert_id
+        'tracking_id' => $tracking_number
     ]);
+
+    if ($status === 'En tránsito') {
+        $qr_url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($tracking_number);
+        enviarCorreoEnvioEnCamino($cliente_email, $cliente_nombre, $tracking_number, $qr_url);
+    }
 } else {
     echo json_encode(['success' => false, 'error' => 'Error al guardar: ' . $conn->error]);
 }

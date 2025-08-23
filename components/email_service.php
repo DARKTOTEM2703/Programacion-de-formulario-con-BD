@@ -3,8 +3,8 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../vendor/autoload.php'; // Asegúrate de tener instalado PHPMailer con Composer
-include 'config.php'; // El archivo de configuración para reconocer el archivo .env
+require '../vendor/autoload.php'; 
+include 'config.php'; 
 try {
 } catch (Dotenv\Exception\InvalidPathException $e) {
     die("Error: El archivo .env no se encuentra en la ruta especificada.");
