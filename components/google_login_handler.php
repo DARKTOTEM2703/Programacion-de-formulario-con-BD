@@ -109,6 +109,15 @@ try {
         $_SESSION['nombre_usuario'] = $name;
         $_SESSION['rol_id']         = $rol_id;
         $_SESSION['email']          = $email;
+
+        
+        // ENVIAR CORREO DE BIENVENIDA SOLO SI ES USUARIO NUEVO
+        $correo_result = enviarCorreo($email, $name, '');
+        if ($correo_result === true) {
+            error_log("Correo de bienvenida enviado a $email");
+        } else {
+            error_log("Error al enviar correo de bienvenida a $email: $correo_result");
+        }
     }
 
     // Redirección por rol (mismo mapa usado en login normal)

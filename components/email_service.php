@@ -212,8 +212,17 @@ HTML;
             "© {$year} {$siteName}. Todos los derechos reservados.";
 
         $mail->send();
+
+        // Registrar en archivo log
+        $logMsg = "[".date('Y-m-d H:i:s')."] CORREO REGISTRO enviado a: $email, usuario: $nombre_usuario\n";
+        file_put_contents(__DIR__ . '/../registro.log', $logMsg, FILE_APPEND);
+
         return true;
     } catch (Exception $e) {
+        // Registrar error en archivo log
+        $logMsg = "[".date('Y-m-d H:i:s')."] ERROR CORREO REGISTRO a: $email, usuario: $nombre_usuario. Error: {$mail->ErrorInfo}\n";
+        file_put_contents(__DIR__ . '/../registro.log', $logMsg, FILE_APPEND);
+
         return "Error al enviar el correo: {$mail->ErrorInfo}";
     }
 }
