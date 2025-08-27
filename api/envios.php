@@ -68,26 +68,26 @@ switch ($action) {
         $conn->begin_transaction();
 
         try {
-            // Actualizar estado del envío
-            $stmt = $conn->prepare("UPDATE envios SET status = ? WHERE id = ?");
+            // Actualizar estado del envío (actualizar updated_at para contar entregas hoy)
+            $stmt = $conn->prepare("UPDATE envios SET status = ?, updated_at = NOW() WHERE id = ?");
             $stmt->bind_param("si", $status, $envio_id);
             $stmt->execute();
-
-            // Registrar en el historial de tracking
-            $stmt = $conn->prepare("
-                INSERT INTO tracking_history (envio_id, status, location, notes, created_by) 
-                VALUES (?, ?, ?, ?, ?)
-            ");
-            $stmt->bind_param("isssi", $envio_id, $status, $location, $notes, $repartidor_id);
-            $stmt->execute();
-
-            $conn->commit();
-
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-            $conn->rollback();
-            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-        }
+            
+             // Registrar en el historial de tracking
+             $stmt = $conn->prepare("
+                 INSERT INTO tracking_history (envio_id, status, location, notes, created_by) 
+                 VALUES (?, ?, ?, ?, ?)
+             ");
+             $stmt->bind_param("isssi", $envio_id, $status, $location, $notes, $repartidor_id);
+             $stmt->execute();
+             
+             $conn->commit();
+             
+             echo json_encode(['success' => true]);
+         } catch (Exception $e) {
+             $conn->rollback();
+             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+         }
         break;
 
     default:

@@ -110,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             $conn->begin_transaction();
 
             try {
-                // Actualizar estado del envío
-                $stmt = $conn->prepare("UPDATE envios SET status = ? WHERE id = ?");
+                // Actualizar estado y updated_at
+                $stmt = $conn->prepare("UPDATE envios SET status = ?, updated_at = NOW() WHERE id = ?");
                 $stmt->bind_param("si", $new_status, $envio_id);
                 $stmt->execute();
 

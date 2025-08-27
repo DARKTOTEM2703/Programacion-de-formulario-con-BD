@@ -106,7 +106,7 @@ function getRolName($rol_id) {
 }
 
 // GEMINI API Key
-$GEMINI_API_KEY = getenv('GEMINI_API_KEY') ?: 'AIzaSyBQJskXcnGo_O8tvQdhJFoRKJqt8PDMtts';
+$GEMINI_API_KEY = getenv(name: 'GEMINI_API_KEY');
 $GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
 // Verificación de API Key
