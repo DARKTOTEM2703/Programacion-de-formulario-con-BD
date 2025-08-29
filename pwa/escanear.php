@@ -32,44 +32,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
     if ($result->num_rows > 0) {
         $envio = $result->fetch_assoc();
 
-        // Mapear las claves faltantes
-        $envio['recipient_name'] = $envio['name'];
-        $envio['recipient_address'] = $envio['destination'];
-
-        // Verificar si el envío está asignado al repartidor
-        if ($envio['usuario_id'] !== $usuario_id) {
-            // Asignar automáticamente el envío al repartidor
-            $stmt = $conn->prepare("INSERT INTO repartidores_envios (envio_id, usuario_id) VALUES (?, ?)");
-            $stmt->bind_param("ii", $envio['id'], $usuario_id);
-            $stmt->execute();
-        }
-
-        // Cambiar el estado a "En tránsito"
-        $nuevo_estado = "En tránsito";
-        if ($nuevo_estado === 'En tránsito') {
-            // Generar PIN seguro
-            $pin_seguro = random_int(100000, 999999);
-
-            // Actualizar estado y PIN en la tabla `envios`
-            $update = $conn->prepare("UPDATE envios SET status = ?, pin_seguro = ?, updated_at = NOW() WHERE id = ?");
-            $update->bind_param("sii", $nuevo_estado, $pin_seguro, $envio['id']);
-            $update->execute();
-        }
-
-        if ($update->execute()) {
-            // Enviar correo al cliente con el PIN
-            $correo_enviado = enviarCorreoEnvioEnCamino($envio['email'], $envio['name'], $tracking_code, $pin_seguro);
-
-            if ($correo_enviado === true) {
-                $mensaje = "El estado del envío #" . $tracking_code . " ha cambiado a: " . $nuevo_estado . ". PIN generado y correo enviado.";
-                $tipo_mensaje = "success";
-            } else {
-                $mensaje = "El estado del envío #" . $tracking_code . " ha cambiado a: " . $nuevo_estado . ". PIN generado, pero no se pudo enviar el correo.";
-                $tipo_mensaje = "warning";
-            }
-        } else {
-            $mensaje = "Error al actualizar el estado del envío.";
+        // Si el paquete no está en bodega, no permitir escanear
+        if ($envio['status'] !== 'Recibido bodega') {
+            $mensaje = "El paquete no está en la bodega (estado actual: " . htmlspecialchars($envio['status']) . "). No puedes recogerlo.";
             $tipo_mensaje = "danger";
+        } else {
+            // Mapear las claves faltantes
+            $envio['recipient_name'] = $envio['name'];
+            $envio['recipient_address'] = $envio['destination'];
+
+            // Verificar si el envío está asignado al repartidor
+            if ($envio['usuario_id'] !== $usuario_id) {
+                // Asignar automáticamente el envío al repartidor
+                $stmt = $conn->prepare("INSERT INTO repartidores_envios (envio_id, usuario_id) VALUES (?, ?)");
+                $stmt->bind_param("ii", $envio['id'], $usuario_id);
+                $stmt->execute();
+            }
+
+            // Cambiar el estado a "En tránsito"
+            $nuevo_estado = "En tránsito";
+            if ($nuevo_estado === 'En tránsito') {
+                // Generar PIN seguro
+                $pin_seguro = random_int(100000, 999999);
+
+                // Actualizar estado y PIN en la tabla `envios`
+                $update = $conn->prepare("UPDATE envios SET status = ?, pin_seguro = ?, updated_at = NOW() WHERE id = ?");
+                $update->bind_param("sii", $nuevo_estado, $pin_seguro, $envio['id']);
+                $update->execute();
+            }
+
+            if ($update->execute()) {
+                // Enviar correo al cliente con el PIN
+                $correo_enviado = enviarCorreoEnvioEnCamino($envio['email'], $envio['name'], $tracking_code, $pin_seguro);
+
+                if ($correo_enviado === true) {
+                    $mensaje = "El estado del envío #" . $tracking_code . " ha cambiado a: " . $nuevo_estado . ". PIN generado y correo enviado.";
+                    $tipo_mensaje = "success";
+                } else {
+                    $mensaje = "El estado del envío #" . $tracking_code . " ha cambiado a: " . $nuevo_estado . ". PIN generado, pero no se pudo enviar el correo.";
+                    $tipo_mensaje = "warning";
+                }
+            } else {
+                $mensaje = "Error al actualizar el estado del envío.";
+                $tipo_mensaje = "danger";
+            }
         }
     } else {
         $mensaje = "El código escaneado no corresponde a ningún envío.";

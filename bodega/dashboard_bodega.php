@@ -6,10 +6,9 @@ require_once '../components/auth_helper.php';
 $auth = inicializarAuth($conn);
 $auth->verificarAcceso('bodega', 'inventario');
 
-// Obtener pendientes con detalles completos (vista nueva)
+// Mostrar únicamente envíos que estén marcados como 'Recibido bodega'
 $pendientes = [];
-$res = $conn->query("SELECT * FROM vista_bodega_envios_completa ORDER BY urgent DESC, created_at ASC LIMIT 50");
-// Corregir la lógica del bucle while
+$res = $conn->query("SELECT * FROM vista_bodega_envios_completa WHERE status = 'Recibido bodega' ORDER BY urgent DESC, created_at ASC LIMIT 50");
 if ($res) {
     while ($row = $res->fetch_assoc()) {
         $pendientes[] = $row;
