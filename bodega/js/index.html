@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bodega MENDEZ - Sistema de Gestión Logística</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i data-lucide="building-2"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h1>Bodega MENDEZ</h1>
+                            <p>Sistema de Gestión Logística</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="status-indicator">
+                        <i data-lucide="activity" class="status-icon"></i>
+                        <span>Sistema activo</span>
+                    </div>
+                    <div class="user-badge">
+                        <i data-lucide="users"></i>
+                        Operador de Bodega
+                    </div>
+                    <button class="btn btn-outline">
+                        <i data-lucide="settings"></i>
+                        Configuración
+                    </button>
+                    <button class="btn btn-outline">
+                        <i data-lucide="log-out"></i>
+                        Salir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Alert Messages -->
+            <div id="alert-container" class="alert-container hidden">
+                <div class="alert">
+                    <div class="alert-content" id="alert-message"></div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon primary">
+                            <i data-lucide="package"></i>
+                        </div>
+                        <i data-lucide="trending-up" class="trend-icon"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Paquetes en bodega</p>
+                        <p class="stat-value" id="packages-warehouse">245</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                        <p class="stat-detail">75% de capacidad</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon secondary">
+                            <i data-lucide="truck"></i>
+                        </div>
+                        <i data-lucide="clock" class="trend-icon"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Paquetes cargados</p>
+                        <p class="stat-value" id="packages-loaded">89</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%"></div>
+                        </div>
+                        <p class="stat-detail">Hoy: +12 vs ayer</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon success">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <i data-lucide="activity" class="trend-icon"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Repartidores activos</p>
+                        <p class="stat-value" id="active-drivers">12</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                        <p class="stat-detail">85% disponibilidad</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon danger">
+                            <i data-lucide="alert-triangle"></i>
+                        </div>
+                        <div class="badge badge-danger">Urgente</div>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Envíos urgentes</p>
+                        <p class="stat-value" id="urgent-packages">7</p>
+                        <div class="progress-bar danger">
+                            <div class="progress-fill" style="width: 30%"></div>
+                        </div>
+                        <p class="stat-detail">Requieren atención</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="content-grid">
+                <!-- Package Reception -->
+                <div class="card">
+                    <div class="card-header primary">
+                        <div class="card-title">
+                            <div class="card-icon">
+                                <i data-lucide="qr-code"></i>
+                            </div>
+                            <div>
+                                <h3>Recepción de Paquetes</h3>
+                                <p>Escanea o ingresa códigos de seguimiento</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <form id="reception-form" class="reception-form">
+                            <div class="input-group">
+                                <div class="input-wrapper">
+                                    <i data-lucide="qr-code" class="input-icon"></i>
+                                    <input type="text" id="tracking-input" placeholder="Escanea o ingresa el tracking number" required>
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i data-lucide="check-circle"></i>
+                                    Recibir
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="section-divider">
+                            <div class="section-header">
+                                <h3>Paquetes recibidos hoy</h3>
+                                <div class="section-actions">
+                                    <button class="btn btn-outline btn-sm">
+                                        <i data-lucide="search"></i>
+                                        Buscar
+                                    </button>
+                                    <button class="btn btn-outline btn-sm">
+                                        <i data-lucide="download"></i>
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tracking</th>
+                                            <th>Hora</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="today-packages">
+                                        <tr>
+                                            <td class="tracking-code">WH001234569</td>
+                                            <td>14:30</td>
+                                            <td>
+                                                <div class="badge badge-success">
+                                                    <i data-lucide="check-circle"></i>
+                                                    Recibido
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tracking-code">WH001234570</td>
+                                            <td>13:45</td>
+                                            <td>
+                                                <div class="badge badge-success">
+                                                    <i data-lucide="check-circle"></i>
+                                                    Recibido
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tracking-code">WH001234571</td>
+                                            <td>12:20</td>
+                                            <td>
+                                                <div class="badge badge-success">
+                                                    <i data-lucide="check-circle"></i>
+                                                    Recibido
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preparation and Loading -->
+                <div class="card">
+                    <div class="card-header secondary">
+                        <div class="card-title">
+                            <div class="card-icon">
+                                <i data-lucide="truck"></i>
+                            </div>
+                            <div>
+                                <h3>Preparación y Carga</h3>
+                                <p>Gestiona envíos pendientes</p>
+                            </div>
+                        </div>
+                        <select class="select" title="Filtrar envíos">
+                            <option value="all">Todos</option>
+                            <option value="urgent">Urgentes</option>
+                            <option value="ready">Listos</option>
+                        </select>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tracking</th>
+                                        <th>Destino</th>
+                                        <th>Repartidor</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-shipments">
+                                    <tr class="urgent-row">
+                                        <td>
+                                            <div class="tracking-info">
+                                                <code class="tracking-code">WH001234567</code>
+                                                <div class="badge badge-danger">
+                                                    <i data-lucide="alert-triangle"></i>
+                                                    Urgente
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="destination">
+                                                <i data-lucide="map-pin"></i>
+                                                Centro Comercial Plaza Norte
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="no-driver">Sin asignar</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-success btn-sm" onclick="loadTruck(1)">
+                                                    <i data-lucide="truck"></i>
+                                                    Cargar
+                                                </button>
+                                                <button class="btn btn-outline btn-sm">
+                                                    <i data-lucide="eye"></i>
+                                                    Ver
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="tracking-info">
+                                                <code class="tracking-code">WH001234568</code>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="destination">
+                                                <i data-lucide="map-pin"></i>
+                                                Residencial Los Pinos Sector 3
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="badge badge-outline badge-success">Carlos Mendez</div>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-success btn-sm" onclick="loadTruck(2)">
+                                                    <i data-lucide="truck"></i>
+                                                    Cargar
+                                                </button>
+                                                <button class="btn btn-outline btn-sm">
+                                                    <i data-lucide="eye"></i>
+                                                    Ver
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Scanner Section -->
+            <div class="card">
+                <div class="card-header accent">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i data-lucide="camera"></i>
+                        </div>
+                        <div>
+                            <h3>Escáner QR Avanzado</h3>
+                            <p>Utiliza la cámara para escanear códigos QR</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="scanner-grid">
+                        <div class="scanner-controls">
+                            <div class="form-group">
+                                <label>Configuración de cámara:</label>
+                                <label for="camera-select" class="visually-hidden">Selecciona la cámara</label>
+                                <select class="select" id="camera-select" title="Selecciona la cámara">
+                                    <option value="camera1">📷 Cámara frontal</option>
+                                    <option value="camera2">📱 Cámara trasera</option>
+                                </select>
+                            </div>
+
+                            <div class="scanner-area" id="scanner-area">
+                                <div class="scanner-content">
+                                    <div class="scanner-icon">
+                                        <i data-lucide="qr-code"></i>
+                                    </div>
+                                    <div class="scanner-text">
+                                        <p>Área de escaneo QR</p>
+                                        <small>Presiona el botón para iniciar</small>
+                                    </div>
+                                    <button class="btn btn-accent" onclick="startScanning()">
+                                        <i data-lucide="camera"></i>
+                                        Iniciar escaneo
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="scan-result" class="scan-result hidden">
+                                <div class="alert alert-success">
+                                    <i data-lucide="check-circle"></i>
+                                    <span id="scan-result-text"></span>
+                                </div>
+                            </div>
+
+                            <button id="reset-scanner" class="btn btn-outline hidden" onclick="resetScanner()">
+                                <i data-lucide="refresh-cw"></i>
+                                Reiniciar escaneo
+                            </button>
+                        </div>
+
+                        <div class="scanner-stats">
+                            <div class="stats-panel">
+                                <h4>
+                                    <i data-lucide="bar-chart-3"></i>
+                                    Estadísticas de escaneo
+                                </h4>
+                                <div class="stats-list">
+                                    <div class="stat-item">
+                                        <span>Escaneos hoy</span>
+                                        <span class="stat-number">47</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Exitosos</span>
+                                        <span class="stat-number success">45</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>Errores</span>
+                                        <span class="stat-number danger">2</span>
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 96%"></div>
+                                </div>
+                                <p class="progress-text">96% tasa de éxito</p>
+                            </div>
+
+                            <div class="tips-panel">
+                                <h4>Consejos de escaneo</h4>
+                                <ul class="tips-list">
+                                    <li>
+                                        <i data-lucide="check-circle"></i>
+                                        Mantén buena iluminación
+                                    </li>
+                                    <li>
+                                        <i data-lucide="check-circle"></i>
+                                        Centra el código en la pantalla
+                                    </li>
+                                    <li>
+                                        <i data-lucide="check-circle"></i>
+                                        Mantén la cámara estable
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
