@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 <body class="bg-light">
     <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="mb-4 d-flex justify-content-between align-items-center">
             <h1 class="h3"><i class="bi bi-building"></i> Bodega</h1>
             <div>
                 <span class="badge bg-primary me-2"><?= $auth->getRolNombre() ?></span>
@@ -113,55 +113,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
         <?php endif; ?>
 
         <!-- Estadísticas -->
-        <div class="row mb-4">
-            <div class="col-md-3 mb-3">
-                <div class="stats-card p-3">
+        <div class="mb-4 row">
+            <div class="mb-3 col-md-3">
+                <div class="p-3 stats-card">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon me-3">
                             <i class="bi bi-box-seam"></i>
                         </div>
                         <div>
                             <div class="small text-muted">En bodega</div>
-                            <div class="h4 mb-0"><?= number_format($stats['en_bodega'] ?? 0) ?></div>
+                            <div class="mb-0 h4"><?= number_format($stats['en_bodega'] ?? 0) ?></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="stats-card p-3">
+            <div class="mb-3 col-md-3">
+                <div class="p-3 stats-card">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon me-3">
                             <i class="bi bi-truck"></i>
                         </div>
                         <div>
                             <div class="small text-muted">Cargados</div>
-                            <div class="h4 mb-0"><?= number_format($stats['cargados'] ?? 0) ?></div>
+                            <div class="mb-0 h4"><?= number_format($stats['cargados'] ?? 0) ?></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="stats-card p-3">
+            <div class="mb-3 col-md-3">
+                <div class="p-3 stats-card">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon me-3">
                             <i class="bi bi-person-badge"></i>
                         </div>
                         <div>
                             <div class="small text-muted">Repartidores activos</div>
-                            <div class="h4 mb-0"><?= number_format($stats['repartidores_activos'] ?? 0) ?></div>
+                            <div class="mb-0 h4"><?= number_format($stats['repartidores_activos'] ?? 0) ?></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="stats-card p-3">
+            <div class="mb-3 col-md-3">
+                <div class="p-3 stats-card">
                     <div class="d-flex align-items-center">
                         <div class="stats-icon me-3">
                             <i class="bi bi-exclamation-triangle"></i>
                         </div>
                         <div>
                             <div class="small text-muted">Urgentes</div>
-                            <div class="h4 mb-0"><?= number_format($stats['urgentes'] ?? 0) ?></div>
+                            <div class="mb-0 h4"><?= number_format($stats['urgentes'] ?? 0) ?></div>
                         </div>
                     </div>
                 </div>
@@ -169,9 +169,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
         </div>
 
         <div class="row">
-            <div class="col-lg-6 mb-4">
+            <div class="mb-4 col-lg-6">
                 <div class="card h-100">
-                    <div class="card-header bg-primary text-white">
+                    <div class="text-white card-header bg-primary">
                         <i class="bi bi-qr-code-scan me-1"></i> Recepción de Paquetes
                     </div>
                     <div class="card-body">
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
                 </div>
             </div>
 
-            <div class="col-lg-6 mb-4">
+            <div class="mb-4 col-lg-6">
                 <div class="card h-100">
                     <div class="card-header bg-warning text-dark">
                         <div class="d-flex justify-content-between align-items-center">
@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-sm align-middle table-hover">
+                            <table class="table align-middle table-sm table-hover">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Tracking</th>
@@ -279,8 +279,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
         </div>
 
         <!-- Escaneo QR con cámara mejorado -->
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
+        <div class="mb-4 card">
+            <div class="text-white card-header bg-info">
                 <i class="bi bi-camera"></i> Escanear QR con cámara
             </div>
             <div class="card-body">
@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
                     <select id="camera-select" class="form-select form-select-sm" style="max-width:300px;"></select>
                 </div>
                 <div id="qr-reader" style="width:300px; margin-bottom:10px; border:1px solid #0d6efd; border-radius:8px;"></div>
-                <div id="qr-result" class="small text-success mb-2"></div>
+                <div id="qr-result" class="mb-2 small text-success"></div>
                 <button id="btn-reiniciar" class="btn btn-outline-primary btn-sm" style="display:none;">
                     <i class="bi bi-arrow-repeat"></i> Reiniciar escaneo
                 </button>

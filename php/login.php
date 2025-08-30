@@ -10,7 +10,7 @@ $roleRedirects = [
     1 => '../admin/dashboard.php',
     2 => 'dashboard.php',
     3 => '../pwa/dashboard.php',                 // ajusta si cambiaste carpeta a /repartidor/
-    4 => '../bodega/dashboard_bodega.php',
+    4 => 'http://localhost:3000/', // si Next.js corre en ese puerto
     5 => '../soporte/dashboard_soporte.php',
     6 => '../supervisor/dashboard_supervisor.php',
     7 => '../contador/dashboard_contador.php',
@@ -126,8 +126,8 @@ if (isset($_SESSION['success'])) {
             <img src="../img/logo.png" alt="Logo de la empresa" class="img-fluid" style="max-width: 200px;">
         </div>
 
-        <div class="card shadow-sm p-4" style="width:100%;max-width:400px;">
-            <h2 class="text-center mb-3">Iniciar Sesión</h2>
+        <div class="p-4 shadow-sm card" style="width:100%;max-width:400px;">
+            <h2 class="mb-3 text-center">Iniciar Sesión</h2>
 
             <!-- Selector de rol -->
             <div class="role-tabs" id="roleTabs">
@@ -150,11 +150,11 @@ if (isset($_SESSION['success'])) {
             <div id="info-bodega" class="role-info">Personal interno de bodega autorizado.</div>
 
             <?php if ($error): ?>
-                <div class="alert alert-danger text-center" role="alert"><?= htmlspecialchars($error) ?></div>
+                <div class="text-center alert alert-danger" role="alert"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <?php if ($success): ?>
-                <div class="alert alert-success text-center" role="alert">
+                <div class="text-center alert alert-success" role="alert">
                     <?= htmlspecialchars($success) ?><br>
                     <small>Redirigiendo...</small>
                 </div>
@@ -173,11 +173,11 @@ if (isset($_SESSION['success'])) {
                 <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
             </form>
 
-            <div class="text-center mt-3">
+            <div class="mt-3 text-center">
                 <p>¿No tienes una cuenta? <a href="register.php" class="text-decoration-none">Regístrate aquí</a></p>
             </div>
 
-            <div class="text-center mt-4">
+            <div class="mt-4 text-center">
                 <p>O inicia sesión con:</p>
                 <?php
                 include '../components/config.php';

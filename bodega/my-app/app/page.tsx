@@ -74,6 +74,7 @@ export default function WarehouseDashboard() {
   const [scanResult, setScanResult] = useState("")
   const [cameras, setCameras] = useState<{ id: string; label?: string }[]>([])
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null)
+  const [repartidores, setRepartidores] = useState<any[]>([])
   const scanContainerRef = useRef<HTMLDivElement | null>(null)
   const html5Ref = useRef<any>(null)
 
@@ -86,9 +87,14 @@ export default function WarehouseDashboard() {
   useEffect(() => {
     let mounted = true
     const fetchData = () => {
-      fetch('/api/dashboard_stats.php')
+      fetch('http://localhost/Programacion-de-formulario-con-BD/api/dashboard_stats.php', { credentials: "include" })
         .then((res) => res.json())
         .then((data) => {
+          console.log("Stats recibidos:", data.stats)
+          if (data.error === "no_session") {
+            window.location.href = "http://localhost/Programacion-de-formulario-con-BD/php/login.php"
+            return
+          }
           if (!mounted) return
           if (data?.stats) setStats({
             en_bodega: Number(data.stats.en_bodega ?? 0),
@@ -99,20 +105,23 @@ export default function WarehouseDashboard() {
           if (Array.isArray(data.pendingShipments)) {
             setPendingShipments(data.pendingShipments.map((s: any) => ({
               id: Number(s.id),
-              tracking_number: s.tracking_number ?? s.tracking ?? '',
+              tracking_number: s.tracking_number ?? '',
               destination: s.destination ?? '',
               status: s.status ?? '',
-              repartidor_nombre: s.repartidor_nombre ?? undefined,
-              urgent: Boolean(Number(s.urgent ?? 0)),
+              repartidor_nombre: s.repartidor_nombre && s.repartidor_nombre.trim() !== '' ? s.repartidor_nombre : undefined,
+              urgent: s.urgent === "1" || s.urgent === 1,
               created_at: s.created_at ?? '',
             })))
           }
           if (Array.isArray(data.todayPackages)) {
             setTodayPackages(data.todayPackages.map((pkg: any) => ({
-              tracking: pkg.tracking_number,
-              time: pkg.hora,
-              status: pkg.status,
+              tracking: pkg.tracking_number ?? '', // <-- usa tracking_number
+              time: pkg.hora ?? '',                // <-- usa hora
+              status: pkg.status ?? '',
             })))
+          }
+          if (Array.isArray(data.repartidores)) {
+            setRepartidores(data.repartidores)
           }
         })
         .catch((err) => console.error('Error cargando stats:', err))
@@ -482,8 +491,8 @@ export default function WarehouseDashboard() {
                               </Badge>
                             </TableCell>
                           </TableRow>
-                        ))
-                      ) : (
+                        )))
+                      : (
                         <TableRow>
                           <TableCell colSpan={3} className="py-8 text-center text-muted-foreground">
                             No hay registros para hoy
@@ -561,13 +570,10 @@ export default function WarehouseDashboard() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            {shipment.repartidor_nombre ? (
-                              <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50">
-                                {shipment.repartidor_nombre}
-                              </Badge>
-                            ) : (
-                              <span className="text-sm text-muted-foreground">Sin asignar</span>
-                            )}
+                            {shipment.repartidor_nombre
+                              ? <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50">{shipment.repartidor_nombre}</Badge>
+                              : <span className="text-sm text-muted-foreground">Sin asignar</span>
+                            }
                           </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
@@ -730,5 +736,4 @@ export default function WarehouseDashboard() {
         </Card>
       </div>
     </div>
-  )
-}
+  )}
