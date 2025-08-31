@@ -10,13 +10,15 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
 2. [Estructura del Proyecto](#estructura-del-proyecto)
 3. [Instalación](#instalación)
 4. [Configuración](#configuración)
-5. [Componentes Principales](#componentes-principales)
+5. [Módulos y Componentes](#módulos-y-componentes)
 6. [Estilos y Diseño](#estilos-y-diseño)
 7. [Validación y Seguridad](#validación-y-seguridad)
 8. [Base de Datos](#base-de-datos)
-9. [Características Adicionales](#características-adicionales)
-10. [Contacto](#contacto)
-11. [Créditos](#créditos)
+9. [Destacado Tecnológico](#destacado-tecnológico)
+10. [Mejoras en Accesibilidad](#mejoras-en-accesibilidad)
+11. [Contacto](#contacto)
+12. [Créditos](#créditos)
+13. [Derechos](#derechos)
 
 ---
 
@@ -117,7 +119,7 @@ Este proyecto es una aplicación web diseñada para gestionar formularios de reg
    composer require vlucas/phpdotenv
    composer require --dev phpunit/phpunit
    composer require --dev phpstan/phpstan
-
+   npm install
    ```
 
 3. Configura la base de datos MySQL:
@@ -167,7 +169,10 @@ Las dependencias principales están definidas en `composer.json`:
 
 ---
 
-## Componentes Principales
+## Módulos y Componentes
+- **Panel de administración**: Gestión de usuarios, envíos, facturas, repartidores y notificaciones.
+- **Gestión financiera**: Facturación electrónica, pagos, panel de ingresos y gastos.
+- **Optimización de rutas**: Algoritmos para asignación inteligente y visualización en mapa.
 
 ### Autenticación
 
@@ -221,6 +226,9 @@ La base de datos `gestion_envios` contiene las siguientes tablas principales:
 | **Modo Oscuro Integrado**        | Sistema automático de detección de preferencias del usuario que ajusta colores y contrastes.    |
 | **Secciones Modulares**          | Estructura por componentes que facilita mantenimiento y escalabilidad del código.               |
 | **Efectos Visuales**             | Animaciones sutiles en tarjetas e imágenes para mejorar la experiencia del usuario.             |
+**Animaciones y microinteracciones** | Animaciones y microinteracciones (GSAP, Animate.css, tw-animate-css)** | Animaciones y microinteracciones (GSAP, Animate.css, tw-animate-css) |
+| **Tablas y paneles modernos**    | Tablas y paneles con filtros y exportación de datos.                                                       |
+| **Efectos Visuales**             | Animaciones sutiles en tarjetas e imágenes para mejorar la experiencia del usuario.                         |
 
 ### Secciones Principales
 
@@ -239,6 +247,33 @@ La base de datos `gestion_envios` contiene las siguientes tablas principales:
 - **Optimización de Rendimiento**: Imágenes optimizadas y recursos cargados eficientemente.
 - **Microinteracciones**: Efectos hover sutiles para mejorar la experiencia del usuario.
 
+## Validación y Seguridad
+
+- Validación en cliente y servidor.
+- Protección CSRF y XSS.
+- Hashing seguro de contraseñas.
+- Roles y permisos granulares.
+- Auditoría y logs de actividad.
+
+## Destacado Tecnológico
+
+- **Dashboard de Bodega con Next.js y React**  
+  Panel moderno y responsivo, desarrollado con Next.js y React, que consume datos en tiempo real desde el backend PHP y la base de datos MySQL.  
+  Incluye escaneo QR con cámara, gestión de envíos, estadísticas y asignación de repartidores.
+
+- **Integración Fullstack**  
+  Comunicación eficiente entre frontend Next.js y backend PHP mediante APIs RESTful, permitiendo escalabilidad y mantenibilidad.
+
+- **Aplicación Progresiva (PWA)**  
+  Módulo para repartidores con escaneo QR, geolocalización, sincronización offline y notificaciones push.
+
+- **Seguridad y Roles**  
+  Sistema robusto de autenticación, gestión de permisos, protección CSRF/XSS y auditoría.
+
+- **Notificaciones Push y Chatbot IA**  
+  Alertas en tiempo real y asistente virtual para soporte automatizado.
+
+---
 ### Mejoras en Accesibilidad
 
 - **Alto contraste**: Cumplimiento de estándares WCAG para legibilidad.
@@ -262,3 +297,5 @@ Este proyecto fue desarrollado por Jafet Gamboa, comprometido con proporcionar s
 ## Derechos
 
 Todos los derechos reservados. Este proyecto y su contenido están protegidos por derechos de autor y no pueden ser reproducidos, distribuidos ni utilizados sin el permiso expreso del autor.
+
+
