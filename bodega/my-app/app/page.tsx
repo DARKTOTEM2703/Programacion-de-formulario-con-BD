@@ -134,6 +134,22 @@ export default function WarehouseDashboard() {
     }
   }, [])
 
+  // Check session on mount
+  useEffect(() => {
+    fetch("http://localhost/Programacion-de-formulario-con-BD/api/check_session.php", {
+      credentials: "include"
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.ok) {
+          window.location.href = "http://localhost/Programacion-de-formulario-con-BD/php/login.php"
+        }
+      })
+      .catch(() => {
+        window.location.href = "http://localhost/Programacion-de-formulario-con-BD/php/login.php"
+      })
+  }, [])
+
   // Load available cameras for html5-qrcode (lazy)
   const ensureHtml5Script = async () => {
     if (typeof window === 'undefined') return
@@ -285,6 +301,13 @@ export default function WarehouseDashboard() {
     await stopScanner()
   }
 
+  const handleLogout = async () => {
+    await fetch("http://localhost/Programacion-de-formulario-con-BD/api/logout.php", {
+      credentials: "include"
+    })
+    window.location.href = "http://localhost/Programacion-de-formulario-con-BD/php/login.php"
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-50 border-b bg-card/50 backdrop-blur-sm">
@@ -314,7 +337,7 @@ export default function WarehouseDashboard() {
                 <Settings className="w-4 h-4" />
                 Configuración
               </Button>
-              <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+              <Button variant="outline" size="sm" className="gap-2 bg-transparent" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
                 Salir
               </Button>

@@ -2,43 +2,11 @@
 session_start();
 require_once '../components/db_connection.php';
 
-/**
- * Mapa de redirecciones por rol
- * 1=Admin,2=Cliente,3=Repartidor,4=Bodeguista,5=Soporte,6=Supervisor,7=Contador,8=SuperAdmin
- */
-$roleRedirects = [
-    1 => '../admin/dashboard.php',
-    2 => 'dashboard.php',
-    3 => '../pwa/dashboard.php',                 // ajusta si cambiaste carpeta a /repartidor/
-    4 => 'http://localhost:3000/', // si Next.js corre en ese puerto
-    5 => '../soporte/dashboard_soporte.php',
-    6 => '../supervisor/dashboard_supervisor.php',
-    7 => '../contador/dashboard_contador.php',
-    8 => '../admin/dashboard.php',
-];
-
-function redirectIfLogged($map) {
-    if (isset($_SESSION['usuario_id'], $_SESSION['rol_id'])) {
-        $dest = $map[$_SESSION['rol_id']] ?? 'dashboard.php';
-        header("Location: $dest");
-        exit();
-    }
-}
-
-redirectIfLogged($roleRedirects);
-
-$error   = '';
-$success = '';
-
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-    unset($_SESSION['error']);
-}
-if (isset($_SESSION['success'])) {
-    $success = $_SESSION['success'];
-    // No redirigimos aquí con header para no romper el diseño; lo hacemos con JS (mantiene tu UI)
-}
+// Inicializa las variables para evitar warnings
+$error = $_SESSION['error'] ?? ''; // Mensaje de error
+$success = $_SESSION['success'] ?? ''; // Mensaje de éxito
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

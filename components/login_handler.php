@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 1 => '../admin/dashboard.php',
                 2 => '../php/dashboard.php',
                 3 => '../pwa/dashboard.php',
-                4 => '../bodega/dashboard_bodega.php',
+                4 => 'http://localhost:3000', // si Next.js corre en ese puerto
                 5 => '../soporte/dashboard_soporte.php',
                 6 => '../supervisor/dashboard_supervisor.php',
                 7 => '../contador/dashboard_contador.php',
