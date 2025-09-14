@@ -6,7 +6,9 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 require_once '../components/db_connection.php';
+require_once '../components/url_helper.php'; // <- añadido
 $usuario_id = $_SESSION['usuario_id'];
+$base_url = rtrim(base_url(), '/'); // exponer
 
 // Obtener información del usuario
 $query = "SELECT nombre_usuario FROM usuarios WHERE id = $usuario_id";
@@ -111,7 +113,10 @@ if ($result && $result->num_rows > 0) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-
+    <script>
+      // Variable global para los scripts cliente
+      window.BASE_URL = "<?php echo addslashes($base_url); ?>";
+    </script>
 </head>
 
 <body>
@@ -159,9 +164,9 @@ if ($result && $result->num_rows > 0) {
                     <h1 class="page-title">Panel de Cliente</h1>
                 </div>
                 <div class="header-controls">
-                    <button>
+                    <button id="notifBell" class="bell-button" style="position:relative;">
                         <i class="bi bi-bell"></i>
-                        <span class="notification-badge">3</span>
+                        <span class="notification-badge" style="position:absolute;top:-6px;right:-6px;background:#dc3545;color:#fff;border-radius:999px;padding:2px 6px;font-size:0.75rem;display:inline-block;"></span>
                     </button>
                     <button>
                         <i class="bi bi-gear"></i>
@@ -323,6 +328,8 @@ if ($result && $result->num_rows > 0) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/dashboard.js"></script>
+    <script src="../js/notifications.js"></script>
+    <!-- tu resto de scripts -->
 </body>
 
 </html>
