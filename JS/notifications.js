@@ -51,6 +51,55 @@
     });
   }
 
+  // Theme handling: detecta preferencia y aplica estilos al dropdown y toasts
+  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  let currentTheme = mq && mq.matches ? 'dark' : 'light';
+
+  function applyThemeStylesToDropdown(d){
+    if (!d) return;
+    if (currentTheme === 'dark') {
+      d.style.background = 'linear-gradient(180deg, rgba(18,24,33,0.98), rgba(12,16,22,0.98))';
+      d.style.color = '#e6eef8';
+      d.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)';
+      d.style.border = '1px solid rgba(255,255,255,0.04)';
+    } else {
+      d.style.background = '#ffffff';
+      d.style.color = '#222';
+      d.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)';
+      d.style.border = '1px solid rgba(0,0,0,0.06)';
+    }
+    // update inner header colors if exists
+    const hdr = d.querySelector('#notif-header strong');
+    if (hdr) hdr.style.color = currentTheme === 'dark' ? '#cfe6ff' : '#003366';
+    const markBtn = d.querySelector('#markAllReadBtn');
+    if (markBtn) markBtn.style.color = currentTheme === 'dark' ? '#9fc5ff' : '#0d6efd';
+  }
+
+  function applyThemeStylesToToast(elmt){
+    if (!elmt) return;
+    if (currentTheme === 'dark') {
+      elmt.style.background = 'linear-gradient(180deg,#0f1724,#0b1220)';
+      elmt.style.color = '#eaf4ff';
+      elmt.style.boxShadow = '0 8px 30px rgba(2,6,23,0.6)';
+    } else {
+      elmt.style.background = '#fff';
+      elmt.style.color = '#111';
+      elmt.style.boxShadow = '0 8px 20px rgba(0,0,0,0.08)';
+    }
+  }
+
+  if (mq && typeof mq.addEventListener === 'function') {
+    mq.addEventListener('change', (ev) => {
+      currentTheme = ev.matches ? 'dark' : 'light';
+      if (dropdown) applyThemeStylesToDropdown(dropdown);
+    });
+  } else if (mq && typeof mq.addListener === 'function') {
+    mq.addListener((ev) => {
+      currentTheme = ev.matches ? 'dark' : 'light';
+      if (dropdown) applyThemeStylesToDropdown(dropdown);
+    });
+  }
+
   async function fetchNotifs(showToastsForNew = true){
     try{
       if (MOCK) {
@@ -104,18 +153,15 @@
     dropdown.style.width = '340px';
     dropdown.style.maxHeight = '60vh';
     dropdown.style.overflow = 'auto';
-    // Dark theme styles (adaptativo)
-    dropdown.style.background = 'linear-gradient(180deg, rgba(18,24,33,0.98), rgba(12,16,22,0.98))';
-    dropdown.style.color = '#e6eef8';
-    dropdown.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)';
-    dropdown.style.border = '1px solid rgba(255,255,255,0.04)';
     dropdown.style.borderRadius = '10px';
     dropdown.style.display = 'none';
     dropdown.style.zIndex = 99999;
     dropdown.style.backdropFilter = 'blur(6px)';
-    // inner padding container
-    dropdown.innerHTML = '<div id="notif-header" style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center"><strong style="color:#cfe6ff">Notificaciones</strong><button id="markAllReadBtn" style="background:transparent;border:0;color:#9fc5ff;cursor:pointer">Marcar todas</button></div><div id="notif-list"></div>';
+
+    // inner structure
+    dropdown.innerHTML = '<div id="notif-header" style="padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.04);display:flex;justify-content:space-between;align-items:center"><strong>Notificaciones</strong><button id="markAllReadBtn" style="background:transparent;border:0;cursor:pointer">Marcar todas</button></div><div id="notif-list"></div>';
     document.body.appendChild(dropdown);
+    applyThemeStylesToDropdown(dropdown);
     return dropdown;
   }
 
@@ -123,22 +169,22 @@
     const d = ensureDropdown();
     const list = d.querySelector('#notif-list');
     if (!Array.isArray(notifs) || notifs.length === 0) {
-      list.innerHTML = '<div style="padding:14px;color:#9aa3b2">Sin notificaciones recientes</div>';
+      list.innerHTML = `<div style="padding:14px;color:${currentTheme === 'dark' ? '#9aa3b2' : '#666'}">Sin notificaciones recientes</div>`;
       return;
     }
     const items = notifs.map(n => {
       const unread = n.status === 'pendiente';
       const contenidoShort = (n.contenido || '').slice(0, 120);
       return `
-        <a href="#" data-id="${n.id}" data-link="${escapeHtml(n.link || '')}" class="notif-item" style="display:block;padding:12px;border-bottom:1px solid rgba(255,255,255,0.02);text-decoration:none;color:inherit">
+        <a href="#" data-id="${n.id}" data-link="${escapeHtml(n.link || '')}" class="notif-item" style="display:block;padding:12px;border-bottom:1px solid rgba(0,0,0,0.04);text-decoration:none;color:inherit">
           <div style="display:flex;gap:10px;align-items:flex-start">
             <div style="flex:1">
-              <div style="font-weight:700;color:${unread ? '#cfe6ff' : '#d7e4f6'}">${escapeHtml(n.asunto)}</div>
-              <div style="font-size:0.92rem;color:#b8c6d9;margin-top:6px;line-height:1.2">${escapeHtml(contenidoShort)}</div>
-              <div style="font-size:0.78rem;color:#94a6bb;margin-top:8px">${formatTime(n.created_at)}</div>
+              <div style="font-weight:700;color:${unread ? (currentTheme === 'dark' ? '#cfe6ff' : '#0d6efd') : (currentTheme === 'dark' ? '#d7e4f6' : '#333')}">${escapeHtml(n.asunto)}</div>
+              <div style="font-size:0.92rem;color:${currentTheme === 'dark' ? '#b8c6d9' : '#666'};margin-top:6px;line-height:1.2">${escapeHtml(contenidoShort)}</div>
+              <div style="font-size:0.78rem;color:${currentTheme === 'dark' ? '#94a6bb' : '#888'};margin-top:8px">${formatTime(n.created_at)}</div>
             </div>
             <div style="margin-left:10px;display:flex;align-items:flex-start;flex-direction:column;gap:6px">
-              ${unread ? '<span style="background:#2b6df6;color:#fff;padding:4px 6px;border-radius:6px;font-size:0.72rem">Nuevo</span>' : '<span style="font-size:0.76rem;color:#6f8196">Leído</span>'}
+              ${unread ? `<span style="background:${currentTheme === 'dark' ? '#2b6df6' : '#0d6efd'};color:#fff;padding:4px 6px;border-radius:6px;font-size:0.72rem">Nuevo</span>` : `<span style="font-size:0.76rem;color:${currentTheme === 'dark' ? '#6f8196' : '#6c757d'}">Leído</span>`}
             </div>
           </div>
         </a>
@@ -205,13 +251,11 @@
 
     const elmt = document.createElement('div');
     elmt.style.minWidth = '260px';
-    elmt.style.background = 'linear-gradient(180deg,#0f1724,#0b1220)';
-    elmt.style.color = '#eaf4ff';
     elmt.style.padding = '12px 14px';
     elmt.style.borderRadius = '8px';
-    elmt.style.boxShadow = '0 8px 30px rgba(2,6,23,0.6)';
     elmt.style.cursor = 'pointer';
-    elmt.innerHTML = `<div style="font-weight:700;color:#cfe6ff">${escapeHtml(n.asunto)}</div><div style="color:#c0d6ea;margin-top:6px;font-size:0.95rem">${escapeHtml(n.contenido)}</div><div style="font-size:0.8rem;color:#9fb3cc;margin-top:8px">${formatTime(n.created_at)}</div>`;
+    applyThemeStylesToToast(elmt);
+    elmt.innerHTML = `<div style="font-weight:700;color:${currentTheme === 'dark' ? '#cfe6ff' : '#0b2a66'}">${escapeHtml(n.asunto)}</div><div style="color:${currentTheme === 'dark' ? '#c0d6ea' : '#333'};margin-top:6px;font-size:0.95rem">${escapeHtml(n.contenido)}</div><div style="font-size:0.8rem;color:${currentTheme === 'dark' ? '#9fb3cc' : '#666'};margin-top:8px">${formatTime(n.created_at)}</div>`;
     elmt.addEventListener('click', async ()=>{
       if (n.id && !MOCK) await markRead(n.id);
       if (n.link) location.href = n.link;
@@ -229,7 +273,7 @@
     const rect = bell.getBoundingClientRect();
     const top = rect.bottom + window.scrollY + 8;
 
-    // si pantalla pequeña, centrar y ajustar ancho al 90%
+    // si pantalla pequeña, centrar y ajustar ancho al 92%
     if (window.innerWidth <= 480) {
       d.style.width = '92%';
       d.style.left = '4%';
