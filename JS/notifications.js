@@ -6,10 +6,7 @@
   const API_MARK = (BASE ? BASE : '') + '/api/notifications_mark_read.php';
   const POLL_MS = 6000;
 
-  // Modo de prueba: datos mock en cliente
-  const MOCK = true; // poner false para usar el backend
-
-  // 8 notificaciones "dumb" de ejemplo
+  const MOCK = true;
   const now = Date.now();
   const MOCK_DATA = [
     { id: 201, usuario_id: 1, tipo: 'envio_status', titulo: 'Paquete recibido en bodega', mensaje: 'Tu paquete #AZ1234 fue recibido en bodega.', enlace: BASE + '/php/tracking.php?tracking=AZ1234', leida: 0, created_at: new Date(now - 30*1000).toISOString() },
@@ -29,75 +26,30 @@
   const bellId = 'notifBell';
 
   function el(id){ return document.getElementById(id); }
-
-  function formatTime(dt){
-    try { return new Date(dt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); } catch(e){ return ''; }
-  }
-
+  function formatTime(dt){ try { return new Date(dt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); } catch(e){ return ''; } }
   function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 
-  // Mapea estructura DB -> UI (soporta 'titulo'/'mensaje' o 'asunto'/'contenido')
   function normalizeNotifications(arr){
-    return (arr || []).map(n => {
-      return {
-        id: n.id,
-        tipo: n.tipo || n.type || '',
-        asunto: n.titulo || n.asunto || '',
-        contenido: n.mensaje || n.contenido || '',
-        link: n.enlace || n.link || '',
-        status: (n.leida === 1 || n.status === 'leido' || n.status === 'leído') ? 'leido' : 'pendiente',
-        created_at: n.created_at || n.createdAt || new Date().toISOString()
-      };
-    });
+    return (arr || []).map(n => ({
+      id: n.id,
+      tipo: n.tipo || n.type || '',
+      asunto: n.titulo || n.asunto || '',
+      contenido: n.mensaje || n.contenido || '',
+      link: n.enlace || n.link || '',
+      status: (n.leida === 1 || n.status === 'leido' || n.status === 'leído') ? 'leido' : 'pendiente',
+      created_at: n.created_at || n.createdAt || new Date().toISOString()
+    }));
   }
 
-  // Theme handling: detecta preferencia y aplica estilos al dropdown y toasts
-  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-  let currentTheme = mq && mq.matches ? 'dark' : 'light';
-
-  function applyThemeStylesToDropdown(d){
-    if (!d) return;
-    if (currentTheme === 'dark') {
-      d.style.background = 'linear-gradient(180deg, rgba(18,24,33,0.98), rgba(12,16,22,0.98))';
-      d.style.color = '#e6eef8';
-      d.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)';
-      d.style.border = '1px solid rgba(255,255,255,0.04)';
-    } else {
-      d.style.background = '#ffffff';
-      d.style.color = '#222';
-      d.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)';
-      d.style.border = '1px solid rgba(0,0,0,0.06)';
-    }
-    // update inner header colors if exists
-    const hdr = d.querySelector('#notif-header strong');
-    if (hdr) hdr.style.color = currentTheme === 'dark' ? '#cfe6ff' : '#003366';
-    const markBtn = d.querySelector('#markAllReadBtn');
-    if (markBtn) markBtn.style.color = currentTheme === 'dark' ? '#9fc5ff' : '#0d6efd';
-  }
-
-  function applyThemeStylesToToast(elmt){
-    if (!elmt) return;
-    if (currentTheme === 'dark') {
-      elmt.style.background = 'linear-gradient(180deg,#0f1724,#0b1220)';
-      elmt.style.color = '#eaf4ff';
-      elmt.style.boxShadow = '0 8px 30px rgba(2,6,23,0.6)';
-    } else {
-      elmt.style.background = '#fff';
-      elmt.style.color = '#111';
-      elmt.style.boxShadow = '0 8px 20px rgba(0,0,0,0.08)';
-    }
-  }
-
-  if (mq && typeof mq.addEventListener === 'function') {
-    mq.addEventListener('change', (ev) => {
-      currentTheme = ev.matches ? 'dark' : 'light';
-      if (dropdown) applyThemeStylesToDropdown(dropdown);
-    });
-  } else if (mq && typeof mq.addListener === 'function') {
-    mq.addListener((ev) => {
-      currentTheme = ev.matches ? 'dark' : 'light';
-      if (dropdown) applyThemeStylesToDropdown(dropdown);
-    });
+  // animate badge (pop)
+  function popBadge(){
+    badge = badge || document.querySelector('.notification-badge');
+    if (!badge) return;
+    badge.classList.remove('pop');
+    // force reflow to restart animation
+    void badge.offsetWidth;
+    badge.classList.add('pop');
+    setTimeout(()=> badge.classList.remove('pop'), 1100);
   }
 
   async function fetchNotifs(showToastsForNew = true){
@@ -111,13 +63,15 @@
             if (!lastSeenIds.has(n.id) && n.status === 'pendiente') {
               lastSeenIds.add(n.id);
               showToast(n);
+              // marcar visual nuevo en listado si está abierto
+              markItemAsNew(n.id);
+              popBadge();
             }
           });
         }
         json.notifications.forEach(n => lastSeenIds.add(n.id));
         return;
       }
-
       const res = await fetch(API_LIST, { credentials: 'include' });
       if (!res.ok) return;
       const json = await res.json();
@@ -130,6 +84,8 @@
           if (!lastSeenIds.has(n.id) && n.status === 'pendiente') {
             lastSeenIds.add(n.id);
             showToast(n);
+            markItemAsNew(n.id);
+            popBadge();
           }
         });
       }
@@ -157,42 +113,47 @@
     dropdown.style.display = 'none';
     dropdown.style.zIndex = 99999;
     dropdown.style.backdropFilter = 'blur(6px)';
-
-    // inner structure
     dropdown.innerHTML = '<div id="notif-header" style="padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.04);display:flex;justify-content:space-between;align-items:center"><strong>Notificaciones</strong><button id="markAllReadBtn" style="background:transparent;border:0;cursor:pointer">Marcar todas</button></div><div id="notif-list"></div>';
     document.body.appendChild(dropdown);
-    applyThemeStylesToDropdown(dropdown);
     return dropdown;
+  }
+
+  function markItemAsNew(id){
+    const d = ensureDropdown();
+    const item = d.querySelector(`.notif-item[data-id="${id}"]`);
+    if (item) {
+      item.classList.add('new');
+      // hacer scroll al top del dropdown para mostrar el nuevo
+      d.scrollTo({ top: 0, behavior: 'smooth' });
+      // quitar clase "new" después de un tiempo
+      setTimeout(()=> item.classList.remove('new'), 2500);
+    }
   }
 
   function renderDropdownList(notifs){
     const d = ensureDropdown();
     const list = d.querySelector('#notif-list');
     if (!Array.isArray(notifs) || notifs.length === 0) {
-      list.innerHTML = `<div style="padding:14px;color:${currentTheme === 'dark' ? '#9aa3b2' : '#666'}">Sin notificaciones recientes</div>`;
+      list.innerHTML = `<div style="padding:14px;color:var(--notif-msg)">Sin notificaciones recientes</div>`;
       return;
     }
     const items = notifs.map(n => {
       const unread = n.status === 'pendiente';
-      const contenidoShort = (n.contenido || '').slice(0, 120);
+      const contenidoShort = (n.contenido || '').slice(0, 140);
       return `
-        <a href="#" data-id="${n.id}" data-link="${escapeHtml(n.link || '')}" class="notif-item" style="display:block;padding:12px;border-bottom:1px solid rgba(0,0,0,0.04);text-decoration:none;color:inherit">
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <div style="flex:1">
-              <div style="font-weight:700;color:${unread ? (currentTheme === 'dark' ? '#cfe6ff' : '#0d6efd') : (currentTheme === 'dark' ? '#d7e4f6' : '#333')}">${escapeHtml(n.asunto)}</div>
-              <div style="font-size:0.92rem;color:${currentTheme === 'dark' ? '#b8c6d9' : '#666'};margin-top:6px;line-height:1.2">${escapeHtml(contenidoShort)}</div>
-              <div style="font-size:0.78rem;color:${currentTheme === 'dark' ? '#94a6bb' : '#888'};margin-top:8px">${formatTime(n.created_at)}</div>
-            </div>
-            <div style="margin-left:10px;display:flex;align-items:flex-start;flex-direction:column;gap:6px">
-              ${unread ? `<span style="background:${currentTheme === 'dark' ? '#2b6df6' : '#0d6efd'};color:#fff;padding:4px 6px;border-radius:6px;font-size:0.72rem">Nuevo</span>` : `<span style="font-size:0.76rem;color:${currentTheme === 'dark' ? '#6f8196' : '#6c757d'}">Leído</span>`}
-            </div>
+        <a href="#" data-id="${n.id}" data-link="${escapeHtml(n.link || '')}" class="notif-item ${unread ? 'unread' : 'read'}">
+          <div class="item-left"></div>
+          <div class="item-body">
+            <div class="item-title">${escapeHtml(n.asunto)}</div>
+            <div class="item-msg">${escapeHtml(contenidoShort)}</div>
+            <div class="item-time">${formatTime(n.created_at)}</div>
           </div>
         </a>
       `;
     }).join('');
     list.innerHTML = items;
 
-    // wire clicks
+    // wire clicks (mantiene comportamiento previo)
     list.querySelectorAll('.notif-item').forEach(a => {
       a.addEventListener('click', async function(ev){
         ev.preventDefault();
@@ -250,30 +211,52 @@
     })();
 
     const elmt = document.createElement('div');
-    elmt.style.minWidth = '260px';
-    elmt.style.padding = '12px 14px';
-    elmt.style.borderRadius = '8px';
-    elmt.style.cursor = 'pointer';
-    applyThemeStylesToToast(elmt);
-    elmt.innerHTML = `<div style="font-weight:700;color:${currentTheme === 'dark' ? '#cfe6ff' : '#0b2a66'}">${escapeHtml(n.asunto)}</div><div style="color:${currentTheme === 'dark' ? '#c0d6ea' : '#333'};margin-top:6px;font-size:0.95rem">${escapeHtml(n.contenido)}</div><div style="font-size:0.8rem;color:${currentTheme === 'dark' ? '#9fb3cc' : '#666'};margin-top:8px">${formatTime(n.created_at)}</div>`;
-    elmt.addEventListener('click', async ()=>{
+    // elegir clase de acento según tipo
+    let accentClass = 'accent-blue';
+    if (n.tipo && /factura|invoice/i.test(n.tipo)) accentClass = 'accent-green';
+    if (n.tipo && /soporte|support/i.test(n.tipo)) accentClass = 'accent-gold';
+    if (n.tipo && /alerta|error|warning/i.test(n.tipo)) accentClass = 'accent-red';
+
+    elmt.className = 'notif-toast ' + accentClass;
+    elmt.innerHTML = `
+      <div c
+      lass="nt-body">
+        <div class="nt-title">${escapeHtml(n.asunto)}</div>
+        <div class="nt-msg">${escapeHtml(n.contenido)}</div>
+      </div>
+      <div class="nt-meta">
+        <div class="nt-time">${formatTime(n.created_at)}</div>
+        <button class="nt-close" aria-label="Cerrar">&times;</button>
+      </div>
+    `;
+
+    // click en tarjeta: marcar y navegar
+    elmt.addEventListener('click', async (ev)=>{
+      // si se pulsa el botón cerrar, se maneja aparte
+      if (ev.target && ev.target.classList && ev.target.classList.contains('nt-close')) return;
       if (n.id && !MOCK) await markRead(n.id);
-      if (n.link) location.href = n.link;
+      if (n.link) window.location.href = n.link;
       elmt.remove();
     });
+
+    // cerrar al pulsar la X
+    elmt.querySelector('.nt-close').addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      elmt.remove();
+    });
+
     toastContainer.prepend(elmt);
-    setTimeout(()=>elmt.remove(), 12000);
+    popBadge();
+    // auto dismiss
+    setTimeout(()=>{ try{ elmt.remove(); }catch(e){} }, 12000);
   }
 
-  // posiciona dropdown relativo al botón del timbre (adaptativo)
   function positionDropdown(){
     const bell = el(bellId);
     const d = ensureDropdown();
     if (!bell || !d) return;
     const rect = bell.getBoundingClientRect();
     const top = rect.bottom + window.scrollY + 8;
-
-    // si pantalla pequeña, centrar y ajustar ancho al 92%
     if (window.innerWidth <= 480) {
       d.style.width = '92%';
       d.style.left = '4%';
@@ -281,8 +264,6 @@
       d.style.top = (rect.bottom + window.scrollY + 6) + 'px';
       return;
     }
-
-    // alinear a la derecha del botón en pantallas grandes
     const rightOffset = Math.max(8, window.innerWidth - rect.right - 8);
     d.style.top = top + 'px';
     d.style.right = rightOffset + 'px';
@@ -290,7 +271,6 @@
     d.style.width = '340px';
   }
 
-  // toggle al hacer click en la campana
   function initBellToggle(){
     const bell = el(bellId);
     if (!bell) return;
@@ -301,22 +281,48 @@
         d.style.display = 'none';
         return;
       }
-      // actualizar y mostrar
       fetchNotifs(false).then(()=>{ positionDropdown(); const dd = ensureDropdown(); dd.style.display = 'block'; });
     });
-    // cerrar al click fuera
     document.addEventListener('click', function(e){
       const d = document.getElementById('notif-dropdown');
       const bellEl = el(bellId);
       if (!d) return;
       if (!d.contains(e.target) && !(bellEl && bellEl.contains(e.target))) d.style.display = 'none';
     });
-    // reposicionar en resize/scroll
     window.addEventListener('resize', ()=>{ if (dropdown && dropdown.style.display === 'block') positionDropdown(); });
     window.addEventListener('scroll', ()=>{ if (dropdown && dropdown.style.display === 'block') positionDropdown(); });
   }
 
-  // inicial + polling
+  // función global para simular llegada de notificación nueva (útil en consola)
+  window.simulateNotification = function(payload){
+    const nextId = Math.floor(Math.random()*900000) + 300;
+    const nowIso = new Date().toISOString();
+    const item = {
+      id: nextId,
+      usuario_id: 1,
+      tipo: payload.tipo || 'test',
+      titulo: payload.titulo || 'Notificación de prueba',
+      mensaje: payload.mensaje || 'Mensaje de prueba',
+      enlace: payload.enlace || '',
+      leida: 0,
+      created_at: nowIso
+    };
+    // insertar al inicio del mock (si MOCK) y forzar render + toast
+    if (MOCK) {
+      MOCK_DATA.unshift(item);
+      fetchNotifs(true);
+      return;
+    }
+    // en producción puedes llamar a un endpoint que cree la notificación
+    fetch(payload.pushEndpoint || (BASE + '/api/notifications_test_push.php'), {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(item)
+    }).then(()=> fetchNotifs(true)).catch(()=> fetchNotifs(true));
+  };
+
+  // inicial
   initBellToggle();
   fetchNotifs(false);
   setInterval(()=>fetchNotifs(true), POLL_MS);
