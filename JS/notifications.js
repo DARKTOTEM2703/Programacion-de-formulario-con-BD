@@ -2,11 +2,11 @@
 (function(){
   if (typeof window === 'undefined') return;
   const BASE = window.BASE_URL ? window.BASE_URL.replace(/\/$/,'') : '';
-  const API_LIST = (BASE ? BASE : '') + '/api/notifications.php';
-  const API_MARK = (BASE ? BASE : '') + '/api/notifications_mark_read.php';
+  const API_LIST = (BASE ? BASE : '') + '/api/notifications.php';  // Ya correcto
+  const API_MARK = (BASE ? BASE : '') + '/api/notifications_mark_read.php';  // Ya correcto
   const POLL_MS = 6000;
 
-  const MOCK = true;
+  const MOCK = false; // cambiar de true a false
   const now = Date.now();
   const MOCK_DATA = [
     { id: 201, usuario_id: 1, tipo: 'envio_status', titulo: 'Paquete recibido en bodega', mensaje: 'Tu paquete #AZ1234 fue recibido en bodega.', enlace: BASE + '/php/tracking.php?tracking=AZ1234', leida: 0, created_at: new Date(now - 30*1000).toISOString() },
@@ -24,6 +24,9 @@
   let dropdown = null;
   let toastContainer = null;
   const bellId = 'notifBell';
+  let activeTracking = null;
+  let normalPollMs = 6000;
+  let trackingPollMs = 2000; // más frecuente durante tracking activo
 
   function el(id){ return document.getElementById(id); }
   function formatTime(dt){ try { return new Date(dt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); } catch(e){ return ''; } }
@@ -219,8 +222,7 @@
 
     elmt.className = 'notif-toast ' + accentClass;
     elmt.innerHTML = `
-      <div c
-      lass="nt-body">
+      <div class="nt-body">
         <div class="nt-title">${escapeHtml(n.asunto)}</div>
         <div class="nt-msg">${escapeHtml(n.contenido)}</div>
       </div>
@@ -322,9 +324,26 @@
     }).then(()=> fetchNotifs(true)).catch(()=> fetchNotifs(true));
   };
 
+  // Función para activar seguimiento intensivo
+  window.startActiveTracking = function(trackingNumber) {
+    activeTracking = trackingNumber;
+    // cambiar intervalo a más frecuente
+    clearInterval(window.notifInterval);
+    window.notifInterval = setInterval(() => fetchNotifs(true), trackingPollMs);
+    console.log(`Seguimiento activo iniciado para: ${trackingNumber}`);
+  };
+
+  // Función para volver al polling normal
+  window.stopActiveTracking = function() {
+    activeTracking = null;
+    clearInterval(window.notifInterval);
+    window.notifInterval = setInterval(() => fetchNotifs(true), normalPollMs);
+    console.log('Seguimiento activo detenido');
+  };
+
   // inicial
   initBellToggle();
   fetchNotifs(false);
-  setInterval(()=>fetchNotifs(true), POLL_MS);
+  window.notifInterval = setInterval(() => fetchNotifs(true), normalPollMs);
 
 })();

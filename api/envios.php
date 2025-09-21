@@ -73,21 +73,25 @@ switch ($action) {
             $stmt->bind_param("si", $status, $envio_id);
             $stmt->execute();
             
-             // Registrar en el historial de tracking
-             $stmt = $conn->prepare("
-                 INSERT INTO tracking_history (envio_id, status, location, notes, created_by) 
-                 VALUES (?, ?, ?, ?, ?)
-             ");
-             $stmt->bind_param("isssi", $envio_id, $status, $location, $notes, $repartidor_id);
-             $stmt->execute();
-             
-             $conn->commit();
-             
-             echo json_encode(['success' => true]);
-         } catch (Exception $e) {
-             $conn->rollback();
-             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-         }
+            // NUEVO: Notificar cambio automáticamente
+            require_once '../components/notifications.php';
+            notifyStatusChange($envio_id, $status);
+
+            // Registrar en el historial de tracking
+            $stmt = $conn->prepare("
+                INSERT INTO tracking_history (envio_id, status, location, notes, created_by) 
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            $stmt->bind_param("isssi", $envio_id, $status, $location, $notes, $repartidor_id);
+            $stmt->execute();
+            
+            $conn->commit();
+            
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            $conn->rollback();
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
         break;
 
     default:

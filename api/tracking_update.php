@@ -50,7 +50,10 @@ $stmt = $conn->prepare("
 $stmt->bind_param("isssi", $envio_id, $status, $location, $notes, $repartidor_id);
 
 if ($stmt->execute()) {
-    $tracking_number = $stmt->insert_id;
+    // NUEVO: Notificar automáticamente el cambio
+    require_once '../components/notifications.php';
+    notifyDeliveryUpdate($tracking_number, $status, "Lat: $latitude, Lng: $longitude");
+    
     echo json_encode([
         'success' => true,
         'message' => 'Ubicación actualizada correctamente',

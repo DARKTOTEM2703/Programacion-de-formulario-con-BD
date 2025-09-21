@@ -67,7 +67,7 @@ if (!empty($tracking_number)) {
     <div class="tracking-container">
         <h1 class="mb-4">Rastrear Envío</h1>
 
-        <form method="GET" action="" class="tracking-form mb-4">
+        <form method="GET" action="" class="mb-4 tracking-form">
             <div class="input-group">
                 <input type="text" name="tracking" class="form-control" placeholder="Ingresa tu número de seguimiento"
                     value="<?php echo htmlspecialchars($tracking_number); ?>">
@@ -79,7 +79,7 @@ if (!empty($tracking_number)) {
 
         <?php if ($shipment): ?>
             <div class="shipment-info">
-                <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="mb-3 d-flex justify-content-between align-items-start">
                     <h3>Envío #<?php echo htmlspecialchars($shipment['tracking_number']); ?></h3>
                     <?php if ($shipment['urgent']): ?>
                         <span class="badge bg-danger">URGENTE</span>
@@ -174,7 +174,7 @@ if (!empty($tracking_number)) {
                                 <div class="mt-2"><strong>Destinatario:</strong> <?php echo htmlspecialchars($shipment['name']); ?>
                                 </div>
                                 <?php if (!empty($shipment['delivery_date'])): ?>
-                                    <div class="eta-badge mt-2">
+                                    <div class="mt-2 eta-badge">
                                         <i class="bi bi-clock"></i> Entrega estimada:
                                         <?php echo date('d/m/Y', strtotime($shipment['delivery_date'])); ?>
                                     </div>
@@ -263,7 +263,7 @@ if (!empty($tracking_number)) {
                         <div class="timeline-item">
                             <div class="timeline-marker"></div>
                             <div class="timeline-content">
-                                <div class="d-flex justify-content-between mb-2">
+                                <div class="mb-2 d-flex justify-content-between">
                                     <h5 class="mb-0"><?php echo htmlspecialchars($track['status']); ?></h5>
                                     <small class="text-muted">
                                         <?php echo date('d/m/Y H:i', strtotime($track['created_at'])); ?>
@@ -309,7 +309,7 @@ if (!empty($tracking_number)) {
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 No se encontró el envío con el número de seguimiento proporcionado.
             </div>
-            <div class="text-center mt-4">
+            <div class="mt-4 text-center">
                 <p>Verifica que has ingresado correctamente el número de seguimiento.</p>
                 <p>Si el problema persiste, contacta con nuestro servicio de atención al cliente:</p>
                 <p><strong><i class="bi bi-telephone me-1"></i> (55) 1234-5678</strong></p>
@@ -319,8 +319,8 @@ if (!empty($tracking_number)) {
                 <i class="bi bi-info-circle-fill me-2"></i>
                 Ingresa tu número de seguimiento para rastrear tu envío.
             </div>
-            <div class="text-center mt-4">
-                <img src="../img/tracking-illustration.png" alt="Rastreo de envíos" class="img-fluid mb-3"
+            <div class="mt-4 text-center">
+                <img src="../img/tracking-illustration.png" alt="Rastreo de envíos" class="mb-3 img-fluid"
                     style="max-width: 300px;">
                 <p>Con MENDEZ Transportes puedes rastrear tu envío en tiempo real.</p>
             </div>
@@ -581,6 +581,22 @@ if (!empty($tracking_number)) {
             });
         </script>
     <?php endif; ?>
+
+    <script>
+    // Si hay un envío en tránsito, activar seguimiento intensivo
+    <?php if ($shipment && in_array($shipment['status'], ['En tránsito', 'En ruta', 'En camino'])): ?>
+      if (typeof window.startActiveTracking === 'function') {
+        window.startActiveTracking('<?php echo htmlspecialchars($tracking_number); ?>');
+      }
+      
+      // Detener cuando se cierre la página
+      window.addEventListener('beforeunload', function() {
+        if (typeof window.stopActiveTracking === 'function') {
+          window.stopActiveTracking();
+        }
+      });
+    <?php endif; ?>
+    </script>
 </body>
 
 </html>

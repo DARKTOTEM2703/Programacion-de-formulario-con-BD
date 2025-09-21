@@ -7,8 +7,9 @@ if (!isset($_SESSION['usuario_id'])) {
 
 require_once '../components/db_connection.php';
 require_once '../components/url_helper.php'; // <- añadido
+require_once '../components/notifications.php'; // <- añadido
 $usuario_id = $_SESSION['usuario_id'];
-$base_url = rtrim(base_url(), '/'); // exponer
+$base_url = rtrim(str_replace('/php', '', base_url()), '/'); // exponer
 
 // Obtener información del usuario
 $query = "SELECT nombre_usuario FROM usuarios WHERE id = $usuario_id";

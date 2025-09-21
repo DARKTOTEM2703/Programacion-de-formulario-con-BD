@@ -61,7 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
                 $update->execute();
             }
 
+            // Después de actualizar el estado
             if ($update->execute()) {
+                // NUEVO: Notificar cambio de estado
+                require_once '../components/notifications.php';
+                $repartidor_name = $_SESSION['nombre_usuario'] ?? 'Repartidor';
+                notifyDeliveryUpdate($tracking_code, $nuevo_estado, null, $repartidor_name);
+                
                 // Enviar correo al cliente con el PIN
                 $correo_enviado = enviarCorreoEnvioEnCamino($envio['email'], $envio['name'], $tracking_code, $pin_seguro);
 
@@ -353,7 +359,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
         </div>
     </nav>
 
-    <div class="container mt-4 mb-5 pb-5">
+    <div class="container pb-5 mt-4 mb-5">
         <!-- Mensaje de respuesta -->
         <?php if (!empty($mensaje)): ?>
             <div class="alert alert-<?php echo $tipo_mensaje; ?> alert-dismissible fade show">
@@ -372,13 +378,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
         <?php endif; ?>
 
         <!-- Logo centrado -->
-        <div class="text-center mb-4">
+        <div class="mb-4 text-center">
             <!-- Logo de MENDEZ -->
             <img src="../img/logo.png" alt="MENDEZ Transportes" class="company-logo">
         </div>
 
         <!-- Scanner -->
-        <div class="scanner-container text-center">
+        <div class="text-center scanner-container">
             <h3 class="scan-title"><i class="bi bi-qr-code-scan me-2"></i>Escanea el código de seguimiento</h3>
             <p class="scan-instructions">Posiciona el código QR o código de barras del envío dentro del recuadro para
                 escanearlo automáticamente.</p>
@@ -389,7 +395,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
             </div>
 
             <div class="mt-4">
-                <div class="d-flex justify-content-center gap-3 mb-4">
+                <div class="gap-3 mb-4 d-flex justify-content-center">
                     <button id="startButton" class="btn btn-custom-primary">
                         <i class="bi bi-camera-video-fill me-2"></i>Iniciar cámara
                     </button>
@@ -398,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
                     </button>
                 </div>
 
-                <div class="text-center mt-4">
+                <div class="mt-4 text-center">
                     <p class="mb-3" style="color: #6c757d; font-weight: 500;">O ingresa el código manualmente:</p>
                     <form method="post" class="d-flex justify-content-center">
                         <div class="input-group" style="max-width: 400px;">
@@ -415,18 +421,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
 
         <!-- Acciones de envío -->
         <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code']) && $result->num_rows > 0): ?>
-            <div class="card mt-4">
+            <div class="mt-4 card">
                 <div class="card-header">
                     <h5 class="mb-0 text-white">Acciones para envío #<?php echo htmlspecialchars($tracking_code); ?></h5>
                 </div>
-                <div class="card-body p-4">
+                <div class="p-4 card-body">
                     <div class="mb-4">
-                        <div class="d-flex align-items-center mb-3">
+                        <div class="mb-3 d-flex align-items-center">
                             <i class="bi bi-person-fill me-3 text-primary fs-4"></i>
                             <h5 class="mb-0"><?php echo htmlspecialchars($envio['recipient_name']); ?></h5>
                         </div>
 
-                        <div class="d-flex mb-2">
+                        <div class="mb-2 d-flex">
                             <i class="bi bi-geo-alt-fill me-3 text-primary"></i>
                             <p class="mb-0"><?php echo htmlspecialchars($envio['recipient_address']); ?></p>
                         </div>
@@ -447,28 +453,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tracking_code'])) {
     </div>
 
     <!-- Barra de navegación inferior -->
-    <nav class="navbar fixed-bottom navbar-dark p-0 shadow">
-        <div class="container-fluid p-0">
-            <div class="d-flex flex-row justify-content-around w-100">
-                <a href="dashboard.php" class="nav-link text-center py-3 flex-fill">
+    <nav class="p-0 shadow navbar fixed-bottom navbar-dark">
+        <div class="p-0 container-fluid">
+            <div class="flex-row d-flex justify-content-around w-100">
+                <a href="dashboard.php" class="py-3 text-center nav-link flex-fill">
                     <div class="d-flex flex-column align-items-center">
                         <i class="bi bi-house-door-fill fs-4"></i>
                         <span class="small">Inicio</span>
                     </div>
                 </a>
-                <a href="escanear.php" class="nav-link text-center py-3 flex-fill active">
+                <a href="escanear.php" class="py-3 text-center nav-link flex-fill active">
                     <div class="d-flex flex-column align-items-center">
                         <i class="bi bi-qr-code-scan fs-4"></i>
                         <span class="small">Escanear</span>
                     </div>
                 </a>
-                <a href="mapa.php" class="nav-link text-center py-3 flex-fill">
+                <a href="mapa.php" class="py-3 text-center nav-link flex-fill">
                     <div class="d-flex flex-column align-items-center">
                         <i class="bi bi-geo-alt-fill fs-4"></i>
                         <span class="small">Mapa</span>
                     </div>
                 </a>
-                <a href="perfil.php" class="nav-link text-center py-3 flex-fill">
+                <a href="perfil.php" class="py-3 text-center nav-link flex-fill">
                     <div class="d-flex flex-column align-items-center">
                         <i class="bi bi-person-fill fs-4"></i>
                         <span class="small">Perfil</span>

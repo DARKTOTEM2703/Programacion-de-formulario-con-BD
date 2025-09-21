@@ -26,7 +26,11 @@ if ($result->num_rows > 0) {
     $stmt->bind_param("i", $envio['id']);
     $stmt->execute();
 
-    echo json_encode(['success' => true, 'message' => 'Entrega validada correctamente']);
+    // NUEVO: Notificar entrega
+    require_once '../components/notifications.php';
+    notifyStatusChange($envio['id'], 'Entregado', '¡Felicidades! Tu paquete ha sido entregado exitosamente.');
+
+    echo json_encode(['success' => true, 'message' => 'Paquete entregado correctamente']);
 } else {
     echo json_encode(['success' => false, 'message' => 'PIN incorrecto']);
 }
