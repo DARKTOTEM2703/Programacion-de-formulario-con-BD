@@ -24,10 +24,10 @@ try {
     $notifications = [];
     // Al procesar las notificaciones:
     while ($row = $result->fetch_assoc()) {
-        // Completar la URL relativa con la base_url CORREGIDA
+        // Completar la URL relativa con la base_url 
         $enlace = $row['enlace'];
         if ($enlace && substr($enlace, 0, 1) == '/') {
-            // Obtener base_url sin "/api"
+            // Obtener base_url
             $base = rtrim(base_url(), '/');
             $base = preg_replace('|/api$|', '', $base);
             

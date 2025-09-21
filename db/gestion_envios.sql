@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-09-2025 a las 21:44:02
+-- Tiempo de generación: 21-09-2025 a las 23:24:34
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -92,6 +92,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_cargar_camion` (IN `p_envio_id` 
   VALUES(p_envio_id,'Cargado camión','Bodega','Cargado a unidad',p_usuario_bodega,NOW());
 
   SET p_ok=1; SET p_msg='OK';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_crear_notificacion` (IN `p_tipo` VARCHAR(50), IN `p_usuario_id` INT, IN `p_titulo` VARCHAR(255), IN `p_mensaje` TEXT, IN `p_enlace` VARCHAR(255), OUT `p_notificacion_id` INT)   BEGIN
+    INSERT INTO notificaciones (
+        tipo, usuario_id, titulo, mensaje, enlace, leida, created_at
+    ) VALUES (
+        p_tipo, p_usuario_id, p_titulo, p_mensaje, p_enlace, 0, NOW()
+    );
+    
+    SET p_notificacion_id = LAST_INSERT_ID();
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_estadisticas_notificaciones` (IN `p_usuario_id` INT)   BEGIN
+    SELECT * FROM vista_resumen_notificaciones
+    WHERE usuario_id = p_usuario_id;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_generar_factura_envio` (IN `p_envio_id` INT, IN `p_actor` INT, OUT `p_ok` TINYINT, OUT `p_msg` VARCHAR(140))   proc: BEGIN
@@ -190,6 +205,25 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_intake_envio` (IN `p_tracking` V
   VALUES(v_id,'Recibido bodega','Bodega','Ingreso a bodega',p_usuario_bodega,NOW());
 
   SET p_ok=1; SET p_msg='OK';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_marcar_notificacion_leida` (IN `p_notificacion_id` INT, IN `p_usuario_id` INT, OUT `p_ok` BOOLEAN)   BEGIN
+    DECLARE affected_rows INT;
+    
+    UPDATE notificaciones 
+    SET leida = 1 
+    WHERE id = p_notificacion_id AND usuario_id = p_usuario_id;
+    
+    SET affected_rows = ROW_COUNT();
+    SET p_ok = (affected_rows > 0);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_marcar_todas_leidas` (IN `p_usuario_id` INT, OUT `p_count` INT)   BEGIN
+    UPDATE notificaciones 
+    SET leida = 1
+    WHERE usuario_id = p_usuario_id AND leida = 0;
+    
+    SET p_count = ROW_COUNT();
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_detalle_envio` (IN `p_envio_id` INT, IN `p_rol_id` INT, IN `p_usuario_id` INT)   BEGIN
@@ -293,6 +327,20 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_estadisticas_bodega` (IN
     WHERE e.status IN ('Procesando', 'Recibido bodega')
     ORDER BY e.urgent DESC, e.created_at ASC
     LIMIT 20;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_notificaciones` (IN `p_usuario_id` INT, IN `p_limit` INT, IN `p_solo_pendientes` BOOLEAN)   BEGIN
+    IF p_solo_pendientes THEN
+        SELECT * FROM vista_notificaciones 
+        WHERE usuario_id = p_usuario_id AND leida = 0
+        ORDER BY created_at DESC
+        LIMIT p_limit;
+    ELSE
+        SELECT * FROM vista_notificaciones 
+        WHERE usuario_id = p_usuario_id
+        ORDER BY created_at DESC
+        LIMIT p_limit;
+    END IF;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_repartidores_activos` ()   BEGIN
@@ -592,7 +640,7 @@ CREATE TABLE `envios` (
 --
 
 INSERT INTO `envios` (`id`, `usuario_id`, `name`, `email`, `phone`, `office_phone`, `origin`, `destination`, `description`, `value`, `tracking_number`, `delivery_date`, `package_type`, `weight`, `insurance`, `urgent`, `additional_notes`, `package_image`, `estimated_cost`, `status`, `created_at`, `lat`, `lng`, `estado_pago`, `fecha_pago`, `updated_at`, `pin_seguro`) VALUES
-(15, 1, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '999-636-9799', '', 'C55A #357 Juan Pablo ll 97236', 'c 55A #357 x 18 y 20 juan pablo ll 97246', 'CAJA DE HERRAMIENTAS MUY PESADA', NULL, 'MENDEZ-CB864B29', '2025-04-17', 'paquete_mediano', 12.00, 1, 1, 'XD', '', 485.00, 'En tránsito', '2025-04-16 05:48:02', 20.96737000, -89.59258600, 'pendiente', NULL, '2025-08-23 04:36:33', NULL),
+(15, 1, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '999-636-9799', '', 'C55A #357 Juan Pablo ll 97236', 'c 55A #357 x 18 y 20 juan pablo ll 97246', 'CAJA DE HERRAMIENTAS MUY PESADA', NULL, 'MENDEZ-CB864B29', '2025-04-17', 'paquete_mediano', 12.00, 1, 1, 'XD', '', 485.00, 'En ruta', '2025-04-16 05:48:02', 20.96737000, -89.59258600, 'pendiente', NULL, '2025-09-21 20:49:59', NULL),
 (16, 1, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '999-636-9799', '', 'C55A', 'c 55A #357 x 18 y 20', 'hjvjvhj', NULL, 'MENDEZ-FA2681B2', '2025-04-23', 'paquete_pequeno', 678.00, 1, 1, 'ghjghj', '', 11013.90, 'En tránsito', '2025-04-16 05:52:28', NULL, NULL, 'pendiente', NULL, '2025-08-23 04:36:33', NULL),
 (17, 1, 'Jafeth Daniel Gamboa Baas', 'jafethgamboabaas@gmail.com', '999-636-9799', '', 'C55A', 'c 55A #357 x 18 y 20', 'hjvjvhj', NULL, 'MENDEZ-10402858', '2025-04-23', 'paquete_pequeno', 678.00, 1, 1, 'ghjghj', '', 11013.90, 'En tránsito', '2025-04-16 05:52:32', NULL, NULL, 'pendiente', NULL, '2025-08-23 04:36:33', NULL),
 (18, 24, 'Josué Gamboa', 'gamboajosue541@gmail.com', '999-645-4541', '', 'Una tienda abarrotes García', 'Xoclán', 'Folletos', NULL, 'MENDEZ-4653DDCF', '2025-04-30', 'paquete_mediano', 3.00, 0, 0, 'Frágil', '', 130.00, 'Procesando', '2025-04-18 02:46:58', NULL, NULL, 'pendiente', NULL, '2025-08-23 04:36:33', NULL),
@@ -651,27 +699,18 @@ INSERT INTO `envios` (`id`, `usuario_id`, `name`, `email`, `phone`, `office_phon
 --
 DELIMITER $$
 CREATE TRIGGER `tr_envio_status_change` AFTER UPDATE ON `envios` FOR EACH ROW BEGIN
+    DECLARE v_notif_id INT;
+    DECLARE v_ok BOOLEAN;
+    
     -- Solo disparar si el status realmente cambió
     IF OLD.status != NEW.status THEN
-        -- Insertar notificación automáticamente
-        INSERT INTO notificaciones (
-            tipo, 
-            usuario_id, 
-            email, 
-            asunto, 
-            contenido, 
-            link, 
-            status, 
-            created_at
-        ) VALUES (
-            'envio_status',
-            NEW.usuario_id,
-            (SELECT email FROM usuarios WHERE id = NEW.usuario_id),
-            CONCAT('Actualización del envío #', NEW.tracking_number),
-            CONCAT('Tu envío #', NEW.tracking_number, ' cambió de "', OLD.status, '" a "', NEW.status, '"'),
-            CONCAT('/php/tracking.php?tracking=', NEW.tracking_number),
-            'pendiente',
-            NOW()
+        -- Usar el SP para crear la notificación
+        CALL sp_notificar_cambio_estado(
+            NEW.id, 
+            NEW.status,
+            NULL, -- mensaje personalizado null (usará el predeterminado)
+            v_ok,
+            v_notif_id
         );
     END IF;
 END
@@ -880,6 +919,18 @@ CREATE TABLE `notificaciones` (
   `leida` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `notificaciones`
+--
+
+INSERT INTO `notificaciones` (`id`, `usuario_id`, `tipo`, `titulo`, `mensaje`, `enlace`, `leida`, `created_at`) VALUES
+(1, 1, 'envio_status', '📦 Actualización del envío #MENDEZ-CB864B29', 'Tu envío #MENDEZ-CB864B29 cambió de \"En tránsito\" a \"En ruta\"', '/php/tracking.php?tracking=MENDEZ-CB864B29', 1, '2025-09-21 20:27:54'),
+(2, 1, 'envio_status', '📦 Actualización del envío #MENDEZ-CB864B29', 'Tu envío #MENDEZ-CB864B29 cambió de \"En ruta\" a \"Procesando\"', '/php/tracking.php?tracking=MENDEZ-CB864B29', 1, '2025-09-21 20:31:21'),
+(3, 1, 'envio_status', '📦 Actualización del envío #MENDEZ-CB864B29', 'Tu envío #MENDEZ-CB864B29 cambió de \"Procesando\" a \"si\"', '/php/tracking.php?tracking=MENDEZ-CB864B29', 1, '2025-09-21 20:31:54'),
+(4, 1, 'envio_status', '📦 Actualización del envío #MENDEZ-CB864B29', 'Tu envío #MENDEZ-CB864B29 cambió de \"si\" a \"En ruta\"', '/php/tracking.php?tracking=MENDEZ-CB864B29', 1, '2025-09-21 20:32:13'),
+(5, 1, 'envio_status', '📦 Actualización del envío #MENDEZ-CB864B29', 'Tu envío cambió a: no', '/php/tracking.php?tracking=MENDEZ-CB864B29', 1, '2025-09-21 20:49:51'),
+(6, 1, 'envio_status', '📦 Actualización del envío #MENDEZ-CB864B29', 'Tu envío está muy cerca. El repartidor está en la zona de entrega.', '/php/tracking.php?tracking=MENDEZ-CB864B29', 1, '2025-09-21 20:49:59');
 
 -- --------------------------------------------------------
 
@@ -1246,7 +1297,11 @@ INSERT INTO `tracking_history` (`id`, `envio_id`, `status`, `location`, `notes`,
 (18, 15, 'Recibido bodega', 'Bodega', 'Ingreso a bodega', 31, '2025-08-22 06:41:09'),
 (19, 17, 'Recibido bodega', 'Bodega', 'Ingreso a bodega', 31, '2025-08-22 06:41:17'),
 (20, 67, 'En tránsito', NULL, 'Asignación repartidor', 30, '2025-08-22 21:25:13'),
-(21, 65, 'En tránsito', NULL, 'Asignación repartidor', 30, '2025-08-23 07:50:04');
+(21, 65, 'En tránsito', NULL, 'Asignación repartidor', 30, '2025-08-23 07:50:04'),
+(22, 15, 'En ruta', 'Actualización de prueba', 'Estado cambiado de \'En tránsito\' a \'En ruta\' (prueba automática)', 1, '2025-09-21 20:27:54'),
+(23, 15, 'En ruta', 'Actualización de prueba', 'Estado cambiado de \'En ruta\' a \'En ruta\' (prueba automática)', 1, '2025-09-21 20:29:08'),
+(24, 15, 'En ruta', 'Actualización de prueba', 'Estado cambiado de \'si\' a \'En ruta\' (prueba automática)', 1, '2025-09-21 20:32:13'),
+(25, 15, 'En ruta', 'Actualización de prueba', 'Estado cambiado de \'no\' a \'En ruta\' (prueba automática)', 1, '2025-09-21 20:49:59');
 
 -- --------------------------------------------------------
 
@@ -1455,6 +1510,50 @@ CREATE TABLE `vista_envios_validados_qr` (
 -- --------------------------------------------------------
 
 --
+-- Estructura Stand-in para la vista `vista_notificaciones`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_notificaciones` (
+`id` int(11)
+,`usuario_id` int(11)
+,`tipo` varchar(50)
+,`titulo` varchar(100)
+,`mensaje` text
+,`enlace` varchar(255)
+,`leida` tinyint(1)
+,`created_at` timestamp
+,`nombre_usuario` varchar(50)
+,`email` varchar(100)
+,`tracking_number` varchar(20)
+,`envio_status` varchar(50)
+,`tracking_code` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_notificaciones_pendientes`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_notificaciones_pendientes` (
+`id` int(11)
+,`usuario_id` int(11)
+,`tipo` varchar(50)
+,`titulo` varchar(100)
+,`mensaje` text
+,`enlace` varchar(255)
+,`leida` tinyint(1)
+,`created_at` timestamp
+,`nombre_usuario` varchar(50)
+,`email` varchar(100)
+,`tracking_number` varchar(20)
+,`envio_status` varchar(50)
+,`tracking_code` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura Stand-in para la vista `vista_repartidores_activos`
 -- (Véase abajo para la vista actual)
 --
@@ -1487,6 +1586,20 @@ CREATE TABLE `vista_repartidor_envios_pendientes` (
 ,`status` varchar(50)
 ,`created_at` timestamp
 ,`fecha_asignacion` timestamp
+);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vista_resumen_notificaciones`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `vista_resumen_notificaciones` (
+`usuario_id` int(11)
+,`total` bigint(21)
+,`pendientes` decimal(22,0)
+,`leidas` decimal(22,0)
+,`ultima_fecha` timestamp
 );
 
 -- --------------------------------------------------------
@@ -1561,6 +1674,24 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Estructura para la vista `vista_notificaciones`
+--
+DROP TABLE IF EXISTS `vista_notificaciones`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_notificaciones`  AS SELECT `n`.`id` AS `id`, `n`.`usuario_id` AS `usuario_id`, `n`.`tipo` AS `tipo`, `n`.`titulo` AS `titulo`, `n`.`mensaje` AS `mensaje`, `n`.`enlace` AS `enlace`, `n`.`leida` AS `leida`, `n`.`created_at` AS `created_at`, `u`.`nombre_usuario` AS `nombre_usuario`, `u`.`email` AS `email`, `e`.`tracking_number` AS `tracking_number`, `e`.`status` AS `envio_status`, CASE WHEN `n`.`tipo` = 'envio_status' THEN substring_index(substring_index(`n`.`enlace`,'tracking=',-1),'&',1) ELSE NULL END AS `tracking_code` FROM ((`notificaciones` `n` left join `usuarios` `u` on(`n`.`usuario_id` = `u`.`id`)) left join `envios` `e` on(case when `n`.`tipo` = 'envio_status' then `e`.`tracking_number` = substring_index(substring_index(`n`.`enlace`,'tracking=',-1),'&',1) else 0 end)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vista_notificaciones_pendientes`
+--
+DROP TABLE IF EXISTS `vista_notificaciones_pendientes`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_notificaciones_pendientes`  AS SELECT `vista_notificaciones`.`id` AS `id`, `vista_notificaciones`.`usuario_id` AS `usuario_id`, `vista_notificaciones`.`tipo` AS `tipo`, `vista_notificaciones`.`titulo` AS `titulo`, `vista_notificaciones`.`mensaje` AS `mensaje`, `vista_notificaciones`.`enlace` AS `enlace`, `vista_notificaciones`.`leida` AS `leida`, `vista_notificaciones`.`created_at` AS `created_at`, `vista_notificaciones`.`nombre_usuario` AS `nombre_usuario`, `vista_notificaciones`.`email` AS `email`, `vista_notificaciones`.`tracking_number` AS `tracking_number`, `vista_notificaciones`.`envio_status` AS `envio_status`, `vista_notificaciones`.`tracking_code` AS `tracking_code` FROM `vista_notificaciones` WHERE `vista_notificaciones`.`leida` = 0 ORDER BY `vista_notificaciones`.`created_at` DESC ;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura para la vista `vista_repartidores_activos`
 --
 DROP TABLE IF EXISTS `vista_repartidores_activos`;
@@ -1575,6 +1706,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vista_repartidor_envios_pendientes`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_repartidor_envios_pendientes`  AS SELECT `re`.`usuario_id` AS `repartidor_id`, `e`.`id` AS `envio_id`, `e`.`tracking_number` AS `tracking_number`, `e`.`name` AS `cliente_nombre`, `e`.`phone` AS `cliente_telefono`, `e`.`destination` AS `destination`, `e`.`package_type` AS `package_type`, `e`.`weight` AS `weight`, `e`.`urgent` AS `urgent`, `e`.`status` AS `status`, `e`.`created_at` AS `created_at`, `re`.`fecha_asignacion` AS `fecha_asignacion` FROM (`repartidores_envios` `re` join `envios` `e` on(`re`.`envio_id` = `e`.`id`)) WHERE `e`.`status` in ('Cargado camión','En tránsito','En ruta') ORDER BY `e`.`urgent` DESC, `re`.`fecha_asignacion` ASC ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vista_resumen_notificaciones`
+--
+DROP TABLE IF EXISTS `vista_resumen_notificaciones`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_resumen_notificaciones`  AS SELECT `notificaciones`.`usuario_id` AS `usuario_id`, count(0) AS `total`, sum(case when `notificaciones`.`leida` = 0 then 1 else 0 end) AS `pendientes`, sum(case when `notificaciones`.`leida` = 1 then 1 else 0 end) AS `leidas`, max(`notificaciones`.`created_at`) AS `ultima_fecha` FROM `notificaciones` GROUP BY `notificaciones`.`usuario_id` ;
 
 --
 -- Índices para tablas volcadas
@@ -1806,7 +1946,7 @@ ALTER TABLE `movimientos_contables`
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `perfiles_bodeguistas`
@@ -1848,7 +1988,7 @@ ALTER TABLE `roles_permisos`
 -- AUTO_INCREMENT de la tabla `tracking_history`
 --
 ALTER TABLE `tracking_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
