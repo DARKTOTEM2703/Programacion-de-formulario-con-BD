@@ -1,9 +1,8 @@
 <?php
-// filepath: api/notifications.php  
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../components/db_connection.php';
-require_once __DIR__ . '/../components/url_helper.php'; // Añadir esta línea
+require_once __DIR__ . '/../components/url_helper.php'; 
 
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['ok' => false, 'error' => 'no_session']);
@@ -38,11 +37,11 @@ try {
             'id' => (int)$row['id'],
             'tipo' => $row['tipo'],
             'titulo' => $row['titulo'],
-            'asunto' => $row['titulo'], // Para compatibilidad con el frontend
+            'asunto' => $row['titulo'], 
             'mensaje' => $row['mensaje'],
-            'contenido' => $row['mensaje'], // Para compatibilidad con el frontend
-            'enlace' => $enlace, // URL corregida
-            'link' => $enlace, // Para compatibilidad con el frontend
+            'contenido' => $row['mensaje'],
+            'enlace' => $enlace,
+            'link' => $enlace, 
             'leida' => (int)$row['leida'],
             'status' => $row['leida'] == 1 ? 'leido' : 'pendiente',
             'created_at' => $row['created_at'],
